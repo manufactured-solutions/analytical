@@ -1,0 +1,305 @@
+\documentclass[10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{ top=3cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage[authoryear]{natbib}
+\usepackage{pdflscape}
+%\geometry{papersize={216mm,330mm}, top=3cm, bottom=2.5cm, left=4cm,  right=2cm}
+
+\newcommand{\D}{\partial}
+\newcommand{\Diff}[2] {\dfrac{\partial( #1)}{\partial #2}}
+
+%opening
+\title{Manufactured Solution for 2D Euler equation using Maple\footnote{Work based on \citet*{Roy2002}.}}
+\author{Kemelli C. Estacio-Hiroms}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document describes the usage of the Method of Manufactured Solutions (MMS) in order to verify codes for the numerical solutions of the 2D Euler equations. \citet{Roy2002}  present the 2D Euler equations together with the analytical solution for density, velocity and pressure, together with the source term for the continuity equation. The respective source terms for the non-linear convection terms $u$ and $v$, as well as for the energy $e_t$ are presented in this document.
+\end{abstract}
+
+
+
+
+
+\section{2D Euler Equations}
+The 2D Euler equations in conservation form are:
+\begin{equation}
+ \label{eq:euler2d_01}
+\Diff{\rho}{t} + \Diff{\rho u}{x}+\Diff{\rho v}{y} = 0
+\end{equation}
+
+
+\begin{equation}
+ \label{eq:euler2d_02}
+\Diff{\rho u}{t} + \Diff{\rho u^2 + p}{x}+\Diff{\rho uv}{y} = 0
+\end{equation}
+
+
+\begin{equation}
+ \label{eq:euler2d_03}
+\Diff{\rho v}{t} + \Diff{\rho vu}{x}+\Diff{\rho v^2+p}{y} = 0
+\end{equation}
+
+
+\begin{equation}
+ \label{eq:euler2d_04}
+\Diff{\rho e_t}{t} + \Diff{\rho ue_t +pu}{x}+\Diff{\rho ve_t +pv}{y} = 0
+\end{equation}
+%
+where the Equation (\ref{eq:euler2d_01}) is the unsteady term (mass conservation), Equations (\ref{eq:euler2d_02}) and (\ref{eq:euler2d_03})are the nonlinear convection term in the $x$ and $y$ direction (momentum), and Equation (\ref{eq:euler2d_04}) is the energy. For a calorically perfect gas, the Euler equations are closed with two auxiliary relations for energy:
+\begin{equation}
+ \label{eq:euler2d_05}
+e=\dfrac{1}{\gamma -1}RT ,
+\end{equation}
+%
+\begin{equation}
+ \label{eq:euler2d_06}
+e_t= e+\dfrac{u^2+v^2}{2},
+\end{equation}
+and with the ideal gas equation of state:
+\begin{equation}
+ \label{eq:euler2d_07}
+p=\rho RT.
+\end{equation}
+
+\section{Manufactured Solution}
+
+\citet{Roy2002} propose the general form of the primitive solution variables to be  a function of sines and cosines:
+\begin{equation}
+ \label{eq:manufactured01}
+  \phi (x,y) = \phi_0+ \phi_x f_s(\frac{a_{\phi x} \pi x}{L}) +  \phi_y f_s(\frac{a_{\phi y} \pi y}{L}),
+\end{equation}
+where $\phi=\rho,u,v$ or $p$, and $f_s(\cdot)$ functions denote either sine or cosine function. Note that in this case, $\phi_x$ and $\phi_y$ are constants  and the subscripts do not denote differentiation.
+
+Therefore, the manufactured analytical solution for for each one of the variables in Euler equations are:
+\begin{equation}
+\begin{split}
+\label{eq:manufactured02}
+\rho\left(x,y\right) &=  \rho_{0}+ \rho_{x} \sin\left(\frac{a_{ \rho x} \pi x}{L}\right)+ \rho_{y} \cos\left(\frac{a_{ \rho y} \pi y}{L}\right),\\
+u\left(x,y\right) &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right)+u_{y} \cos\left(\frac{a_{u y} \pi y}{L}\right),\\
+v\left(x,y\right) &= v_{0}+v_{x} \cos\left(\frac{a_{v x} \pi x}{L}\right)+v_{y} \sin\left(\frac{a_{v y} \pi y}{L}\right),\\
+p\left(x,y\right) &= p_{0}+p_{x} \cos\left(\frac{a_{p x} \pi x}{L}\right)+p_{y} \sin\left(\frac{a_{p y} \pi y}{L}\right).\\
+\end{split}
+\end{equation}
+
+
+
+
+\citet{Roy2002} present both the source for the 2D mass conservation Equation (\ref{eq:euler2d_01}), and the constants used in the manufactured solutions for the 2D supersonic and subsonic cases. The resulting source terms for the remaining Equations (\ref{eq:euler2d_02}) -- (\ref{eq:euler2d_04}) are obtained through symbolic manipulation using the software Maple and are presented in the following sections.
+
+%The  governing equations (\ref{eq:euler2d_01}) -- (\ref{eq:euler2d_07}) are applied to the solutions in {\ref{eq:manufactured02}} using Maple and the resulting analytical source term are presented in the following sections.
+
+\section{Euler mass conservation equation}
+
+The mass conservation equation written as an operator is:
+\begin{equation}
+ \label{eq:euler2d_11}
+L= \Diff{\rho}{t} + \Diff{\rho u}{x}+\Diff{\rho v}{y} 
+\end{equation}
+
+Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho$, $u$ and $v$ using operator $L$ defined above gives  the source term $Q_{\rho}$:
+\begin{equation}
+\begin{split}
+Q_{\rho} &= \dfrac{\pi a_{\rho   x} \rho _{x} }{L} \cos\left(\dfrac{\pi x a_{\rho   x}}{L}\right)\left[u_{x} \sin\left(\dfrac{\pi x a_{u  x}}{L}\right)+u_{y} \cos\left(\dfrac{\pi y a_{u  y}}{L}\right)+u_{0}\right] \\
+%
+&-\dfrac{\pi a_{\rho   y} \rho _{y} }{L}\sin\left(\dfrac{\pi y a_{\rho   y}}{L}\right)\left[v_{x} \cos\left(\dfrac{\pi x a_{v  x}}{L}\right)+v_{y} \sin\left(\dfrac{\pi y a_{v  y}}{L}\right)+v_{0}\right] \\
+%
+&+\dfrac{ \pi a_{u  x} u_{x} }{L}\cos\left(\dfrac{\pi x a_{u  x}}{L}\right)\left[\rho _{x} \sin\left(\dfrac{\pi x a_{\rho   x}}{L}\right)+\rho _{y} \cos\left(\dfrac{\pi y a_{\rho   y}}{L}\right)+\rho _{0}\right] \\
+%
+&+\dfrac{\pi a_{v  y} v_{y} }{L}\cos\left(\dfrac{\pi y a_{v  y}}{L}\right)\left[\rho _{x} \sin\left(\dfrac{\pi x a_{\rho   x}}{L}\right)+\rho _{y} \cos\left(\dfrac{\pi y a_{\rho   y}}{L} \right) + \rho _{0} \right]
+\end{split}
+\end{equation}
+
+\section{Euler momentum equation}
+
+For the generation of the analytical source term $Q_u$ for the $x$ momentum equation, Equation  (\ref{eq:euler2d_02}) is written as an  operator $L$:
+\begin{equation}
+ \label{eq:euler2d_12}
+L=\Diff{\rho u}{t} + \Diff{\rho u^2 + p}{x}+\Diff{\rho uv}{y}.
+\end{equation}
+which, when operated in Equation (\ref{eq:manufactured02}), provides source term $Q_{u}$:
+
+\begin{equation}
+\begin{split}
+Q_{u} = &-\dfrac{\pi a_{p  x} p_{x} }{L}\sin\left(\dfrac{\pi x a_{p  x}}{L}\right)\\
+&+ \dfrac{\pi a_{\rho   x} \rho _{x} }{L}\cos\left(\dfrac{\pi x a_{\rho   x}}{L}\right)\left[u_{x} \sin\left(\dfrac{\pi x a_{u  x}}{L}\right)+u_{y} \cos\left(\dfrac{\pi y a_{u  y}}{L}\right)+u_{0}\right]^{2}\\
+&-\dfrac{ \pi a_{\rho   y} \rho _{y} }{L}\sin\left(\dfrac{\pi y a_{\rho   y}}{L}\right)\left[u_{x} \sin\left(\dfrac{\pi x a_{u  x}}{L}\right)+u_{y} \cos\left(\dfrac{\pi y a_{u  y}}{L}\right)+u_{0}\right]   \left[v_{x} \cos\left(\dfrac{\pi x a_{v  x}}{L}\right)+v_{y} \sin\left(\dfrac{\pi y a_{v  y}}{L}\right)+v_{0}\right] \\
+&+ \dfrac{ 2\pi a_{u  x} u_{x} }{L}\cos\left(\dfrac{\pi x a_{u  x}}{L}\right)\left[\rho _{x} \sin\left(\dfrac{\pi x a_{\rho   x}}{L}\right)+\rho _{y} \cos\left(\dfrac{\pi y a_{\rho   y}}{L}\right)+\rho _{0}\right] \left[u_{x} \sin\left(\dfrac{\pi x a_{u  x}}{L}\right)+u_{y} \cos\left(\dfrac{\pi y a_{u  y}}{L}\right)+u_{0}\right]\\
+&- \dfrac{\pi a_{u  y} u_{y} }{L}\sin\left(\dfrac{\pi y a_{u  y}}{L}\right)\left[\rho _{x} \sin\left(\dfrac{\pi x a_{\rho   x}}{L}\right)+\rho _{y} \cos\left(\dfrac{\pi y a_{\rho   y}}{L}\right)+\rho _{0}\right] \left[v_{x} \cos\left(\dfrac{\pi x a_{v  x}}{L}\right)+v_{y} \sin\left(\dfrac{\pi y a_{v  y}}{L}\right)+v_{0}\right]\\
+&+\dfrac{ \pi a_{v  y} v_{y} }{L}\cos\left(\dfrac{\pi y a_{v  y}}{L}\right)\left[\rho _{x} \sin\left(\dfrac{\pi x a_{\rho   x}}{L}\right)+\rho _{y} \cos\left(\dfrac{\pi y a_{\rho   y}}{L}\right)+\rho _{0}\right] \left[ u_{x} \sin\left(\dfrac{\pi x a_{u  x}}{L}\right)+u_{y} \cos\left(\dfrac{\pi y a_{u  y}}{L}\right)+u_{0}\right]
+\end{split}
+ \end{equation}
+
+
+Analogously, for the generation of the analytical source term $Q_v$ for the $y$ momentum equation, Equation~(\ref{eq:euler2d_03}) is written as an  operator $L$:
+\begin{equation}
+  \label{eq:euler2d_13}
+  L = \Diff{\rho v}{t}+ \Diff{\rho u v}{x} + \Diff{\rho  v^2 + p}{y}
+\end{equation}
+and then applied to Equation  (\ref{eq:manufactured02}). It yields:
+\begin{equation}
+\begin{split} 
+Q_{v} &= \dfrac{\pi a_{p  y} p_{y} }{L}\cos\left(\dfrac{\pi y a_{p  y}}{L}\right)\\
+&+ \dfrac{\pi a_{\rho   x} \rho _{x}}{L} \cos\left(\dfrac{\pi x a_{\rho   x}}{L}\right)\left[u_{x} \sin\left(\dfrac{\pi x a_{u  x}}{L}\right)+u_{y} \cos\left(\dfrac{\pi y a_{u  y}}{L}\right)+u_{0}\right] \left[v_{x} \cos\left(\dfrac{\pi x a_{v  x}}{L}\right)+v_{y} \sin\left(\dfrac{\pi y a_{v  y}}{L}\right)+v_{0}\right] \\
+&-\dfrac{\pi a_{\rho   y} \rho _{y}}{L} \sin\left(\dfrac{\pi y a_{\rho   y}}{L}\right)\left[v_{x} \cos\left(\dfrac{\pi x a_{v  x}}{L}\right)+v_{y} \sin\left(\dfrac{\pi y a_{v  y}}{L}\right)+v_{0}\right]^2 \\
+&+ \dfrac{\pi a_{u  x} u_{x} }{L}\cos\left(\dfrac{\pi x a_{u  x}}{L}\right)\left[\rho _{x} \sin\left(\dfrac{\pi x a_{\rho   x}}{L}\right)+\rho _{y} \cos\left(\dfrac{\pi y a_{\rho   y}}{L}\right)+\rho _{0}\right] \left[v_{x} \cos\left(\dfrac{\pi x a_{v  x}}{L}\right)+v_{y} \sin\left(\dfrac{\pi y a_{v  y}}{L}\right)+v_{0}\right]\\
+&- \dfrac{\pi a_{v  x} v_{x} }{L}\sin\left(\dfrac{\pi x a_{v  x}}{L}\right)\left[\rho _{x} \sin\left(\dfrac{\pi x a_{\rho   x}}{L}\right)+\rho _{y} \cos\left(\dfrac{\pi y a_{\rho   y}}{L}\right)+\rho _{0}\right] \left[u_{x} \sin\left(\dfrac{\pi x a_{u  x}}{L}\right)+u_{y} \cos\left(\dfrac{\pi y a_{u  y}}{L}\right)+u_{0}\right]\\
+&+ \dfrac{2 \pi a_{v  y} v_{y}}{L} \cos\left(\dfrac{\pi y a_{v  y}}{L}\right)\left[\rho _{x} \sin\left(\dfrac{\pi x a_{\rho   x}}{L}\right)+\rho _{y} \cos\left(\dfrac{\pi y a_{\rho   y}}{L}\right)+\rho _{0}\right] \left[v_{x} \cos\left(\dfrac{\pi x a_{v  x}}{L}\right)+v_{y} \sin\left(\dfrac{\pi y a_{v  y}}{L}\right)+v_{0}\right]
+ \end{split}
+\end{equation}
+
+
+
+\section{Euler energy equation}
+
+
+The last component of Euler equations is written as an operator:
+\begin{equation}
+ \label{eq:euler2d_14}
+L=\Diff{\rho e_t}{t} + \Diff{\rho ue_t +pu}{x}+\Diff{\rho ve_t +pv}{y} .
+\end{equation}
+
+
+Source term $Q_e$ is obtained by operating $L$ on Equation  (\ref{eq:manufactured02}) together with the use of the  auxiliary relations~(\ref{eq:euler2d_05})--(\ref{eq:euler2d_07}) for energy :
+
+ \begin{landscape}
+ \begin{equation}\label{eq:source_e}
+ \begin{split}
+\displaystyle
+ Q_{e_t}= &-  \dfrac{\gamma}{(\gamma-1)}\dfrac{\pi a_{p x} p_{x}} {L} \sin \left( {\frac {\pi x a_{p x}}{L}} \right) \left[ u_{x}\sin \left( {\frac {\pi x a_{u x}}{L}} \right) +u_{y}\cos \left( {\frac {\pi y a_{u y}}{L}} \right) +u_{0} \right]   \\
+ & + \dfrac{\gamma}{(\gamma-1)} \dfrac{\pi a_{p y} p_{y} } {L} \cos \left( {\frac {\pi y a_{p y}}{L}} \right)\left[ v_{x}\cos \left( {\frac {\pi x a_{v x}}{L}} \right) +v_{y}\sin \left( {\frac {\pi y a_{v y}}{L}} \right) +v_{0} \right]  \\
+& + \dfrac{\pi a_{\rho x} \rho_{x}}{2 L} \cos \left( {\frac {\pi x a_{\rho x}}{L}} \right) \left[ u_{x}\sin \left( {\frac {\pi x a_{u x}}{L}} \right) +u_{y}\cos \left( {\frac {\pi y a_{u y}}{L}} \right) +u_{0} \right]  \left(  \left[ u_{x}\sin \left( {\frac {\pi x a_{u x}}{L}} \right) +u_{y}\cos \left( {\frac {\pi y a_{u y}}{L}} \right) +u_{0} \right] ^{2}+ \left[ v_{x}\cos \left( {\frac {\pi x a_{v x}}{L}} \right) +v_{y}\sin \left( {\frac {\pi y a_{v y}}{L}} \right) +v_{0} \right] ^{2}  \right) \\
+&-\dfrac{\pi   a_{\rho y} \rho_{y}}{2 L}\sin \left( {\frac {\pi y a_{\rho y}}{L}} \right) \left[ v_{x}\cos \left( {\frac {\pi x a_{v x}}{L}} \right) +v_{y}\sin \left( {\frac {\pi y a_{v y}}{L}} \right) +v_{0} \right]  \left(  \left[ u_{x}\sin \left( {\frac {\pi x a_{u x}}{L}} \right) +u_{y}\cos \left( {\frac {\pi y a_{u y}}{L}} \right) +u_{0} \right] ^{2}+ \left[ v_{x}\cos \left( {\frac {\pi x a_{v x}}{L}} \right) +v_{y}\sin \left( {\frac {\pi y a_{v y}}{L}} \right) +v_{0} \right] ^{2}  \right) \\
+&+  \dfrac{\pi a_{u x} u_{x}}{2 L} \cos \left( {\frac {\pi x a_{u x}}{L}} \right) \left\{\dfrac{ 2\gamma }{(\gamma-1)} \left[ p_{x}\cos \left( {\frac {\pi x a_{p x}}{L}} \right) +p_{y}\sin \left( {\frac {\pi y a_{p y}}{L}} \right) +p_{0} \right]\right.+\\
+&\qquad+  \left.  \left[ \rho_{x}\sin \left( {\frac {\pi x a_{\rho x}}{L}} \right) +\rho_{y}\cos \left( {\frac {\pi y a_{\rho y}}{L}} \right) +\rho_{0} \right]
+  \left( 3 \left[ u_{x}\sin \left( {\frac {\pi x a_{u x}}{L}} \right) +u_{y}\cos \left( {\frac {\pi y a_{u y}}{L}} \right) +u_{0} \right] ^{2}+  \left[ v_{x}\cos \left( {\frac {\pi x a_{v x}}{L}} \right) +v_{y}\sin \left( {\frac {\pi y a_{v y}}{L}} \right) +v_{0} \right] ^{2}  \right)\right\}  \\
+&- \dfrac{\pi a_{u y} u_{y}}{ L}  \sin \left( {\frac {\pi y a_{u y}}{L}} \right)\left[ \rho_{x}\sin \left( {\frac {\pi x a_{\rho x}}{L}} \right) +\rho_{y}\cos \left( {\frac {\pi y a_{\rho y}}{L}} \right) +\rho_{0} \right]\left[ u_{x}\sin \left( {\frac {\pi x a_{u x}}{L}} \right) +u_{y}\cos \left( {\frac {\pi y a_{u y}}{L}} \right) +u_{0} \right] \left[ v_{x}\cos \left( {\frac {\pi x a_{v x}}{L}} \right) +v_{y}\sin \left( {\frac {\pi y a_{v y}}{L}} \right) +v_{0} \right]   \\
+&  - \dfrac{ \pi  a_{v x}v_{x}}{ L} \sin \left( {\frac {\pi x a_{v x}}{L}} \right)\left[ \rho_{x}\sin \left( {\frac {\pi x a_{\rho x}}{L}} \right) +\rho_{y}\cos \left( {\frac {\pi y a_{\rho y}}{L}} \right) +\rho_{0} \right]  \left[ u_{x}\sin \left( {\frac {\pi x a_{u x}}{L}} \right) +u_{y}\cos \left( {\frac {\pi y a_{u y}}{L}} \right) +u_{0} \right]\left[ v_{x}\cos \left( {\frac {\pi x a_{v x}}{L}} \right) +v_{y}\sin \left( {\frac {\pi y a_{v y}}{L}} \right) +v_{0} \right]  \\
+&+\dfrac{ \pi   a_{v y}v_{y}}{2 L} \cos \left( {\frac {\pi y a_{v y}}{L}} \right)\left\{ \dfrac{2 \gamma}{(\gamma-1)} \left[ p_{x}\cos \left( {\frac {\pi x a_{p x}}{L}} \right) +p_{y}\sin \left( {\frac {\pi y a_{p y}}{L}} \right) +p_{0} \right]   + \right.\\
+ &\qquad+ \left. \left[ \rho_{x}\sin \left( {\frac {\pi x a_{\rho x}}{L}} \right) +\rho_{y}\cos \left( {\frac {\pi y a_{\rho y}}{L}} \right) +\rho_{0} \right] \left(  \left[ u_{x}\sin \left( {\frac {\pi x a_{u x}}{L}} \right) +u_{y}\cos \left( {\frac {\pi y a_{u y}}{L}} \right) +u_{0} \right] ^{2} +3 \left[ v_{x}\cos \left( {\frac {\pi x a_{v x}}{L}} \right) +v_{y}\sin \left( {\frac {\pi y a_{v y}}{L}} \right) +v_{0} \right] ^{2}
+ \right)  \right\}  \\
+ \end{split}
+ \end{equation}
+
+ \end{landscape}
+
+
+\section{Comments}
+
+Source terms $Q_{\rho}$, $Q_u$ and $Q_v$ have been generated automatically by replacing the analytical expressions (\ref{eq:manufactured02}) into  respective operators  (\ref{eq:euler2d_11}), (\ref{eq:euler2d_12}) and (\ref{eq:euler2d_13}), followed by the usage of Maple commands for collecting, sorting and factorizing the terms. Because of its higher complexity, in order to btain source term $Q_{e_t}$, a different procedure has  been conducted: Equation (\ref{eq:manufactured02}) has been replaced into operator (\ref{eq:euler2d_14}), followed by a Maple command for collecting terms and the manual split of source term $Q_{e_t}$ into sub-terms.
+ 
+ Therefore, $Q_{e_t}$ was chosen to be collected distributively according to constants $a_{px}$, $a_{py}$, $a_{\rho x}$,  $\ldots$, $a_{vy}$, generating  8 sub-terms $T_1, \ldots, T_8$:
+  $$Q_{e_t}=T_1+T_2+T_3+T_4+T_5+T_6+T_7+T_8.$$
+  Each one of theses terms has been simplified, factorized and sorted, so the final result has the form of Equation ~(\ref{eq:manufactured01}). A importat part of this procedure was to  verify that no human error was added to the expression. This was accomplished in the file \texttt{Euler\_equation\_2d\_e\_check.mw}, where the difference between the original version of $Q_e$ and the presented, factorized one results in zero.
+  
+ This strategy allowed the original  23-page long expression for $Q_{e_t}$ to be reduced to Equation~(\ref{eq:source_e}). Please see file {\tt Euler\_equation\_2d\_energy\_Maple.pdf} for the original expression of $Q_{e_t}$.
+
+
+Files containing  $C$ codes for the source terms have also been generated. They are: \texttt{Euler\_2d\_e\_code.C, Euler\_2d\_rho\_code.C, Euler\_2d\_u\_code.C} and \texttt{Euler\_2d\_v\_code.C}.
+
+An example of the automatically generated C file from the source term for the velocity in the $x$-direction is:
+\begin{verbatim}
+double SourceQ_u (double x,  double y,  double u_0,  double u_x,  double u_y,  double v_0,
+                  double v_x,  double v_y,  double rho_0,  double rho_x,  double rho_y,
+                  double p_0,  double p_x,  double p_y,  double a_px,  double a_py,
+                  double a_rhox,  double a_rhoy,  double a_ux,  double a_uy,  double a_vx,
+                  double a_vy,  double L)
+{
+  double Q_u;
+  Q_u = -p_x * sin(a_px * PI * x / L) * a_px * PI / L +
+  rho_x * cos(a_rhox * PI * x / L) *  pow(u_0 + u_x * sin(a_ux * PI * x / L) +
+    u_y * cos(a_uy * PI * y / L), 0.2e1) * a_rhox * PI / L -
+  rho_y * sin(a_rhoy * PI * y / L) * (v_0 + v_x * cos(a_vx * PI * x / L) +
+    v_y * sin(a_vy * PI * y / L)) * (u_0 + u_x * sin(a_ux * PI * x / L) +
+    u_y * cos(a_uy * PI * y / L)) * a_rhoy * PI / L +
+  0.2e1 * u_x * cos(a_ux * PI * x / L) * (rho_0 + rho_x * sin(a_rhox * PI * x / L) +
+    rho_y * cos(a_rhoy * PI * y / L)) * (u_0 + u_x * sin(a_ux * PI * x / L) +
+    u_y * cos(a_uy * PI * y / L)) * a_ux * PI / L -
+  u_y * sin(a_uy * PI * y / L) * (rho_0 + rho_x * sin(a_rhox * PI * x / L) +
+    rho_y * cos(a_rhoy * PI * y / L)) * (v_0 + v_x * cos(a_vx * PI * x / L) +
+    v_y * sin(a_vy * PI * y / L)) * a_uy * PI / L +
+  v_y * cos(a_vy * PI * y / L) * (rho_0 + rho_x * sin(a_rhox * PI * x / L) +
+    rho_y * cos(a_rhoy * PI * y / L)) * (u_0 + u_x * sin(a_ux * PI * x / L) +
+    u_y * cos(a_uy * PI * y / L)) * a_vy * PI / L;
+  return(Q_u);
+}
+\end{verbatim}
+
+Finally the gradients of the analytical solutions have also been computed and their respective C codes are presented in \texttt{Euler\_manuf\_solutions\_grad\_and\_code\_2d.C}. Therefore, the gradients of the anylitical solution~ (\ref{eq:manufactured02}):
+\begin{equation}
+\nabla \rho = \left[ \begin{array}{c}
+ \dfrac{  a_{\rho x}  \pi rho_x }{L} \cos\left( \dfrac{ a_{\rho x}  \pi  x }{L}\right) \vspace{5pt}\\ 
+ -\dfrac{  a_{\rho y}  \pi rho_y }{L} \sin\left( \dfrac{ a_{\rho y}  \pi  y }{L}\right) 
+\end{array} \right],
+\qquad
+\nabla p = \left[ \begin{array}{c}
+- \dfrac{  a_{px}  \pi p_x }{L} \sin\left( \dfrac{ a_{px}  \pi  x }{L}\right) \vspace{5pt}\\
+  \dfrac{  a_{py}  \pi p_y }{L} \cos\left( \dfrac{ a_{py}  \pi  y }{L}\right)
+\end{array} \right],
+\end{equation}
+\begin{equation}
+\nabla u = \left[ \begin{array}{c}
+\dfrac{  a_{ux}  \pi u_x}{L} \cos\left( \dfrac{ a_{ux}  \pi  x }{L}\right)\vspace{5pt} \\
+-  \dfrac{  a_{uy}  \pi u_y }{L} \sin\left( \dfrac{ a_{uy}  \pi  y }{L}\right)
+\end{array} \right]
+\quad \mbox{and} \quad
+\nabla v = \left[ \begin{array}{c}
+-  \dfrac{  a_{vx}  \pi v_x }{L} \sin\left( \dfrac{ a_{vx}  \pi  x }{L}\right)\vspace{5pt} \\
+ \dfrac{  a_{vy}  \pi  v_y }{L} \cos\left( \dfrac{ a_{vy}  \pi  y }{L}\right) 
+\end{array} \right]
+\end{equation}
+are written in C language as:
+
+\begin{verbatim}
+grad_rho_an[0] = rho_x * cos(a_rhox * pi * x / L) * a_rhox * pi / L;
+grad_rho_an[1] = -rho_y * sin(a_rhoy * pi * y / L) * a_rhoy * pi / L;
+grad_p_an[0] = -p_x * sin(a_px * pi * x / L) * a_px * pi / L;
+grad_p_an[1] = p_y * cos(a_py * pi * y / L) * a_py * pi / L;
+grad_u_an[0] = u_x * cos(a_ux * pi * x / L) * a_ux * pi / L;
+grad_u_an[1] = -u_y * sin(a_uy * pi * y / L) * a_uy * pi / L;
+grad_v_an[0] = -v_x * sin(a_vx * pi * x / L) * a_vx * pi / L;
+grad_v_an[1] = v_y * cos(a_vy * pi * y / L) * a_vy * pi / L;
+\end{verbatim}
+
+%---------------------------------------------------------------------------------------------------------
+\bibliographystyle{chicago} 
+\bibliography{/home/kemelli/MMS_maple_workplace/heat_equation/MMS_bib}
+
+\end{document}
+
+
+\begin{equation}
+\nabla \rho = \left[ \begin{array}{c}
+ \dfrac{  a_{\rho x}  \pi rho_x }{L} \cos\left( \dfrac{ a_{\rho x}  \pi  x }{L}\right) \vspace{5pt}\\
+ -\dfrac{  a_{\rho y}  \pi rho_y }{L} \sin\left( \dfrac{ a_{\rho y}  \pi  y }{L}\right)
+\end{array} \right]\qquad
+\end{equation}
+
+
+\begin{equation}
+\nabla p = \left[ \begin{array}{c}
+- \dfrac{  a_{px}  \pi p_x }{L} \sin\left( \dfrac{ a_{px}  \pi  x }{L}\right) \vspace{5pt}\\
+  \dfrac{  a_{py}  \pi p_y }{L} \cos\left( \dfrac{ a_{py}  \pi  y }{L}\right)
+\end{array} \right]
+\end{equation}
+
+
+\begin{equation}
+\nabla u = \left[ \begin{array}{c}
+\dfrac{  a_{ux}  \pi u_x}{L} \cos\left( \dfrac{ a_{ux}  \pi  x }{L}\right)\vspace{5pt} \\
+-  \dfrac{  a_{uy}  \pi u_y }{L} \sin\left( \dfrac{ a_{uy}  \pi  y }{L}\right)
+\end{array} \right]
+\end{equation}
+
+
+\begin{equation}
+\nabla v = \left[ \begin{array}{c}
+-  \dfrac{  a_{vx}  \pi v_x }{L} \sin\left( \dfrac{ a_{vx}  \pi  x }{L}\right)\vspace{5pt} \\
+ \dfrac{  a_{vy}  \pi  v_y }{L} \cos\left( \dfrac{ a_{vy}  \pi  y }{L}\right)
+\end{array} \right]
+\end{equation}

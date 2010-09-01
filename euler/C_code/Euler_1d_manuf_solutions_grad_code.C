@@ -1,0 +1,12 @@
+rho_an = rho_0 + rho_x * sin(a_rhox * pi * x / L);
+p_an = p_0 + p_x * cos(a_px * pi * x / L);
+u_an = u_0 + u_x * sin(a_ux * pi * x / L);
+grad_rho_an[0] = rho_x * cos(a_rhox * pi * x / L) * a_rhox * pi / L;
+grad_rho_an[1] = 0;
+grad_rho_an[2] = 0;
+grad_p_an[0] = -p_x * sin(a_px * pi * x / L) * a_px * pi / L;
+grad_p_an[1] = 0;
+grad_p_an[2] = 0;
+grad_u_an[0] = u_x * cos(a_ux * pi * x / L) * a_ux * pi / L;
+grad_u_an[1] = 0;
+grad_u_an[2] = 0;
