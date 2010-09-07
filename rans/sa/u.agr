@@ -25,7 +25,7 @@
 @map font 25 to "Palatino-BoldItalic", "Palatino-BoldItalic"
 @map font 26 to "Palatino-Italic", "Palatino-Italic"
 @map font 27 to "Palatino-Roman", "Palatino-Roman"
-@map font 12 to "Symbol", "Symbol"
+@map font 75 to "Symbol", "Symbol"
 @map font 2 to "Times-Bold", "Times-Bold"
 @map font 3 to "Times-BoldItalic", "Times-BoldItalic"
 @map font 1 to "Times-Italic", "Times-Italic"
@@ -72,39 +72,6 @@
 @map font 72 to "LMTypewriterVarWd10-LightOblique", "LMTypewriterVarWd10-LightOblique"
 @map font 73 to "LMTypewriterVarWd10-Oblique", "LMTypewriterVarWd10-Oblique"
 @map font 74 to "LMTypewriterVarWd10-Regular", "LMTypewriterVarWd10-Regular"
-@map font 75 to "Symbol", "Symbol"
-@map font 76 to "TeXGyreAdventor-Bold", "TeXGyreAdventor-Bold"
-@map font 77 to "TeXGyreAdventor-BoldItalic", "TeXGyreAdventor-BoldItalic"
-@map font 78 to "TeXGyreAdventor-Italic", "TeXGyreAdventor-Italic"
-@map font 79 to "TeXGyreAdventor-Regular", "TeXGyreAdventor-Regular"
-@map font 80 to "TeXGyreBonum-Bold", "TeXGyreBonum-Bold"
-@map font 81 to "TeXGyreBonum-BoldItalic", "TeXGyreBonum-BoldItalic"
-@map font 82 to "TeXGyreBonum-Italic", "TeXGyreBonum-Italic"
-@map font 83 to "TeXGyreBonum-Regular", "TeXGyreBonum-Regular"
-@map font 84 to "TeXGyreChorus-Italic", "TeXGyreChorus-Italic"
-@map font 85 to "TeXGyreCursor-Bold", "TeXGyreCursor-Bold"
-@map font 86 to "TeXGyreCursor-BoldItalic", "TeXGyreCursor-BoldItalic"
-@map font 87 to "TeXGyreCursor-Italic", "TeXGyreCursor-Italic"
-@map font 88 to "TeXGyreCursor-Regular", "TeXGyreCursor-Regular"
-@map font 89 to "TeXGyreHeros-Bold", "TeXGyreHeros-Bold"
-@map font 90 to "TeXGyreHeros-BoldItalic", "TeXGyreHeros-BoldItalic"
-@map font 91 to "TeXGyreHeros-Condensed", "TeXGyreHeros-Condensed"
-@map font 92 to "TeXGyreHeros-CondensedBold", "TeXGyreHeros-CondensedBold"
-@map font 93 to "TeXGyreHeros-CondensedBoldItalic", "TeXGyreHeros-CondensedBoldItalic"
-@map font 94 to "TeXGyreHeros-CondensedItalic", "TeXGyreHeros-CondensedItalic"
-@map font 95 to "TeXGyreHeros-Italic", "TeXGyreHeros-Italic"
-@map font 96 to "TeXGyreHeros-Regular", "TeXGyreHeros-Regular"
-@map font 97 to "TeXGyrePagella-Bold", "TeXGyrePagella-Bold"
-@map font 98 to "TeXGyrePagella-BoldItalic", "TeXGyrePagella-BoldItalic"
-@map font 99 to "TeXGyrePagella-Italic", "TeXGyrePagella-Italic"
-@map font 100 to "TeXGyrePagella-Regular", "TeXGyrePagella-Regular"
-@map font 101 to "TeXGyreSchola-Bold", "TeXGyreSchola-Bold"
-@map font 102 to "TeXGyreSchola-BoldItalic", "TeXGyreSchola-BoldItalic"
-@map font 103 to "TeXGyreSchola-Italic", "TeXGyreSchola-Italic"
-@map font 104 to "TeXGyreSchola-Regular", "TeXGyreSchola-Regular"
-@map font 105 to "TeXGyreTermes-Bold", "TeXGyreTermes-Bold"
-@map font 106 to "TeXGyreTermes-BoldItalic", "TeXGyreTermes-BoldItalic"
-@map font 107 to "TeXGyreTermes-Italic", "TeXGyreTermes-Italic"
 @map color 0 to (255, 255, 255), "white"
 @map color 1 to (0, 0, 0), "black"
 @map color 2 to (255, 0, 0), "red"
@@ -140,7 +107,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Tue Sep  7 00:43:47 2010"
+@timestamp def "Tue Sep  7 12:07:47 2010"
 @r0 off
 @link r0 to g0
 @r0 type above
@@ -187,7 +154,7 @@
 @g0 fixedpoint format general general
 @g0 fixedpoint prec 6, 6
 @with g0
-@    world 0, -2, 2, 1
+@    world 0, 0, 1, 1.5
 @    stack world 0, 0, 0, 0
 @    znorm 1
 @    view 0.150000, 0.150000, 1.150000, 0.850000
@@ -377,7 +344,7 @@
 @    s0 errorbar riser linestyle 1
 @    s0 errorbar riser clip off
 @    s0 errorbar riser clip length 0.100000
-@    s0 comment ""
+@    s0 comment "u.agr"
 @    s0 legend  ""
 @    s1 hidden false
 @    s1 type xy
@@ -426,7 +393,7 @@
 @    s1 errorbar riser linestyle 1
 @    s1 errorbar riser clip off
 @    s1 errorbar riser clip length 0.100000
-@    s1 comment ""
+@    s1 comment "u.agr"
 @    s1 legend  ""
 @target G0.S0
 @type xy
