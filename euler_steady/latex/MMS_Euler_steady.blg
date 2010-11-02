@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: MMS_Euler_steady.aux
+The style file: chicago.bst
+Database file #1: ../../MMS_bib.bib
+I was expecting a `,' or a `}'---line 113 of file ../../MMS_bib.bib
+ : 
+ : year = {2009},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--there's a number but no series in Roy2002
+You've used 2 entries,
+            2861 wiz_defined-function locations,
+            625 strings with 5188 characters,
+and the built_in function-call counts, 1209 in all, are:
+= -- 97
+> -- 87
+< -- 1
++ -- 24
+- -- 28
+* -- 98
+:= -- 230
+add.period$ -- 6
+call.type$ -- 2
+change.case$ -- 14
+chr.to.int$ -- 2
+cite$ -- 3
+duplicate$ -- 38
+empty$ -- 76
+format.name$ -- 32
+if$ -- 222
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 1
+newline$ -- 13
+num.names$ -- 20
+pop$ -- 14
+preamble$ -- 1
+purify$ -- 26
+quote$ -- 0
+skip$ -- 35
+stack$ -- 0
+substring$ -- 40
+swap$ -- 11
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 40
+warning$ -- 1
+while$ -- 16
+width$ -- 0
+write$ -- 29
+(There was 1 error message)

@@ -1,0 +1,16 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Maplesoft}{Maplesoft}{2009}]{Maple}
+Maplesoft (2009, November).
+\newblock Maple: the essential tool for mathematics and modeling.
+\newblock http://www.maplesoft.com/Products/Maple/.
+
+\bibitem[\protect\citeauthoryear{Roy, Smith, and Ober}{Roy
+  et~al.}{2002}]{Roy2002}
+Roy, C., T.~Smith, and C.~Ober (2002).
+\newblock Verification of a compressible {CFD} code using the method of
+  manufactured solutions.
+\newblock In {\em AIAA Fluid Dynamics Conference and Exhibit}, Number AIAA
+  2002-3110.
+
+\end{thebibliography}
