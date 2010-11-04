@@ -1,0 +1,47 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: MMS_Burgers_2d.aux
+The style file: chicago.bst
+Database file #1: /home/kemelli/MMS_maple_workplace/heat_equation/MMS_bib.bib
+Warning--there's a number but no series in Roy2002
+You've used 6 entries,
+            2861 wiz_defined-function locations,
+            658 strings with 5991 characters,
+and the built_in function-call counts, 4443 in all, are:
+= -- 355
+> -- 373
+< -- 2
++ -- 112
+- -- 120
+* -- 433
+:= -- 817
+add.period$ -- 18
+call.type$ -- 6
+change.case$ -- 48
+chr.to.int$ -- 6
+cite$ -- 7
+duplicate$ -- 111
+empty$ -- 249
+format.name$ -- 140
+if$ -- 826
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 5
+newline$ -- 33
+num.names$ -- 60
+pop$ -- 36
+preamble$ -- 1
+purify$ -- 84
+quote$ -- 0
+skip$ -- 108
+stack$ -- 0
+substring$ -- 203
+swap$ -- 34
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 120
+warning$ -- 1
+while$ -- 50
+width$ -- 0
+write$ -- 82
+(There was 1 warning)

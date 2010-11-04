@@ -1,0 +1,44 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Bond, Ober, Knupp, and Bova}{Bond
+  et~al.}{2007}]{Bond2007}
+Bond, R., C.~Ober, P.~Knupp, and S.~Bova (2007).
+\newblock Manufactured solution for computational fluid dynamics -- boundary
+  condition verification.
+\newblock {\em AIAA Journal\/}~{\em 45\/}(9), 2224--2236.
+
+\bibitem[\protect\citeauthoryear{Orozco, Kizildag, Oliva, and
+  Pérez-Segarra}{Orozco et~al.}{2010}]{Orozco2010}
+Orozco, C., D.~Kizildag, A.~Oliva, and C.~D. Pérez-Segarra (2010).
+\newblock Verification of multidimensional and transient {CFD} solutions.
+\newblock {\em Numerical Heat Transfer, Part B: Fundamentals\/}~{\em 57\/}(1),
+  46--73.
+
+\bibitem[\protect\citeauthoryear{Roache}{Roache}{2002}]{Roache2002}
+Roache, P. (2002).
+\newblock Code verification by the method of manufactured solutions.
+\newblock {\em Journal of Fluids Engineering -- Transactions of the
+  ASME\/}~{\em 124\/}(1), 4--10.
+
+\bibitem[\protect\citeauthoryear{Roy, Nelson, Smith, and Ober}{Roy
+  et~al.}{2004}]{Roy2004}
+Roy, C., C.~Nelson, T.~Smith, and C.~Ober (2004).
+\newblock Verification of {E}uler/{N}avier–stokes codes using the method of
+  manufactured solutions.
+\newblock {\em Int. J. Numer. Meth. Fluids\/}~{\em 44}, 599--620.
+
+\bibitem[\protect\citeauthoryear{Roy, Smith, and Ober}{Roy
+  et~al.}{2002}]{Roy2002}
+Roy, C., T.~Smith, and C.~Ober (2002).
+\newblock Verification of a compressible {CFD} code using the method of
+  manufactured solutions.
+\newblock In {\em AIAA Fluid Dynamics Conference and Exhibit}, Number AIAA
+  2002-3110.
+
+\bibitem[\protect\citeauthoryear{Salari and Knupp}{Salari and
+  Knupp}{2000}]{Salari_Knupp_2000}
+Salari, K. and P.~Knupp (2000).
+\newblock Code verification by the method of manufactured solutions.
+\newblock Technical Report SAND2000-1444, Sandia National Laboratories.
+
+\end{thebibliography}
