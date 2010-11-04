@@ -90,15 +90,15 @@ Source terms  for mass conservation ($Q_\rho$), momentum ($Q_u$, $Q_v$ and $Q_w$
 
 
 
-\section{1D transient Euler equations}
+\section{1D Transient Euler equations}
 
 The manufactured analytical solutions (\ref{eq:manufactured01}) for each one of the variables in the 1D case of Euler equations are:
 \begin{equation}
 \begin{split}
 \label{eq:manufactured_1d}
-\rho\left(x,y\right) &=  \rho_{0}+ \rho_{x} \sin\left(\frac{a_{ \rho x} \pi x}{L}\right)+ \rho_t \sin\left(\dfrac{a_{\rho t} \pi t}{L}\right),\\
-u\left(x,y\right) &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right) + u_t \cos\left(\dfrac{a_{u t} \pi t}{L}\right),\\
-p\left(x,y\right) &= p_{0}+p_{x} \cos\left(\frac{a_{p x} \pi x}{L}\right)+ p_t \cos\left(\dfrac{a_{p t} \pi t}{L}\right).\\
+\rho\left(x,t\right) &=  \rho_{0}+ \rho_{x} \sin\left(\frac{a_{ \rho x} \pi x}{L}\right)+ \rho_t \sin\left(\dfrac{a_{\rho t} \pi t}{L}\right),\\
+u\left(x,t\right) &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right) + u_t \cos\left(\dfrac{a_{u t} \pi t}{L}\right),\\
+p\left(x,t\right) &= p_{0}+p_{x} \cos\left(\frac{a_{p x} \pi x}{L}\right)+ p_t \cos\left(\dfrac{a_{p t} \pi t}{L}\right).\\
 \end{split}
 \end{equation}
 
@@ -186,15 +186,15 @@ Q_e &= \dfrac{a_{\rho x} \pi \rho_x \U_1^3 }{2L}\cos\left(\dfrac{a_{\rho x} \pi 
  \end{split}
 \end{equation}
 
- \section{2D transient Euler equations}
+ \section{2D Transient Euler equations}
 The manufactured analytical solutions (\ref{eq:manufactured01}) for each one of the variables in the two-dimensional Euler equations are:
 \begin{equation}
 \begin{split}
 \label{eq:manufactured_2d}
-\rho\left(x,y\right) &=  \rho_{0}+ \rho_{x} \sin\left(\frac{a_{ \rho x} \pi x}{L}\right)+ \rho_{y} \cos\left(\frac{a_{ \rho y} \pi y}{L}\right)+ \rho_t \sin\left(\dfrac{a_{\rho t} \pi t}{L}\right),\\
-u\left(x,y\right) &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right)+u_{y} \cos\left(\frac{a_{u y} \pi y}{L}\right) + u_t \cos\left(\dfrac{a_{u t} \pi t}{L}\right),\\
-v\left(x,y\right) &= v_{0}+v_{x} \cos\left(\frac{a_{v x} \pi x}{L}\right)+v_{y} \sin\left(\frac{a_{v y} \pi y}{L}\right)+ v_t \sin\left(\dfrac{a_{v t} \pi t}{L}\right),\\
-p\left(x,y\right) &= p_{0}+p_{x} \cos\left(\frac{a_{p x} \pi x}{L}\right)+p_{y} \sin\left(\frac{a_{p y} \pi y}{L}\right)+ p_t \cos\left(\dfrac{a_{p t} \pi t}{L}\right).\\
+\rho\left(x,y,t\right) &=  \rho_{0}+ \rho_{x} \sin\left(\frac{a_{ \rho x} \pi x}{L}\right)+ \rho_{y} \cos\left(\frac{a_{ \rho y} \pi y}{L}\right)+ \rho_t \sin\left(\dfrac{a_{\rho t} \pi t}{L}\right),\\
+u\left(x,y,t\right) &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right)+u_{y} \cos\left(\frac{a_{u y} \pi y}{L}\right) + u_t \cos\left(\dfrac{a_{u t} \pi t}{L}\right),\\
+v\left(x,y,t\right) &= v_{0}+v_{x} \cos\left(\frac{a_{v x} \pi x}{L}\right)+v_{y} \sin\left(\frac{a_{v y} \pi y}{L}\right)+ v_t \sin\left(\dfrac{a_{v t} \pi t}{L}\right),\\
+p\left(x,y,t\right) &= p_{0}+p_{x} \cos\left(\frac{a_{p x} \pi x}{L}\right)+p_{y} \sin\left(\frac{a_{p y} \pi y}{L}\right)+ p_t \cos\left(\dfrac{a_{p t} \pi t}{L}\right).\\
 \end{split}
 \end{equation}
 
@@ -311,7 +311,7 @@ Q_{e_t} &=\dfrac{ a_{\rho x} \pi \rho_x  \U_2 (\U_2^2+\V_2^2)}{2L}\cos\left(\dfr
 
 
 
-\section{3D transient Euler equations}
+\section{3D Transient Euler equations}
 
 The manufactured analytical solution for for each one of the variables in 3D transient Euler equations are:
 \begin{equation}
