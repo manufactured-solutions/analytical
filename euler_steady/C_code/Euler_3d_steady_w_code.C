@@ -4,7 +4,6 @@ double SourceQ_w (double x, double y, double z)
 {
   double Q_w;
   double RHO;
-  double P;
   double U;
   double V;
   double W;

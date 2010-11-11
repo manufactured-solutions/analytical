@@ -17,9 +17,7 @@ double SourceQ_u (double x)
   double Q_u;
   double RHO;
   double U;
-  double P;
   RHO = rho_0 + rho_x * sin(a_rhox * pi * x / L);
-  P = p_0 + p_x * cos(a_px * pi * x / L);
   U = u_0 + u_x * sin(a_ux * pi * x / L);
   Q_u = 0.2e1 * cos(a_ux * PI * x / L) * RHO * U * a_ux * PI * u_x / L + cos(a_rhox * PI * x / L) * U * U * a_rhox * PI * rho_x / L - sin(a_px * PI * x / L) * a_px * PI * p_x / L;
   return(Q_u);
