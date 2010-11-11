@@ -1,0 +1,5 @@
+Q_u_t := 1/L*a_rhox*Pi*rho_x*U^2*cos(1/L*a_rhox*Pi*x)-1/L*a_rhoy*Pi*rho_y*U*V*
+sin(1/L*a_rhoy*Pi*y)-1/L*a_uy*Pi*u_y*RHO*V*sin(1/L*a_uy*Pi*y)-1/L*a_px*Pi*p_x*
+sin(1/L*a_px*Pi*x)+(2*a_ux*u_x*cos(1/L*a_ux*Pi*x)+a_vy*v_y*cos(1/L*a_vy*Pi*y))
+/L*Pi*RHO*U+1/L*a_rhot*Pi*rho_t*U*cos(1/L*a_rhot*Pi*t)-1/L*a_ut*Pi*u_t*RHO*sin
+(1/L*a_ut*Pi*t);
