@@ -107,9 +107,9 @@ The MMS applied to Euler equations consists in modifying the 1D Euler equations~
 \begin{equation}
  \label{eq:euler_mod_2d}
 \begin{split}
-\Diff{\rho}{t} +\Diff{\rho u}{x} &= Q_\rho,\\
-\Diff{\rho u}{t} + \Diff{\rho u^2 }{x}+ \Diff{p}{x} &= Q_u,\\
-\Diff{\rho e_t}{t} +\Diff{\rho ue_t}{x}+ \Diff{pu}{x} &= Q_{e_t},
+&\Diff{\rho}{t} +\Diff{\rho u}{x} = Q_\rho,\\
+&\Diff{\rho u}{t} + \Diff{\rho u^2 }{x}+ \Diff{p}{x} = Q_u,\\
+&\Diff{\rho e_t}{t} +\Diff{\rho ue_t}{x}+ \Diff{pu}{x} = Q_{e_t},
 \end{split}
 \end{equation}
 %
@@ -173,10 +173,10 @@ The last component of Euler equations is written as an operator:
 \end{equation*}
 
 
-Source term $Q_e$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manufactured_1d}) together with the use of the  auxiliary relations~(\ref{eq:euler_04})--(\ref{eq:euler_05}) for energy:
+Source term $Q_{e_t}$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manufactured_1d}) together with the use of the  auxiliary relations~(\ref{eq:euler_04})--(\ref{eq:euler_05}) for energy:
   \begin{equation}\label{eq:source_e}
  \begin{split}
-Q_e &= \dfrac{a_{\rho x} \pi \rho_x \U_1^3 }{2L}\cos\left(\dfrac{a_{\rho x} \pi x}{L}\right)+\\
+Q_{e_t} &= \dfrac{a_{\rho x} \pi \rho_x \U_1^3 }{2L}\cos\left(\dfrac{a_{\rho x} \pi x}{L}\right)+\\
 &- \dfrac{\gamma}{\gamma-1}\dfrac{a_{px} \pi p_x \U_1}{L}\sin\left(\dfrac{a_{px} \pi x}{L}\right) +\\
 &+ \dfrac{\gamma}{\gamma-1}\dfrac{a_{ux} \pi u_x \PP_1}{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)  +\\
 &+ \dfrac{ 3 a_{ux} \pi u_x \Rho_1 \U_1^2 }{2L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
@@ -205,7 +205,7 @@ Analogously to the 1D case, MMS applied to the 2D transient Euler consists in mo
 \label{eq:euler2d_mod}
 &\Diff{\rho}{t} + \Diff{\rho u}{x}+\Diff{\rho v}{y} = Q_\rho\\
 &\Diff{\rho u}{t} +  \Diff{\rho u^2 }{x}+\Diff{\rho uv}{y} +\Diff{p}{x}= Q_u\\
-&\Diff{\rho v}{t} +  \Diff{\rho vu}{x}+\Diff{\rho v^2}{y} +\Diff{p}{y}= Q_v\\
+&\Diff{\rho v}{t} +  \Diff{\rho uv}{x}+\Diff{\rho v^2}{y} +\Diff{p}{y}= Q_v\\
 & \Diff{\rho e_t}{t} +\Diff{\rho ue_t }{x}+\Diff{\rho ve_t}{y}+\Diff{pu}{x} +\Diff{pv}{y}= Q_{e_t}
 \end{split}
 \end{equation}
@@ -229,7 +229,7 @@ where the subscripts in $\Rho_2$, $\PP_2$, $\U_2$ and $\V_2$ refer to the 2D cas
 
 The 2D mass conservation equation written as an operator is:
 \begin{equation*}
- \Lo=\Diff{\rho e_t}{t} +  \Diff{\rho}{t} +\Diff{\rho u}{x}+\Diff{\rho v}{y}.
+ \Lo= \Diff{\rho}{t} +\Diff{\rho u}{x}+\Diff{\rho v}{y}.
 \end{equation*}
 
 Analytically differentiating Equation (\ref{eq:manufactured_2d}) for $\rho$, $u$ and $v$ using operator $\Lo$ defined above gives  the source term~$Q_{\rho}$:
@@ -335,9 +335,9 @@ The MMS applied to 3D Euler equations consists in modifying Equations~(\ref{eq:e
 %
  &\Diff{\rho u}{t} + \Diff{\rho u^2 }{x}+\Diff{\rho uv}{y} +\Diff{\rho uw}{z} +\Diff{p}{x}= Q_u,\\
 %
-&\Diff{\rho v}{t} + \Diff{\rho vu }{x}+\Diff{\rho v^2}{y} +\Diff{\rho vw}{z}+\Diff{p}{y}= Q_v,\\
+&\Diff{\rho v}{t} + \Diff{\rho uv }{x}+\Diff{\rho v^2}{y} +\Diff{\rho vw}{z}+\Diff{p}{y}= Q_v,\\
 %
-&\Diff{\rho w}{t} + \Diff{\rho w u }{ x}+\Diff{\rho w v }{ y}+\Diff{\rho w^2 }{ z}+\Diff{p}{z}=Q_w,\\
+&\Diff{\rho w}{t} + \Diff{\rho uw }{ x}+\Diff{\rho  vw }{ y}+\Diff{\rho w^2 }{ z}+\Diff{p}{z}=Q_w,\\
 %
 &\Diff{\rho e_t}{t} +\Diff{\rho u e_t}{x}+\Diff{\rho v e_t}{y}+\Diff{\rho w e_t}{z}+\Diff{pu}{x}+\Diff{pv}{y}+\Diff{pw}{z} =Q_{e_t},
 \end{split}
