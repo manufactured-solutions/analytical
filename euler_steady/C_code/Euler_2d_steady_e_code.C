@@ -2,12 +2,11 @@
 
 double SourceQ_e (double x, double y)
 {
-  double Q_e;
+  double Qe;
   double RHO;
   double U;
   double V;
   double P;
-  double Qe;
   RHO = rho_0 + rho_x * sin(a_rhox * PI * x / L) + rho_y * cos(a_rhoy * PI * y / L);
   U = u_0 + u_x * sin(a_ux * PI * x / L) + u_y * cos(a_uy * PI * y / L);
   V = v_0 + v_x * cos(a_vx * PI * x / L) + v_y * sin(a_vy * PI * y / L);
