@@ -1,0 +1,7 @@
+#! /bin/sh
+for i in *.mw
+do
+sed 's/Steady/Transient/g' $i > $i.tmp
+
+mv $i.tmp $i
+done

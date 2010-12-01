@@ -1,0 +1,7 @@
+#!/bin/sh
+
+for x in *.mw
+do
+name=`echo $x | sed -e "s/steady/transient/g"`
+mv $x $name
+done
