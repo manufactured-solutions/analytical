@@ -1,0 +1,16 @@
+rho_an = rho_0 + rho_r * cos(a_rhor * PI * r / L) + rho_z * sin(a_rhoz * PI * z / L);
+p_an = p_0 + p_r * sin(a_pr * PI * r / L) + p_z * cos(a_pz * PI * z / L);
+u_an = u_r * u_z * (cos(a_ur * PI * r / L) - 0.1e1) * sin(a_uz * PI * z / L);
+w_an = w_0 + w_r * cos(a_wr * PI * r / L) + w_z * sin(a_wz * PI * z / L);
+grad_rho_an[0] = -rho_r * sin(a_rhor * PI * r / L) * a_rhor * PI / L;
+grad_rho_an[1] = 0;
+grad_rho_an[2] = rho_z * cos(a_rhoz * PI * z / L) * a_rhoz * PI / L;
+grad_p_an[0] = p_r * cos(a_pr * PI * r / L) * a_pr * PI / L;
+grad_p_an[1] = 0;
+grad_p_an[2] = -p_z * sin(a_pz * PI * z / L) * a_pz * PI / L;
+grad_u_an[0] = -u_r * u_z * sin(a_ur * PI * r / L) * a_ur * PI / L * sin(a_uz * PI * z / L);
+grad_u_an[1] = 0;
+grad_u_an[2] = u_r * u_z * (cos(a_ur * PI * r / L) - 0.1e1) * cos(a_uz * PI * z / L) * a_uz * PI / L;
+grad_w_an[0] = -w_r * sin(a_wr * PI * r / L) * a_wr * PI / L;
+grad_w_an[1] = 0;
+grad_w_an[2] = w_z * cos(a_wz * PI * z / L) * a_wz * PI / L;

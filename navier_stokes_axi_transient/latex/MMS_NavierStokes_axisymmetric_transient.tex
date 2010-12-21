@@ -1,0 +1,494 @@
+\documentclass[10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{ top=2.5cm, bottom=2cm, left=2cm, right=2cm}
+%\geometry{papersize={216mm,330mm}, top=3cm, bottom=2.5cm, left=4cm, right=2cm}
+\usepackage{pdflscape}
+\newcommand{\bv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\D}{\partial}
+\newcommand{\Diff}[2] {\dfrac{\partial( #1)}{\partial #2}}
+\newcommand{\diff}[2] {\dfrac{\partial #1}{\partial #2}}
+\newcommand{\Lo}{\,\mathcal{L}}
+\newcommand{\Rho}{\,\mathtt{Rho}}
+\newcommand{\PP}{\,\mathtt{P}}
+\newcommand{\U}{\,\mathtt{U}}
+\newcommand{\W}{\,\mathtt{W}}
+
+%opening
+\title{Choice of Manufactured Analytical Solution for Code Verification of Axisymmetric Transient Navier--Stokes Equations using Maple}
+\author{Kemelli C. Estacio-Hiroms}
+
+\begin{document}
+
+ 
+\maketitle
+
+\begin{abstract}
+The Method of Manufactured Solutions is a valuable approach for code verification, providing means to verify how accurately the numerical method solves the equations of interest. The method generates a related set of governing equations that has known analytical (manufactured) solution. Then, the modified set of equations may be discretized and solved numerically, and the numerical solution may be compared to the manufactured analytical solution. A choice of analytical solutions for the flow variables of the axisymmetric transient Navier--Stokes and their respective source terms are presented in this document.
+\end{abstract}
+
+\section{Axisymmetric Navier--Stokes equations}
+
+Navier--Stokes equations may be written in cylindrical coordinates for $(r,\theta,z)$, where $r$ is the radial coordinate, $\theta$ is the angular coordinate, and $z$ is the axial coordinate. In axisymmetrical flows, the pressure and the velocity fields are independent of the angular variable $\theta$, and the problem depends exclusively on $r$ and~ $z$. Therefore, Navier--Stokes equations for axisymmetric flows, in conservation form,  are:
+The conservation of mass, momentum, and total energy for a compressible transient viscous fluid may be written as:
+\begin{equation}
+ \label{eq:euler_01}
+\Diff{\rho}{t}+ \nabla \cdot \left(\rho \bv{u}\right) = 0,
+\end{equation}
+
+\begin{equation}
+ \label{eq:euler_02}
+\Diff{\rho \bv{u}}{t} +\nabla\cdot\left(\rho\bv{u}\bv{u}\right) = -\nabla p+  \nabla \cdot (\bv{\tau} ),
+\end{equation}
+
+\begin{equation}
+ \label{eq:euler_03}
+%\nabla \cdot (\rho\bv{u}e_t)+  \nabla\cdot(p  \bv{u})=0
+\Diff{\rho e_t}{ t}+\nabla\cdot\left(\rho \bv{u} H\right) =-   \nabla\cdot(p  \mathbf{u}) -\nabla\cdot \mathbf{q} +  \nabla \cdot (\bv{\tau} \cdot \mathbf{u}).
+\end{equation}
+%
+
+
+Equations (\ref{eq:euler_01})--(\ref{eq:euler_03}) are known as Navier--Stokes equations and, $\rho$ is the density, $\bv{u}=(u,0,w)$ is the velocity in $r$, or $z$-direction, respectively,    and $p$ is the pressure. Notice that Equations~(\ref{eq:euler_02}) and (\ref{eq:euler_03}) include viscous effects. The total enthalpy, $H$, may be expressed in terms of the total energy per unit mass $e_t$, density, and pressure:
+$$H = e_t + \dfrac{p}{\rho}.$$
+
+
+The shear stress tensor is:
+\begin{equation}
+\tau_{rr}=  \mu \left( 2 \diff{u}{r} - \dfrac{2}{3} \nabla \cdot  \mathbf{u} \right),
+\quad  \tau_{zz}=  \mu \left( 2 \diff{w}{z} - \dfrac{2}{3} \nabla \cdot \mathbf{u} \right),
+\quad\tau_{rz}= \tau_{zr}=\mu \left( \diff{u}{z} + \diff{w}{r}\right),
+\end{equation}
+where $\mu$ is the absolute viscosity, and the heat flux vector is given by:
+\begin{equation}
+ %\begin{split}
+ % q_x &= - k \diff{T}{x}\\
+%q_y &= - k \diff{T}{y}
+% \end{split}
+ q_r = - k \diff{T}{r},  \quad \mbox{and} \quad q_z = - k \diff{T}{z},
+ \end{equation}
+where $k$ is the thermal conductivity, which can be determined by choosing the Prandtl number:
+$$k= \dfrac{\gamma R \mu}{ (\gamma-1) \, \mbox{Pr} }.$$
+
+For a calorically perfect gas, Navier--Stokes equations are closed with two auxiliary relations for energy:
+\begin{equation}
+ \label{eq:euler_04}
+e_t= e+\dfrac{\bv{u}\cdot \bv{u}}{2},\quad\mbox{and}\quad e=\dfrac{1}{\gamma -1}RT ,
+\end{equation}
+and with the ideal gas equation of state:
+\begin{equation}
+ \label{eq:euler_05}
+p=\rho RT.\\
+\end{equation}
+
+
+Recall that the  divergence of a vector field $\bv{A}=(A_r,A_\theta,A_z)$ in cylindrical coordinates is given by:
+\begin{equation*}
+ \nabla\cdot \bv{A}= \dfrac{1}{r}\Diff{r A_r}{r} +\dfrac{1}{r}\Diff{ A_\theta}{\theta} +\dfrac{1}{r}\Diff{r A_z}{z},
+\end{equation*}
+therefore, for axisymmetrical flows,  $\bv{A}=(A_r,0,A_z)$  and :
+\begin{equation*}
+ \nabla\cdot \bv{A}= \dfrac{1}{r}\Diff{r A_r}{r}  +\dfrac{1}{r}\Diff{r A_z}{z}.
+\end{equation*}
+
+\section{Manufactured Solution}
+
+The choice of cylindrical coordinates, like any system that contains a symmetry axis, introduces singular terms in the governing equation of the type $r^{-n}$, being $r$ the radial coordinate and $n$ a positive exponent, %typically $n=1$ and $n=2$ 
+ although the flow is continuous and regular at the axis \cite{Domenichini2004}.
+
+%Therefore, even though it is not a physical boundary,  appropriate boundary conditions at $r=0$ must be defined in order to guarantee the regularity of the flow: %In the case of axisymmetric flows, the singular behavior is simply cancelled by the symmetry condition at the axis.
+
+Accordingly, the representation of fluid flows in cylindrical coordinates requires the definition of appropriate boundary conditions at $r=0$, despite the fact that it is not a physical boundary, that would guarantee the regularity of the flow: %In the case of axisymmetric flows, the singular behavior is simply cancelled by the symmetry condition at the axis.
+\begin{equation}
+\label{cc}
+\begin{split}
+u \big| _{r=0} &=0,\\
+ \diff{u}{r}\Big| _{r=0} &=0,\\
+\diff{w}{r}\Big| _{r=0} &=0.\\
+\end{split}
+\end{equation}
+
+The strategy to deal with this difficulty in analytical approaches is commonly that of discarding the singular solutions among all the admissible ones. % (e.g. using the Bessel’s functions of the first kind, and discarding those of the second kind).
+Consequently, a suitable form of each one of the primitive solution variables is a function of sines and cosines:
+\begin{equation}
+ \label{eq:manufactured01}
+\begin{split}
+\rho(r,z,t)&= \rho_0+\rho_r \cos\left(\dfrac{a_{\rho r} \pi r}{L}\right)+\rho_z \sin\left(\dfrac{a_{\rho z} \pi z}{L}\right)+\rho_t \sin\left(\dfrac{a_{\rho t} \pi t}{L}\right),\\
+u(r,z,t)&= u_r  \left[\cos\left(\dfrac{a_{ur} \pi r}{L}\right)-1 \right] \left[u_z \sin\left(\dfrac{a_{uz} \pi z}{L}\right) + u_t\cos\left(\dfrac{a_{ut} \pi t}{L}\right) \right],\\
+w(r,z,t)&=w_0+w_r \cos\left(\dfrac{a_{w r} \pi r}{L}\right)+w_z \sin\left(\dfrac{a_{w z} \pi z}{L}\right)+w_t \cos\left(\dfrac{a_{w t} \pi t}{L}\right),\\
+p(r,z,t)&=p_0+p_r \sin\left(\dfrac{a_{p r} \pi r}{L}\right)+p_z \cos\left(\dfrac{a_{p z} \pi z}{L}\right)+p_t \cos\left(\dfrac{a_{p t} \pi t}{L}\right),\\
+\end{split}
+\end{equation}
+%
+where $\rho_0$, $\rho_r$,  $\rho_z$,  $\rho_t$, $p_0$, $p_r$, $p_z$, $p_t$, $u_r$, $u_z$, $u_t$, $w_0$, $w_r$ $w_z$ and $w_t$ are pre-defined constants.
+
+The MMS applied to Navier--Stokes equations consists in modifying Equations~(\ref{eq:euler_01}) -- (\ref{eq:euler_03}) by adding a source term to the right-hand side of each equation:
+\begin{equation}
+ \label{eq:ns2d_mod}
+\begin{split}
+  \Diff{\rho}{t}+ \dfrac{1}{r} \Diff{\rho r u}{r}+ \dfrac{1}{r}\Diff{\rho r w}{z} &=Q_\rho,\\
+%
+\Diff{\rho u}{t} +\dfrac{1}{r}\Diff{r \rho u^2 }{r}+ \dfrac{1}{r}\Diff{r \rho u w }{z}+\diff{p}{r}-\left(\dfrac{1}{r}\Diff{r \tau_{rr}}{r}+\dfrac{1}{r}\Diff{r \tau_{rz}}{z}\right) &= Q_u,\\
+%
+\Diff{\rho w}{t} + \dfrac{1}{r}\Diff{r \rho  u w}{r}+ \dfrac{1}{r}\Diff{r \rho w^2 }{z}+\diff{p}{z}- \left(\dfrac{1}{r}\Diff{r \tau_{zr}}{r}+\dfrac{1}{r}\Diff{r \tau_{zz}}{z}\right) &= Q_w,\\
+%
+\Diff{\rho e_t}{ t}+\dfrac{1}{r}\Diff{r \rho e_t u}{ r}+\dfrac{1}{r}\Diff{r \rho e_t w}{z} +\dfrac{1}{r}\Diff{r p  u}{ r}+\dfrac{1}{r}\Diff{r p w}{z}+&\\
++\left(\dfrac{1}{r}\Diff{r q_r }{r} + \dfrac{1}{r}\Diff{r q_z }{z}\right) -\left(\dfrac{1}{r}\Diff{r( \tau_{rr} u + \tau_{rz} w ) }{r} + \dfrac{1}{r}\Diff{ r(\tau_{zr} u + \tau_{zz} w ) }{z}\right) &=Q_{e_t},
+\end{split}
+\end{equation}
+%
+%\begin{equation}
+% \dfrac{1}{r}\Diff{r(\rho e_t+p) u}{ r}+\dfrac{1}{r}\Diff{r(\rho e_t+p)w}{z}
+%-\left(\dfrac{1}{r}\Diff{r( \tau_{rr} u + \tau_{rz} w -q_r) }{r} + \Diff{ \tau_{zr} u + \tau_{zz} w - q_z }{z}\right) =Q_{e},
+%\end{equation}
+%
+so the modified set of equations conveniently has the analytical solution given in Equation (\ref{eq:manufactured01}) \cite{Roy2002}. This is achieved by simply applying Equations~(\ref{eq:euler_01}) -- (\ref{eq:euler_03}) as operators on Equation (\ref{eq:manufactured01}).
+
+Terms $Q_\rho$, $Q_u$,  $Q_w$ and $Q_{e_t}$ are obtained by symbolic manipulations of equations above using Maple and are presented in the following sections. The following auxiliary variables have been included in order to improve readability and computational efficiency:
+\begin{equation*}
+ \begin{split}
+\label{eq:aux_}
+\Rho &= \rho_0+\rho_r \cos\left(\dfrac{a_{\rho r} \pi r}{L}\right)+\rho_z \sin\left(\dfrac{a_{\rho z} \pi z}{L}\right),\\
+\U &= u_r u_z \left[\cos\left(\dfrac{a_{ur} \pi r}{L}\right)-1\right]\sin\left(\dfrac{a_{uz} \pi z}{L}\right),\\
+\W &=w_0+w_r \cos\left(\dfrac{a_{w r} \pi r}{L}\right)+w_z \sin\left(\dfrac{a_{w z} \pi z}{L}\right),\\
+\PP &=p_0+p_r \sin\left(\dfrac{a_{p r} \pi r}{L}\right)+p_z \cos\left(\dfrac{a_{p z} \pi z}{L}\right).
+\end{split}
+\end{equation*}
+
+\subsection{Source term for mass conservation equation}
+
+The mass conservation equation for axisymmetrical flows written as an operator is:
+\begin{equation*}
+ \Lo=  \Diff{\rho}{t}+  \dfrac{1}{r} \Diff{\rho r u}{r}+ \dfrac{1}{r}\Diff{\rho r w}{z}
+\end{equation*}
+
+Analytically differentiating Equation (\ref{eq:manufactured01}) for $\rho$, $u$ and $w$ using operator $\Lo$ defined above gives  the source term~$Q_{\rho}$:
+
+\begin{equation}
+ \begin{split}
+Q_\rho &= -\dfrac{a_{\rho r} \pi \rho_r \U }{L}\sin\left(\dfrac{a_{\rho r} \pi r}{L}\right)+ \\
+&+\dfrac{a_{\rho z} \pi \rho_z \W }{L}\cos\left(\dfrac{a_{\rho z} \pi z}{L}\right)+ \\
+&+\dfrac{a_{\rho t} \pi \rho_t }{L}\cos\left(\dfrac{a_{\rho t} \pi t}{L}\right)+ \\
+&-\dfrac{\pi \Rho}{L}\left[ a_{ur} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+a_{ur} u_r u_t \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right)\right.+\\
+&  \quad\quad\left. -a_{wz} w_z \cos\left(\dfrac{a_{wz} \pi z}{L}\right)\right] + \\
+&+\dfrac{\Rho \U}{r}.
+\end{split}
+\end{equation}
+%
+\subsection{Source term for radial velocity}
+
+For the generation of the analytical source term $Q_u$ for the $r$-momentum equation (radial velocity), the first component of Equation~(\ref{eq:euler_02}) is written as an  operator $\Lo$:
+\begin{equation*}
+ \Lo= \Diff{\rho u}{t} +\dfrac{1}{r}\Diff{r \rho u^2 }{r}+ \dfrac{1}{r}\Diff{r \rho u w }{z}+\diff{p}{r}-\left(\dfrac{1}{r}\Diff{r \tau_{rr}}{r}+\dfrac{1}{r}\Diff{r \tau_{rz}}{z}\right),
+\end{equation*}
+which, when operated in Equation (\ref{eq:manufactured01}), provides source term $Q_{u}$:
+
+\begin{equation}
+ \begin{split}
+ \displaystyle
+Q_u &=\dfrac{a_{uz} \pi u_r u_z \Rho \W }{L} \left[\cos\left(\dfrac{a_{ur} \pi r}{L}\right)-1\right] \cos\left(\dfrac{a_{uz} \pi z}{L}\right)+ \\
+&-\dfrac{a_{\rho r} \pi \rho_r \U^2 }{L}\sin\left(\dfrac{a_{\rho r} \pi r}{L}\right)+ \\
+&+\dfrac{a_{\rho z} \pi \rho_z \U \W }{L}\cos\left(\dfrac{a_{\rho z} \pi z}{L}\right)+ \\
+&-\dfrac{a_{ut} \pi u_r u_t \Rho}{L}\left[\cos\left(\dfrac{a_{ur} \pi r}{L}\right)-1\right]  \sin\left(\dfrac{a_{ut} \pi t}{L}\right)+ \\
+&+\dfrac{a_{\rho t} \pi \rho_t \U }{L}\cos\left(\dfrac{a_{\rho t} \pi t}{L}\right)+ \\
+&+\dfrac{a_{pr} \pi p_r }{L}\cos\left(\dfrac{a_{pr} \pi r}{L}\right)+ \\
+&-\dfrac{\pi \Rho \U}{L}\left[2 a_{ur} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+2 a_{ur} u_r u_t \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right)\right.+\\
+&  \quad\quad\left. -a_{wz} w_z \cos\left(\dfrac{a_{wz} \pi z}{L}\right)\right] + \\
+&+\dfrac{\Rho \U^2}{r}+\\
+&+ \dfrac{4 a_{ur}^2 \pi^2 \mu \U}{3L^2}+ \\
+&+\dfrac{\pi^2 u_r \mu}{3L^2}\left[3 a_{uz}^2 u_z \cos\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+4 a_{ur}^2 u_z \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+4 a_{ur}^2 u_t \cos\left(\dfrac{a_{ut} \pi t}{L}\right)\right.+\\
+&  \quad\quad\left. -3 a_{uz}^2 u_z \sin\left(\dfrac{a_{uz} \pi z}{L}\right)\right] + \\
+&+\dfrac{2 \pi \mu}{L r} \left[ a_{ur} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+a_{ur} u_r u_t \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right)\right.+\\
+&  \quad\quad\left. +a_{wz} w_z \cos\left(\dfrac{a_{wz} \pi z}{L}\right)\right].
+\end{split}
+\end{equation}
+%
+\subsection{Source term for axial velocity}
+Analogously, for the generation of the analytical source term $Q_w$ for the $z$-momentum equation (axial velocity), the second component of Equation  (\ref{eq:euler_02})  is written as an  operator $\Lo$:
+\begin{equation*}
+   \Lo =\Diff{\rho w}{t} + \dfrac{1}{r}\Diff{r \rho  u w}{r}+ \dfrac{1}{r}\Diff{r \rho w^2 }{z}+\diff{p}{z}- \left(\dfrac{1}{r}\Diff{r \tau_{zr}}{r}+\dfrac{1}{r}\Diff{r \tau_{zz}}{z}\right) ,
+\end{equation*}
+and then applied to Equation  (\ref{eq:manufactured01}). It yields:
+
+\begin{equation}
+ \begin{split}
+ \displaystyle
+Q_w &= -\dfrac{a_{\rho r} \pi \rho_r \U \W }{L}\sin\left(\dfrac{a_{\rho r} \pi r}{L}\right)+ \\
+&+\dfrac{a_{\rho z} \pi \rho_z \W^2 }{L}\cos\left(\dfrac{a_{\rho z} \pi z}{L}\right)+ \\
+&-\dfrac{a_{wr} \pi w_r \Rho \U}{L}\sin\left(\dfrac{a_{wr} \pi r}{L}\right) + \\
+&+\dfrac{a_{\rho t} \pi \rho_t \W }{L}\cos\left(\dfrac{a_{\rho t} \pi t}{L}\right)+ \\
+&-\dfrac{a_{wt} \pi w_t \Rho}{L}\sin\left(\dfrac{a_{wt} \pi t}{L}\right) + \\
+&-\dfrac{a_{pz} \pi p_z }{L}\sin\left(\dfrac{a_{pz} \pi z}{L}\right)+ \\
+&-\dfrac{\pi \Rho \W}{L}\left[ a_{ur} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+a_{ur} u_r u_t \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right)\right.+\\
+&  \quad\quad\left.-2 a_{wz} w_z \cos\left(\dfrac{a_{wz} \pi z}{L}\right)\right] + \\
+&+\dfrac{\Rho \U \W}{r}+\\
+&-\dfrac{a_{uz} \pi u_r u_z \mu}{3L r} \left[\cos\left(\dfrac{a_{ur} \pi r}{L}\right)-1\right]  \cos\left(\dfrac{a_{uz} \pi z}{L}\right)+\\
+&+\dfrac{ \pi^2 \mu}{3L^2} \left[ a_{ur} a_{uz} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{uz} \pi z}{L}\right)+4 a_{wz}^2 w_z \sin\left(\dfrac{a_{wz} \pi z}{L}\right)\right].
+\end{split}
+\end{equation}
+
+
+
+\subsection{Source term for energy}
+
+The operator for the axisymmetric Navier--Stokes total energy equation is:
+\begin{equation*}
+\begin{split}
+ \Lo&= \Diff{\rho e_t}{ t}+\dfrac{1}{r}\Diff{r \rho e_t u}{ r}+\dfrac{1}{r}\Diff{r \rho e_t w}{z} +\dfrac{1}{r}\Diff{r p  u}{ r}+\dfrac{1}{r}\Diff{r p w}{z}+\\
+&+\left(\dfrac{1}{r}\Diff{r q_r }{r} + \dfrac{1}{r}\Diff{r q_z }{z}\right) -\left(\dfrac{1}{r}\Diff{r( \tau_{rr} u + \tau_{rz} w ) }{r} + \dfrac{1}{r}\Diff{ r(\tau_{zr} u + \tau_{zz} w ) }{z}\right) .
+\end{split}
+\end{equation*}
+
+
+Source term $Q_{e_t}$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manufactured01}) together with the use of the  auxiliary relations~(\ref{eq:euler_04})~--~(\ref{eq:euler_05}) for energy:
+
+\begin{equation*}
+ \begin{split}
+ \displaystyle
+Q_{e_t} = &-\dfrac{a_{ut} \pi u_r u_t \Rho \U }{L}\left[\cos\left(\dfrac{a_{ur} \pi r}{L}\right)-1\right] \sin\left(\dfrac{a_{ut} \pi t}{L}\right)+ \\
+&+\dfrac{\gamma  }{\gamma-1}\dfrac{a_{pr} \pi p_r \U}{L}\cos\left(\dfrac{a_{pr} \pi r}{L}\right)+\\
+&-\dfrac{\gamma }{\gamma-1}\dfrac{a_{pz} \pi p_z \W }{L}\sin\left(\dfrac{a_{pz} \pi z}{L}\right)+\\
+&-\dfrac{a_{wt} \pi w_t \Rho \W }{L}\sin\left(\dfrac{a_{wt} \pi t}{L}\right)+ \\
+&-\dfrac{a_{\rho r} \pi \rho_r \U  (\U^2+\W^2) }{2L} \sin\left(\dfrac{a_{\rho r} \pi r}{L}\right) + \\
+&+\dfrac{ a_{\rho z}\pi \rho_z \W (\U^2+\W^2) }{2L}\cos\left(\dfrac{a_{\rho z} \pi z}{L}\right) + \\
+&+\dfrac{ a_{\rho t} \pi \rho_t (\U^2+\W^2)}{2L}\cos\left(\dfrac{a_{\rho t} \pi t}{L}\right)+ \\
+&-\dfrac{1}{\gamma-1}\dfrac{a_{pt} \pi p_t }{L}\sin\left(\dfrac{a_{pt} \pi t}{L}\right)+\\
+&-\dfrac{\pi \Rho \U^2}{2L} \left[3 a_{ur} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+3 a_{ur} u_r u_t \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right)-a_{wz} w_z \cos\left(\dfrac{a_{wz} \pi z}{L}\right)\right] + \\
+&+\dfrac{\pi \Rho \U \W}{L}\left[ a_{uz} u_r u_z \cos\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{uz} \pi z}{L}\right)-a_{uz} u_r u_z \cos\left(\dfrac{a_{uz} \pi z}{L}\right)-a_{wr} w_r \sin\left(\dfrac{a_{wr} \pi r}{L}\right)\right] + \\
+&-\dfrac{\pi \Rho \W^2}{2L} \left[ a_{ur} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+a_{ur} u_r u_t \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right)-3 a_{wz} w_z \cos\left(\dfrac{a_{wz} \pi z}{L}\right)\right]+ \\
+&- \dfrac{\gamma}{\gamma-1}\dfrac{\pi \PP}{L}\left[ a_{ur} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+a_{ur} u_r u_t \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right)\right.\\
+  &\quad\left.-a_{wz} w_z \cos\left(\dfrac{a_{wz} \pi z}{L}\right)\right] +\\
+&+ \dfrac{ \Rho \U(\U^2+\W^2)}{2r}+\\
+&+\dfrac{\gamma}{\gamma-1} \dfrac{\PP \U }{r}+\\
+& -\dfrac{a_{\rho r} \pi \rho_r k \PP }{R L r \Rho^2}\sin\left(\dfrac{a_{\rho r} \pi r}{L}\right) + \\
+&-\dfrac{a_{pr} \pi p_r k }{R L r \Rho}\cos\left(\dfrac{a_{pr} \pi r}{L}\right) + \\
+&+\dfrac{\pi^2 k}{R L^2 \Rho}\left[ a_{pr}^2 p_r\sin\left(\dfrac{a_{pr} \pi r}{L}\right)+ a_{pz}^2 p_z \cos\left(\dfrac{a_{pz} \pi z}{L}\right)\right] + \\
+&-\dfrac{\pi^2 k \PP}{R L^2 \Rho^2}\left[ a_{\rho r}^2 \rho_r \cos\left(\dfrac{a_{\rho r} \pi r}{L}\right)+a_{\rho z}^2 \rho_z \sin\left(\dfrac{a_{\rho z} \pi z}{L}\right)\right]  + \\
+&- \dfrac{2\pi^2 k}{R L^2 \Rho^2} \left[ a_{\rho r} a_{pr} \rho_r p_r \sin\left(\dfrac{a_{\rho r} \pi r}{L}\right) \cos\left(\dfrac{a_{pr} \pi r}{L}\right)+a_{\rho z} a_{pz} \rho_z p_z \cos\left(\dfrac{a_{\rho z} \pi z}{L}\right) \sin\left(\dfrac{a_{pz} \pi z}{L}\right)\right]  + \\
+&- \dfrac{2 \pi^2 k \PP}{R L^2 \Rho^3}\left[ a_{\rho r}^2 \rho_r^2 \sin\left(\dfrac{a_{\rho r} \pi r}{L}\right)^2+a_{\rho z}^2 \rho_z^2 \cos\left(\dfrac{a_{\rho z} \pi z}{L}\right)^2\right]+\\
+&+ \dfrac{4a_{ur}^2 \pi^2 \mu \U^2}{3L^2}+ \\
+&-\dfrac{a_{uz} \pi u_r u_z \mu \W }{3Lr} \left[\cos\left(\dfrac{a_{ur} \pi r}{L}\right)-1\right] \cos\left(\dfrac{a_{uz} \pi z}{L}\right)+\\
+&+\dfrac{4 a_{wz} \pi w_z \mu \U }{3Lr}\cos\left(\dfrac{a_{wz} \pi z}{L}\right)+\\
+&+\cdots\\
+\end{split}
+\end{equation*}
+\begin{equation}
+ \begin{split}
+ \displaystyle
+&+\dfrac{\pi^2 u_r \mu \U}{3L^2}\left[3 a_{uz}^2 u_z \cos\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+4 a_{ur}^2 u_z \sin\left(\dfrac{a_{uz} \pi z}{L}\right)+4 a_{ur}^2 u_t \cos\left(\dfrac{a_{ut} \pi t}{L}\right)\right.\\
+  &\quad\left.-3 a_{uz}^2 u_z \sin\left(\dfrac{a_{uz} \pi z}{L}\right)\right] + \\
+&+\dfrac{\pi^2 \mu \W}{3L^2} \left[ a_{ur} a_{uz} u_r u_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{uz} \pi z}{L}\right)+4 a_{wz}^2 w_z \sin\left(\dfrac{a_{wz} \pi z}{L}\right)\right] + \\
+&-\dfrac{\pi^2 \mu}{3L^2} \left[4 a_{ur}^2 u_r^2 u_z^2 \sin\left(\dfrac{a_{ur} \pi r}{L}\right)^2 \sin\left(\dfrac{a_{uz} \pi z}{L}\right)^2+8 a_{ur}^2 u_r^2 u_z u_t \sin\left(\dfrac{a_{ur} \pi r}{L}\right)^2 \sin\left(\dfrac{a_{uz} \pi z}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right)+\right.\\
+  &\quad+4 a_{ur}^2 u_r^2 u_t^2 \sin\left(\dfrac{a_{ur} \pi r}{L}\right)^2 \cos\left(\dfrac{a_{ut} \pi t}{L}\right)^2+3 a_{uz}^2 u_r^2 u_z^2 \cos\left(\dfrac{a_{ur} \pi r}{L}\right)^2 \cos\left(\dfrac{a_{uz} \pi z}{L}\right)^2+\\
+  &\quad-6 a_{uz}^2 u_r^2 u_z^2 \cos\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{uz} \pi z}{L}\right)^2+4 a_{ur} a_{wz} u_r u_z w_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \sin\left(\dfrac{a_{uz} \pi z}{L}\right) \cos\left(\dfrac{a_{wz} \pi z}{L}\right)+\\
+  &\quad+4 a_{ur} a_{wz} u_r u_t w_z \sin\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{ut} \pi t}{L}\right) \cos\left(\dfrac{a_{wz} \pi z}{L}\right)+3 a_{uz}^2 u_r^2 u_z^2 \cos\left(\dfrac{a_{uz} \pi z}{L}\right)^2+\\
+  &\quad-3 a_{uz} a_{wr} u_r u_z w_r \cos\left(\dfrac{a_{ur} \pi r}{L}\right) \cos\left(\dfrac{a_{uz} \pi z}{L}\right) \sin\left(\dfrac{a_{wr} \pi r}{L}\right)+\\
+  &\quad\left.+3 a_{uz} a_{wr} u_r u_z w_r \cos\left(\dfrac{a_{uz} \pi z}{L}\right) \sin\left(\dfrac{a_{wr} \pi r}{L}\right)+4 a_{wz}^2 w_z^2 \cos\left(\dfrac{a_{wz} \pi z}{L}\right)^2\right] .
+\end{split}
+\end{equation}
+
+
+
+\section{Comments}
+
+
+The complexity and, consequently, length of the source terms increase with both dimension and physics handled by the governing equations.
+
+%In some cases, such as the 3D energy equation, the final expression for $Q_{e_t}$ may reach 139,000 characters, including parenthesis and mathematical operators, prior to factorization.
+
+
+Applying commands in order to simplify extensive expressions is challenging even with a high performance workstation; thus, a suitable alternative to this issue is to simplify each equation by dividing it into a combination of sub-operators handling different physical phenomena. Then, each one of the operators may be applied to the manufactured solutions individually, and the resulting sub-source terms are combined back to represent the source term for the original equation.
+
+
+
+For instance, instead of writing the axisymmetrical transient Navier-Stokes energy equation using one single operator~$\Lo$:
+\begin{equation}
+ \label{eq:ns2d_04}
+\Lo= \Diff{\rho e_t}{ t}+\nabla \cdot (\rho\mathbf{u}e_t) +\nabla\cdot \mathbf{q} +  \nabla\cdot(p  \mathbf{u})  - \nabla \cdot (\bv{\tau} \cdot \mathbf{u}),
+%\Diff{\rho e_t}{t}& + \nabla \cdot (\rho \mathbf{u} H)+\nabla\cdot \mathbf{q} - \nabla \cdot (\bv{\tau u})
+\end{equation}
+to then be used in the MMS, let Equation (\ref{eq:ns2d_04}) be written with five operators, according to their physical meaning:
+\begin{equation}
+ \begin{split}
+  \Lo_1&=\Diff{\rho e_t}{ t},\\
+  \Lo_2&=\nabla \cdot (\rho\mathbf{u}e_t),\\
+  \Lo_3&=\nabla\cdot \mathbf{q},\\
+  \Lo_4&= \nabla\cdot(p  \mathbf{u}),\\
+  \Lo_5&=- \nabla \cdot (\bv{\tau} \cdot \mathbf{u}),
+ \end{split}
+\end{equation}
+where $\Lo_1$ denotes the rate of accumulation of inertial and kinetic energy,   $\Lo_2$ is the net rate of internal and kinetic energy increase by convection, $\Lo_3$ is the net rate of heat addition due to heat conduction, $\Lo_4$ is the rate of work done on the fluid by external body forces, and $\Lo_5$ is the rate of work done on the fluid by viscous forces. Naturally:
+\begin{equation}
+ \label{op01}
+\Lo=\Lo_1+\Lo_2+\Lo_3+\Lo_4+\Lo_5.
+\end{equation}
+
+After the application of $\Lo_i$,  and $i=1\cdots5$, the corresponding sub-source terms are simplified, factorized and sorted. Then, the final factorized version is checked against the original one, to assure that not human error has been introduced.
+
+An advantage of this strategy is the possibility of inclusion and/or removal of other physical effects without the need of re-doing previous manipulations.
+
+For instance, a change in the viscosity model will no longer require the re-calculation of the operator $\Lo$ over the entire
+Equation (\ref{eq:ns2d_04}), only operator $\Lo_5$ needs to be modified in order to include the desired viscous effects.
+Moreover, the source term for the energy  equation for a transient inviscid fluid (Euler equations) may be achieve by simply setting $\Lo_4=\Lo_5=0$ in (\ref{op01}).
+
+This strategy results in less time, decreases the computational effort and occasional software crashes, and also increases the flexibility in the code verification procedure.
+
+
+
+
+\subsection{Boundary Conditions}
+Additionally to verifying code capability of solving the governing equations accurately in the interior of the domain of interest, one may also verify the software capability of correctly imposing boundary conditions. Therefore, the gradients of the  analytical solutions (\ref{eq:manufactured01}) have been calculated:
+\begin{equation*}
+\nabla  \rho= \left[ \begin{array}{c}
+-\dfrac{  a_{\rho r}  \pi \rho_r}{L} \sin\left( \dfrac{ a_{\rho r}  \pi  r}{L}\right)\vspace{5pt} \\
+ 0\\
+ \dfrac{  a_{\rho z}  \pi \rho_z}{L}  \cos\left( \dfrac{ a_{\rho z}  \pi  z}{L}\right)
+\end{array} \right],
+\qquad\quad\quad
+\nabla p = \left[ \begin{array}{c}
+  \dfrac{  a_{pr}  \pi p_r}{L} \cos\left( \dfrac{ a_{pr}  \pi  r}{L}\right)\vspace{5pt}\\
+  0\\
+- \dfrac{  a_{pz}  \pi p_z}{L} \sin\left( \dfrac{ a_{pz}  \pi  z}{L}\right)
+\end{array} \right],
+\end{equation*}
+\begin{equation*}
+\nabla u = \left[ \begin{array}{c}
+  -\dfrac{  a_{ur}  \pi u_r }{L} \sin\left( \dfrac{ a_{ur}  \pi  r}{L}\right)\left[u_z\sin\left( \dfrac{ a_{uz}  \pi  z}{L}\right)+u_t\cos\left( \dfrac{ a_{ut}  \pi  t}{L}\right)\right]\vspace{5pt}\\
+  0\\
+   \dfrac{  a_{uz}  \pi u_r u_z}{L} \left( \cos\left( \dfrac{ a_{ur}  \pi  r}{L}\right) -1\right)\cos\left( \dfrac{ a_{uz}  \pi  z}{L}\right)
+\end{array} \right],
+\quad\mbox{and}\quad
+\nabla w = \left[ \begin{array}{c}
+-\dfrac{  a_{wr}  \pi  w_r}{L} \sin\left( \dfrac{ a_{wr}  \pi  r}{L}\right)\vspace{5pt}\\
+ 0\\
+  \dfrac{  a_{wz}  \pi w_z}{L}  \cos\left( \dfrac{ a_{wz}  \pi  z}{L}\right)
+\end{array} \right]
+\end{equation*}
+ and translated into $C$ codes:
+\begin{small}
+ \begin{verbatim}
+grad_rho_an[0] = -rho_r * sin(a_rhor * PI * r / L) * a_rhor * PI / L;
+grad_rho_an[1] = 0;
+grad_rho_an[2] = rho_z * cos(a_rhoz * PI * z / L) * a_rhoz * PI / L;
+grad_p_an[0] = p_r * cos(a_pr * PI * r / L) * a_pr * PI / L;
+grad_p_an[1] = 0;
+grad_p_an[2] = -p_z * sin(a_pz * PI * z / L) * a_pz * PI / L;
+grad_u_an[0] = -u_r * sin(a_ur * PI * r / L) * a_ur * PI / L * (u_z * sin(a_uz * PI * z / L)
+  + u_t * cos(a_ut * PI * t / L));
+grad_u_an[1] = 0;
+grad_u_an[2] = u_r * (cos(a_ur * PI * r / L) - 0.1e1) * u_z * cos(a_uz * PI * z / L) * a_uz * PI / L;
+grad_w_an[0] = -w_r * sin(a_wr * PI * r / L) * a_wr * PI / L;
+grad_w_an[1] = 0;
+grad_w_an[2] = w_z * cos(a_wz * PI * z / L) * a_wz * PI / L;
+\end{verbatim}
+\end{small}
+
+
+\subsection{C Files}
+The $C$ files for both source terms and gradients of the  manufactured solutions are:
+\begin{itemize}
+\item \texttt{NavierStokes\_axi\_transient\_e\_code.C}
+ \item \texttt{NavierStokes\_axi\_transient\_rho\_code.C}
+ \item \texttt{NavierStokes\_axi\_transient\_u\_code.C}
+ \item \texttt{NavierStokes\_axi\_transient\_v\_code.C}
+ \item \texttt{NavierStokes\_axi\_manuf\_solutions\_grad\_code.C}
+\end{itemize}
+
+An example of the automatically generated $C$ file from the source term for the total energy source term $Q_{e_t}$~is:
+
+\begin{small}
+\begin{verbatim}#include <math.h>
+
+double SourceQ_e (double r, double z, double t)
+{
+  double Q_e;
+  double RHO;
+  double P;
+  double U;
+  double W;
+  RHO = rho_0 + rho_r * cos(a_rhor * PI * r / L) + rho_z * sin(a_rhoz * PI * z / L)
+    + rho_t * sin(a_rhot * PI * t / L);
+  P = p_0 + p_r * sin(a_pr * PI * r / L) + p_z * cos(a_pz * PI * z / L)
+    + p_t * cos(a_pt * PI * t / L);
+  U = u_r * (cos(a_ur * PI * r / L) - 0.1e1) * (u_z * sin(a_uz * PI * z / L)
+    + u_t * cos(a_ut * PI * t / L));
+  W = w_0 + w_r * cos(a_wr * PI * r / L) + w_z * sin(a_wz * PI * z / L)
+    + w_t * cos(a_wt * PI * t / L);
+  Q_e = -a_wt * PI * w_t * RHO * W * sin(a_wt * PI * t / L) / L
+    - (U * U + W * W) * a_rhor * PI * rho_r * U * sin(a_rhor * PI * r / L) / L / 0.2e1
+    + (U * U + W * W) * a_rhoz * PI * rho_z * W * cos(a_rhoz * PI * z / L) / L / 0.2e1
+    - k * (a_rhor * a_rhor * rho_r * cos(a_rhor * PI * r / L)
+      + a_rhoz * a_rhoz * rho_z * sin(a_rhoz * PI * z / L))
+      * PI * PI * P / R * pow(L, -0.2e1) * pow(RHO, -0.2e1)
+    - 0.2e1 * k * (a_rhor * a_rhor * rho_r * rho_r * pow(sin(a_rhor * PI * r / L), 0.2e1)
+      + a_rhoz * a_rhoz * rho_z * rho_z * pow(cos(a_rhoz * PI * z / L), 0.2e1))
+      * PI * PI * P / R * pow(L, -0.2e1) * pow(RHO, -0.3e1)
+    + (U * U + W * W) * a_rhot * PI * rho_t * cos(a_rhot * PI * t / L) / L / 0.2e1
+    - a_pt * PI * p_t * sin(a_pt * PI * t / L) / (Gamma - 0.1e1) / L
+    + mu * (0.3e1 * a_uz * a_uz * u_z * cos(a_ur * PI * r / L) * sin(a_uz * PI * z / L)
+      + 0.4e1 * a_ur * a_ur * u_z * sin(a_uz * PI * z / L)
+      + 0.4e1 * a_ur * a_ur * u_t * cos(a_ut * PI * t / L)
+      - 0.3e1 * a_uz * a_uz * u_z * sin(a_uz * PI * z / L))
+      * PI * PI * u_r * U * pow(L, -0.2e1) / 0.3e1
+    + (a_uz * u_r * u_z * cos(a_ur * PI * r / L) * cos(a_uz * PI * z / L)
+      - a_uz * u_r * u_z * cos(a_uz * PI * z / L)
+      - a_wr * w_r * sin(a_wr * PI * r / L)) * PI * RHO * U * W / L
+    - (a_ur * u_r * u_z * sin(a_ur * PI * r / L) * sin(a_uz * PI * z / L)
+      + a_ur * u_r * u_t * sin(a_ur * PI * r / L) * cos(a_ut * PI * t / L)
+      - a_wz * w_z * cos(a_wz * PI * z / L)) * Gamma * PI * P / (Gamma - 0.1e1) / L
+    + k * (sin(a_pr * PI * r / L) * a_pr * a_pr * p_r
+      + cos(a_pz * PI * z / L) * a_pz * a_pz * p_z) * PI * PI / R * pow(L, -0.2e1) / RHO
+    - 0.2e1 * k * (a_rhor * a_pr * rho_r * p_r * sin(a_rhor * PI * r / L) * cos(a_pr * PI * r / L)
+      + a_rhoz * a_pz * rho_z * p_z * cos(a_rhoz * PI * z / L) * sin(a_pz * PI * z / L))
+      * PI * PI / R * pow(L, -0.2e1) * pow(RHO, -0.2e1)
+    - (cos(a_ur * PI * r / L) - 0.1e1) * a_ut * PI * u_r * u_t * RHO * U * sin(a_ut * PI * t / L) / L
+    - mu * (cos(a_ur * PI * r / L) - 0.1e1) * a_uz * PI * u_r * u_z * W
+      * cos(a_uz * PI * z / L) / L / r / 0.3e1
+    - Gamma * a_pz * PI * p_z * W * sin(a_pz * PI * z / L) / (Gamma - 0.1e1) / L
+    + Gamma * a_pr * PI * p_r * U * cos(a_pr * PI * r / L) / (Gamma - 0.1e1) / L
+    + 0.4e1 / 0.3e1 * mu * a_wz * PI * w_z * U * cos(a_wz * PI * z / L) / L / r
+    - k * a_rhor * PI * rho_r * P * sin(a_rhor * PI * r / L) / R / L / r * pow(RHO, -0.2e1)
+    - k * a_pr * PI * p_r * cos(a_pr * PI * r / L) / R / L / r / RHO
+    + RHO * pow(U, 0.3e1) / r / 0.2e1
+    + 0.4e1 / 0.3e1 * mu * a_ur * a_ur * PI * PI * U * U * pow(L, -0.2e1)
+    - (0.3e1 * a_ur * u_r * u_z * sin(a_ur * PI * r / L) * sin(a_uz * PI * z / L)
+      + 0.3e1 * a_ur * u_r * u_t * sin(a_ur * PI * r / L) * cos(a_ut * PI * t / L)
+      - a_wz * w_z * cos(a_wz * PI * z / L)) * PI * RHO * U * U / L / 0.2e1
+    - (a_ur * u_r * u_z * sin(a_ur * PI * r / L) * sin(a_uz * PI * z / L)
+      + a_ur * u_r * u_t * sin(a_ur * PI * r / L) * cos(a_ut * PI * t / L)
+      - 0.3e1 * a_wz * w_z * cos(a_wz * PI * z / L)) * PI * RHO * W * W / L / 0.2e1
+    + mu * (a_ur * a_uz * u_r * u_z * sin(a_ur * PI * r / L) * cos(a_uz * PI * z / L)
+      + 0.4e1 * sin(a_wz * PI * z / L) * a_wz * a_wz * w_z) * PI * PI * W * pow(L, -0.2e1) / 0.3e1
+    + Gamma * P * U / (Gamma - 0.1e1) / r
+    + RHO * U * W * W / r / 0.2e1
+    - mu * (0.4e1 * a_ur * a_ur * u_r * u_r * u_z * u_z * pow(sin(a_ur * PI * r / L), 0.2e1)
+      * pow(sin(a_uz * PI * z / L), 0.2e1) + 0.8e1 * a_ur * a_ur * u_r * u_r * u_z * u_t
+      * pow(sin(a_ur * PI * r / L), 0.2e1) * sin(a_uz * PI * z / L) * cos(a_ut * PI * t / L)
+      + 0.4e1 * a_ur * a_ur * u_r * u_r * u_t * u_t * pow(sin(a_ur * PI * r / L), 0.2e1)
+      * pow(cos(a_ut * PI * t / L), 0.2e1) + 0.3e1 * a_uz * a_uz * u_r * u_r * u_z * u_z
+      * pow(cos(a_ur * PI * r / L), 0.2e1) * pow(cos(a_uz * PI * z / L), 0.2e1)
+      - 0.6e1 * a_uz * a_uz * u_r * u_r * u_z * u_z * cos(a_ur * PI * r / L)
+      * pow(cos(a_uz * PI * z / L), 0.2e1) + 0.4e1 * a_ur * a_wz * u_r * u_z * w_z
+      * sin(a_ur * PI * r / L) * sin(a_uz * PI * z / L) * cos(a_wz * PI * z / L)
+      + 0.4e1 * a_ur * a_wz * u_r * u_t * w_z * sin(a_ur * PI * r / L) * cos(a_ut * PI * t / L)
+      * cos(a_wz * PI * z / L) + 0.3e1 * a_uz * a_uz * u_r * u_r * u_z * u_z
+      * pow(cos(a_uz * PI * z / L), 0.2e1) - 0.3e1 * a_uz * a_wr * u_r * u_z * w_r
+      * cos(a_ur * PI * r / L) * cos(a_uz * PI * z / L) * sin(a_wr * PI * r / L)
+      + 0.3e1 * a_uz * a_wr * u_r * u_z * w_r * cos(a_uz * PI * z / L) * sin(a_wr * PI * r / L)
+      + 0.4e1 * a_wz * a_wz * w_z * w_z * pow(cos(a_wz * PI * z / L), 0.2e1))
+      * PI * PI * pow(L, -0.2e1) / 0.3e1;
+  return(Q_e);
+}
+\end{verbatim}
+\end{small}
+
+
+
+%---------------------------------------------------------------------------------------------------------
+\bibliographystyle{ieeetr}
+\bibliography{../../MMS_bib}
+
+
+
+\end{document}
