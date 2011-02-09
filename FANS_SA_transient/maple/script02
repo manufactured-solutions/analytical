@@ -1,0 +1,7 @@
+#! /bin/sh
+for i in *.mw
+do
+sed 's/Navier-Stokes transient equations/transient Favre-Averaged Navier-Stokes equations with Spalart-Allmaras one-equation turbulence model and constant viscosity mu./g' $i > $i.tmp
+
+mv $i.tmp $i
+done

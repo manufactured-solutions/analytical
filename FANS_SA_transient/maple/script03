@@ -1,0 +1,7 @@
+#!/bin/sh
+
+for x in *.mw
+do
+name=`echo $x | sed -e "s/NavierStokes_turbulent/FANS/g"`
+mv $x $name
+done
