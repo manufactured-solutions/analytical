@@ -129,8 +129,19 @@ $c_{w1}$, $c_{w2}$, $c_{w3}$, and $\kappa$ are the SA model
 calibration parameters.\\
 
 
-\textbf{Note:} In this work the averaged absolute viscosity is considered constant, $\bmu=\texttt{constant}$ and the distance to the nearest no-slip wall is assumed to be infinity, $d\rightarrow\infty$.
-Due to such assumptions, the simplifications carried out in the governing equations as well as in the closure expressions  are presented in Section \ref{NS+SA}.
+\textbf{Note:} In this work, two simplifications are carried out: the averaged absolute viscosity $\bmu$ is considered constant, and the distance to the nearest no-slip wall is assumed to be infinite, $d\rightarrow\infty$. Therefore, he equation for the Spalart-Allmaras variable (\ref{eq:ns04}) becomes:
+\begin{equation}\label{eq:ns05}
+\pp{}{t}(\bar{\rho} \sa) + \pp{}{x_j} (\bar{\rho} \tilde{u}_j \sa) =  c_{b1} S_{\mathrm{sa}} \bar{\rho} \sa + \frac{1}{\sigma} \pp{}{x_k} \left[ (\bar{\mu} + \bar{\rho} \sa) \pp{\sa}{x_k} \right] + \frac{c_{b2}}{\sigma} \bar{\rho} \pp{\sa}{x_k} \pp{\sa}{x_k}.
+\end{equation}
+and the following terms are simplified in Equation (\ref{eq:closure}):
+\begin{equation}
+\begin{split}\label{eq:closure01}
+ &\bmu=\texttt{constant}\\
+&S_\tsa=\Omega\\
+&r=0 \Rightarrow g=f_w=0.
+\end{split}
+\end{equation}
+
 %
 % where here, $\bar{\rho}$ and $\bar{p}$ are Reynolds-averaged density and pressure, respectively,  $\tilde{u}_i$ is the Favre averaged velocity and $u_i''$ is the fluctuations due to turbulence. % It is assumed that $u_i=\tilde{u}_i+u_i''$.
 % %
@@ -185,7 +196,7 @@ Source terms  for mass conservation ($Q_\rho$), momentum ($Q_u$, and $Q_v$), tot
 
 
 
- \subsection{2D FANS equations and SA turbulence model}\label{NS+SA}
+ \subsection{2D FANS Equations and SA Turbulence Model}\label{NS+SA}
 
 
 
@@ -207,47 +218,40 @@ MMS applied to the 2D transient FANS equations with SA turbulent model simply co
  &\Diff{\bar{\rho} \sa}{t} +\nabla \cdot (\bar{\rho} \tilde{\bv{u}} \sa) - c_{b1} S_\tsa \bar{\rho} \sa - \dfrac{1 }{\sigma}\nabla \cdot \left( (\bmu+\bar{\rho}  \sa) \nabla \sa\right) -\dfrac{c_{b2} \bar{\rho} }{\sigma} \nabla \sa \cdot \nabla \sa =Q_{\sa}
  \end{split}
  \end{equation}
-so the modified set of Equations (\ref{eq:ns2d_mod}) has Equation (\ref{eq:manufactured_2d}) as analytical solution. Note that in Equation (\ref{eq:ns2d_mod}) it is assumed that the distance to the neartest no slip wall is sufficiently large, i.e., $d\rightarrow\infty$.
+so the modified set of Equations (\ref{eq:ns2d_mod}) has Equation (\ref{eq:manufactured_2d}) as analytical solution. Note that the last equation in (\ref{eq:ns2d_mod}) is simplified due to the assumption that the distance to the neartest no slip wall is sufficiently large, i.e., $d\rightarrow\infty$.
 
 Recall that the averaged kinematic viscosity, total energy per unit mass and the total enthalpy per unit mass are give, respectively, by:
 \begin{equation}
- \begin{split}\label{eq:closure01}
+ \begin{split}\label{eq:closure02}
   \tilde{\nu}=\dfrac{\bar{\mu}}{\bar{\rho}},\qquad \tilde{E}=\tilde{e}+\dfrac{\tilde{\bv{u}}\cdot \tilde{\bv{u}}}{2}, \quad \tilde{H}=\tilde{h}+\dfrac{\tilde{\bv{u}}\cdot \tilde{\bv{u}}}{2}
  \end{split}
 \end{equation}
 with $\tilde{e}$ and $\tilde{h}$ defined in Equation (\ref{eq:closure}) and $\bmu$ is the averaged absolute viscosity. The laminar mean heat-flux vector $\bar{\bv{q}}=(\bar{q}_x,\bar{q}_y)$ is given by:
 %
-\begin{equation}\label{eq:closure02}
+\begin{equation}\label{eq:closure03}
  \bar{q}_x = \left(\dfrac{\bar{\mu}}{\Pr}+\dfrac{\mu_t}{\Pr_t}\right)\diff{\tilde{h}}{x}\quad \mbox{and} \quad \bar{q}_y = \left(\dfrac{\bar{\mu}}{\Pr}+\dfrac{\mu_t}{\Pr_t}\right)\diff{\tilde{h}}{y}
  \end{equation}
 where the Prandtl number $\Pr$ and the turbulent Prandtl number $\Pr_t$ are assumed to be constant.
 
-Since the fluid is considered to have constant viscosity and the distance to the neartest no slip wall is assumed to be sufficient large, i.e., $d\rightarrow\infty$, the expressions in (\ref{eq:closure}) are simplified accordingly:
-\begin{gather}
-\label{eq:closure03}
- \bar{\mu} = \text{constant}, \quad \bar{p} = \bar{\rho} R \tilde{T}, \quad \tilde{e} = c_v \tilde{T}, \quad \tilde{h} = c_p \tilde{T} = \tilde{e} + \frac{\bar{p}}{\bar{\rho}} \\
-\label{eq:closure04}
-\mu_t = \bar{\rho} \nu_t = \bar{\rho} \sa f_{v1}, \quad f_{v1} = \frac{\chi^3}{\chi^3 + c_{v1}^3}, \quad \chi = \frac{\sa}{\tilde{\nu}}, \\
-\label{eq:closure05}
-S_{\mathrm{sa}} = \Omega, \quad \Omega = \sqrt{\left( \diff{\tilde{u}}{y} - \diff{\tilde{v}}{x}\right)^2} \\
-\label{eq:closure06}
-\tS_{xx}= \diff{\tilde{u}}{x}-\dfrac{1}{3} \nabla \cdot \tilde{\bv{u}},\quad \tS_{yy}= \diff{\tilde{v}}{y}-\dfrac{1}{3} \nabla \cdot \tilde{\bv{u}}, \quad \tS_{xy}= \tS_{yx}= \left( \diff{\tilde{u}}{y} + \diff{\tilde{v}}{x}\right),
-\end{gather}
-with
+
+Additionally,   $\Omega$ and $\tilde{\bv{S}}$ in expression (\ref{eq:closure}) are given by:
 \begin{equation}
+\label{eq:closure04}
+ \Omega = \sqrt{\left( \diff{\tilde{u}}{y} - \diff{\tilde{v}}{x}\right)^2} ,
+\end{equation}
+and
+\begin{equation}
+ \label{eq:closure05}
 \tilde{\bv{S}}=\left[
 \begin{array}{cc}
 \tS_{xx} & \tS_{xy}\\
 \tS_{yx} & \tS_{yy}
-\end{array}\right] .
+\end{array}\right] , 
 \end{equation}
-
-% and  variable $\tilde{\bv{S}} $ ($\tS_{ij}$ in Equation. \ref{eq:closure05}) is the instantaneous viscous stress tensor:
-% \begin{equation}\label{eq:closure06}
-% \tS_{xx}= \diff{\tilde{u}}{x}-\dfrac{1}{3} \nabla \cdot \tilde{\bv{u}},\quad
-% \tS_{yy}= \diff{\tilde{v}}{y}-\dfrac{1}{3} \nabla \cdot \tilde{\bv{u}}, \quad
-% \tS_{xy}= \tS_{yx}= \left( \diff{\tilde{u}}{y} + \diff{\tilde{v}}{x}\right),
-% \end{equation}
+with
+\begin{equation*}
+\tS_{xx}= \diff{\tilde{u}}{x}-\dfrac{1}{3} \nabla \cdot \tilde{\bv{u}},\quad \tS_{yy}= \diff{\tilde{v}}{y}-\dfrac{1}{3} \nabla \cdot \tilde{\bv{u}}, \quad \tS_{xy}= \tS_{yx}= \left( \diff{\tilde{u}}{y} + \diff{\tilde{v}}{x}\right).\\
+\end{equation*}
 
 
 
@@ -349,7 +353,7 @@ The operator for the 2D Navier--Stokes total energy is:
 \end{split}
 \end{equation*}
 
-Source term $Q_{\tE}$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manufactured_2d}) together with the use of the  auxiliary relations for energy given in Equations (\ref{eq:closure03}), (\ref{eq:closure04}) and (\ref{eq:closure06}). It yields:
+Source term $Q_{\tE}$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manufactured_2d}) together with the use of the  auxiliary relations for energy given in Equations (\ref{eq:closure}),  (\ref{eq:closure02}) and (\ref{eq:closure03}). It yields:
 
 \begin{equation*}
  \begin{split}
@@ -400,11 +404,11 @@ The operator for the viscosity-like baseline compressible Spalart-Allmaras equat
 \begin{equation*}
 \begin{split}
 \Lo&=  \Diff{\brho \sa }{t}+ \Diff{\brho \tu \sa }{x}+\Diff{\brho \tv \sa}{y}- c_{b1} S_\tsa \bar{\rho} \sa +\\
-   &+ \dfrac{1 }{\sigma}\left[\diff{}{x}\left((\bmu+\bar{\rho} \sa) \diff{\sa}{x}\right)+\diff{}{y}\left((\bmu+\bar{\rho} \sa) \diff{\sa}{y}\right)\right] +\dfrac{c_{b2} \bar{\rho} }{\sigma} \left[ \left(\diff{\sa}{x}\right)^2 + \left(\diff{\sa}{y}\right)^2\right]
+   &- \dfrac{1 }{\sigma}\left[\diff{}{x}\left((\bmu+\bar{\rho} \sa) \diff{\sa}{x}\right)+\diff{}{y}\left((\bmu+\bar{\rho} \sa) \diff{\sa}{y}\right)\right] -\dfrac{c_{b2} \bar{\rho} }{\sigma} \left[ \left(\diff{\sa}{x}\right)^2 + \left(\diff{\sa}{y}\right)^2\right]
 \end{split}
 \end{equation*}
 
-Source term $Q_{\sa}$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manufactured_2d}) together with the use of the  auxiliary relations for energy given in Equations (\ref{eq:closure03}) -- (\ref{eq:closure05}). It yields:
+Source term $Q_{\sa}$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manufactured_2d}) together with the use of the  auxiliary relations given in Equations (\ref{eq:closure}) and  (\ref{eq:closure01}). It yields:
 
 \begin{equation}
  \begin{split}
@@ -416,14 +420,16 @@ Source term $Q_{\sa}$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manuf
 &+\dfrac{\pi^2 \Nu}{ L^2\sigma}\left[a_{\rho x} a_{\nu_{sa} x} \rho_x \nu_{sa x}  \cos\left(\dfrac{a_{\rho x} \pi x}{L}\right)  \sin\left(\dfrac{a_{\nu_{sa} x} \pi x}{L}\right)-a_{\rho y} a_{\nu_{sa} y} \rho_y \nu_{sa y}  \sin\left(\dfrac{a_{\rho y} \pi y}{L}\right)  \sin\left(\dfrac{a_{\nu_{sa} y} \pi y}{L}\right)\right] +\\
  &-c_{b1}  \pi \Rho \Nu \sqrt{\dfrac{1}{L^2} \left[-a_{uy} u_y  \sin\left(\dfrac{a_{uy} \pi y}{L}\right)+a_{vx} v_x  \sin\left(\dfrac{a_{vx} \pi x}{L}\right)\right]^2}+\\
 &+\dfrac{\pi \Rho \Nu}{L}\left[a_{ux} u_x  \cos\left(\dfrac{a_{ux} \pi x}{L}\right)+a_{vy} v_y  \cos\left(\dfrac{a_{vy} \pi y}{L}\right)\right] + \\
- &+\dfrac{(\Rho \Nu+\bmu) \pi^2}{L^2 \sigma}\left[a_{\nu_{sa} x}^2 \nu_{sa x}  \cos\left(\dfrac{a_{\nu_{sa} x} \pi x}{L}\right)+a_{\nu_{sa} y}^2 \nu_{sa y}  \cos\left(\dfrac{a_{\nu_{sa} y} \pi y}{L}\right)\right],
+ &+\dfrac{(\Rho \Nu+\bmu) \pi^2}{L^2 \sigma}\left[a_{\nu_{sa} x}^2 \nu_{sa x}  \cos\left(\dfrac{a_{\nu_{sa} x} \pi x}{L}\right)+a_{\nu_{sa} y}^2 \nu_{sa y}  \cos\left(\dfrac{a_{\nu_{sa} y} \pi y}{L}\right)\right]+\\
+&+ \dfrac{a_{\rho t} \pi \rho_t \Nu}{L} \cos\left(\dfrac{a_{\rho t} \pi t}{L}\right)+\\
+&- \dfrac{a_{\nu_{sa}t} \pi \nu_{sa_t}}{L} \Rho \sin\left(\dfrac{a_{\nu_{sa} t} \pi t}{L}\right),
  \end{split}
 \end{equation}
 with  $\Rho,\, \U,\,\V$ and $\Nu$ defined in (\ref{eq:aux_2d}).
 
 
 \section{Comments}
-The complexity, and consequently length, of the source terms increase with both dimension and physics handled by the governing equations. In some cases, such as the 2D energy equation, the final expression for $Q_{\tE}$ may reach 500,000 characters, including parenthesis and mathematical operators, prior to factorization.
+The complexity, and consequently length, of the source terms increase with both dimension and physics handled by the governing equations. In some cases, such as the 2D energy equation, the final expression for $Q_{\tE}$ may reach 107,600 characters, including parenthesis and mathematical operators, prior to factorization.
 
 Applying commands in order to simplify such extensive expression is challenging even with a very good machine; thus, a suitable alternative to this issue is to simplify the equation by dividing it into a combination of sub-operators handling different physical phenomena. Then, each one of the operators may be applied to the manufactured solutions individually, and the resulting sub-source terms are combined back to represent the source term for the original equation.
 
@@ -446,17 +452,17 @@ where $\Lo_1$ denotes the rate of accumulation of inertial and kinetic energy, $
 $$\Lo=\Lo_1+\Lo_2+\Lo_3+\Lo_4.$$
 
 
-In fact, due to the extremely high complexity of operator $\Lo_3$, further subdivision had to be carried out in order to allow the algebraic manipulations:
+In fact, due to the extremely high complexity of operator $\Lo_3$ (see Eq. (\ref{eq:closure03}) and (\ref{eq:closure05})), further subdivision had to be carried out in order to allow the algebraic manipulations:
 \begin{equation}
  \begin{split}\label{sub02}
  \Lo_3&=\Lo_{3a}\cdot(\Lo_{3b}+\Lo_{3c})+\Lo_{3d}\cdot\Lo_{3e}+\Lo_{3f}\cdot\Lo_{3g}\\
  \Lo_{3a} &= -\left(\dfrac{\bmu}{\Pr}+\dfrac{\mu_t}{\Pr_t}\right),\quad \Lo_{3b} = \diff{^2\hh}{ x^2},\quad \Lo_{3c} = \diff{^2\hh}{ y^2}\\
  \Lo_{3d} &= \diff{\mu_t}{ x},\quad \Lo_{3e} = -\dfrac{1}{\Pr_t} \diff{\hh}{ x},\\
- \Lo_{3f} &= \diff{\mu_t}{ y},\quad \Lo_{3g} = -\dfrac{1}{\Pr_t} \diff{\hh}{ y},\\
+ \Lo_{3f} &= \diff{\mu_t}{ y},\quad \Lo_{3g} = -\dfrac{1}{\Pr_t} \diff{\hh}{ y}.\\
  \end{split}
 \end{equation}
 
- After the application of each sub-operator defined in (\ref{sub01}) and (\ref{sub02}), the corresponding sub-source terms are also simplified, factorized and sorted. Then, the final factorized version is checked against the original one, in order to assure that not human error has been introduced.  This strategy allowed the original  500,000 character-long  expression for $Q_{\tE}$ to be reduced to less than 14,500, and expressed in Equation (\ref{eq:ns_2d_e}).
+ After the application of each sub-operator defined in (\ref{sub01}) and (\ref{sub02}), the corresponding sub-source terms are also simplified, factorized and sorted. Then, the final factorized version is checked against the original one, in order to assure that not human error has been introduced.  This strategy allowed the original  107,600 character-long  expression for $Q_{\tE}$ to be reduced to less than 12,400, and expressed in Equation (\ref{eq:ns_2d_e}).
 
 
 \subsection{Boundary Conditions}
@@ -489,10 +495,10 @@ Additionally to verifying code capability of solving the governing equations acc
 \end{array} \right].
 \end{equation*}
 
-\subsection{C Files}Files containing $C$ codes for the source terms have also been generated. They are:\\ \texttt{NavierStokes\_2d\_turbulent\_SA\_transient\_rho\_code.C, NavierStokes\_2d\_turbulent\_SA\_transient\_u\_code.C,\\ NavierStokes\_2d\_turbulent\_SA\_transient\_v\_code.C, NavierStokes\_2d\_turbulent\_SA\_transient\_nu\_code.C} \\and \texttt{NavierStokes\_2d\_turbulent\_SA\_transient\_E\_code.C}.
+\subsection{C Files}Files containing $C$ codes for the source terms have also been automatically generated. They are:\\ \texttt{FANS\_SA\_transient\_2d\_rho\_code.C, FANS\_SA\_transient\_2d\_u\_code.C, FANS\_SA\_transient\_2d\_v\_code.C,\\ FANS\_SA\_transient\_2d\_E\_code.C} and \texttt{FANS\_SA\_transient\_2d\_nu\_code.C}.
 
 %\newpage
-An example of the automatically generated $C$ file from the source term for the 2D total energy source term $Q_{E}$~is:
+An example of the $C$ file from the source term for the 2D total energy source term $Q_{\tE}$~is:
 
 \begin{footnotesize}
 \begin{verbatim}
