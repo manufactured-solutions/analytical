@@ -341,10 +341,10 @@ where $\chi$ and $f_{v1}$ are given in  Equation (\ref{eq:chi}), and  $\Rho,\,\U
 
 \subsubsection{2D FANS Total Energy Conservation}
 
-The operator for the 2D Navier--Stokes total energy is:
+The operator for the 2D FANS total energy is:
 \begin{equation*}
 \begin{split}
-\Lo&=  \Diff{\brho \tE }{t}+ \Diff{\brho \tu \tE }{x}+\Diff{\brho \tv \tE}{y}+\Diff{\bp\tu}{x} +\Diff{\bp\tv}{y} + \Diff{\bq_x}{x} +\Diff{\bq_y}{y} +\\
+\Lo&=  \Diff{\brho \tE }{t}+ \Diff{\brho \tu \tE }{x}+\Diff{\brho \tv \tE}{y}+\Diff{\bp\tu}{x} +\Diff{\bp\tv}{y} - \Diff{\bq_x}{x} -\Diff{\bq_y}{y} +\\
   &-\Diff{2(\bmu+\mu_t)\tu \tS_{xx}}{x}-\Diff{2(\bmu+\mu_t)\tv \tS_{xy}}{x}-\Diff{2(\bmu+\mu_t) \tu \tS_{yx}}{y}-\Diff{2(\bmu+\mu_t)\tv \tS_{yy}}{y}.
 \end{split}
 \end{equation*}
