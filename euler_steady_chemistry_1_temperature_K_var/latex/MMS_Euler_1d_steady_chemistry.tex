@@ -30,7 +30,7 @@
 \begin{abstract}
 The Method of Manufactured Solutions is a valuable approach for code verification, providing means to verify how accurately the numerical method solves the equations of interest. The method generates a related set of governing equations that has known analytical (manufactured) solution. Then, the modified set of equations may be discretized and solved numerically, and the numerical solution may be compared to the manufactured analytical solution  chosen \textit{a priori}.
 
-A choice of analytical solutions for the flow variables of the 1D Steady Euler equations for chemically reacting hypersonic flows in thermal equilibrium  and their respective source terms are presented in this document.
+A choice of analytical solutions for the flow variables of the 1D steady Euler equations for chemically reacting hypersonic flows in thermal equilibrium  and their respective source terms are presented in this document.
 \end{abstract}
 
 
@@ -327,7 +327,7 @@ Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\text
 
 \begin{equation}
 \begin{split}
-Q_{\rho_{\text{N}_2}}=&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{N_2 x} \U }{L}\sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)+\\
+Q_{\rho_{\text{N}_2}}=&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{\text{N}_2 x} \U }{L}\sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)+\\
 &+\dfrac{a_{ux} \pi u_x \Rho_{\text{N}_2} }{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
 &-\dfrac{\Rho_\text{N}^2}{M_{\text{N}}^2 K(\T)} \left(2 k_{f_1 \text{N}} \Rho_\text{N}+k_{f_1 \text{N}_2} \Rho_{\text{N}_2}\right) +\\
 &+\dfrac{\Rho_{\text{N}_2}}{2M_{\text{N}}}\left(2 k_{f_1 \text{N}} \Rho_\text{N}+k_{f_1 \text{N}_2} \Rho_{\text{N}_2}\right) .
@@ -341,18 +341,18 @@ where  $k_{f_1 \text{N}}$ and $k_{f_1 \text{N}_2}$ are given in Equation (\ref{e
 For the generation of the analytical source term $Q_u$, the $x$ momentum equation in Equation (\ref{eq:euler01}) is written as an operator $\Lo$:
 \begin{equation*}
  \label{eq:euler1d_12}
-\Lo =\Diff{\rho u^2}{x},
+\Lo =\Diff{\rho u^2}{x}+\diff{p}{x},
 \end{equation*}
 which, when operated in to Equations (\ref{eq:manufactured02}) and (\ref{eq:manufactured03}), provides source term $Q_{u}$:
 
 \begin{equation}
 \begin{split}
 Q_u &= \dfrac{a_{ \rho \text{N} x} \pi \rho_{\text{N}x} \U^2 }{L}\cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)+\\
-&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{N_2 x} \U^2 }{L}\sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)+\\
+&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{\text{N}_2 x} \U^2 }{L}\sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)+\\
 &-\dfrac{a_{Tx} \pi T_x R_\text{N} \Rho_\text{N} }{L}\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)+\\
 &-\dfrac{a_{Tx} \pi T_x R_\text{N} \Rho_{\text{N}_2} }{2L}\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)+\\
 &+\dfrac{2 a_{ux} \pi u_x \Rho \U }{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
-&-\dfrac{\pi R_\text{N} \T}{2L} \left(-2 a_{ \rho \text{N} x} \rho_{\text{N}x} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)+a_{ \rho \text{N}_2 x} \rho_{N_2 x} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right),
+&-\dfrac{\pi R_\text{N} \T}{2L} \left(-2 a_{ \rho \text{N} x} \rho_{\text{N}x} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)+a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right),
 \end{split}
 \end{equation}
 with $\Rho,\,\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ defined in Equation (\ref{eq:aux_1d}).
@@ -376,11 +376,11 @@ Source term $Q_E$ is obtained by operating $\Lo$ on Equations (\ref{eq:manufactu
 &+ \dfrac{7a_{ux} \pi u_x R_\text{N} \Rho_{\text{N}_2} \T }{4L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
 &+ \dfrac{3a_{ux} \pi u_x \Rho \U^2 }{2L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
 &+\dfrac{a_{ux} \pi u_x (h^0_{\text{N}} \Rho_\text{N} +h^0_{\text{N}_2} \Rho_{\text{N}_2})}{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
-&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{N_2 x} E_{vib, \text{N}_2} \U }{L}\sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)+\\
+&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{\text{N}_2 x} E_{vib, \text{N}_2} \U }{L}\sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)+\\
 &+\dfrac{a_{ux} \pi u_x E_{vib, \text{N}_2} \Rho_{\text{N}_2} }{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
-&+\dfrac{\pi R_\text{N} \U \T}{4L}\left(10 a_{ \rho \text{N} x} \rho_{\text{N}x} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-7 a_{ \rho \text{N}_2 x} \rho_{N_2 x} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right) +\\
-&+\dfrac{\pi \U^3}{2L}\left(a_{ \rho \text{N} x} \rho_{\text{N}x} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-a_{ \rho \text{N}_2 x} \rho_{N_2 x} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right) +\\
-&+\dfrac{\pi \U}{L}\left(a_{ \rho \text{N} x} \rho_{\text{N}x} h^0_{\text{N}} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-a_{ \rho \text{N}_2 x} \rho_{N_2 x} h^0_{\text{N}_2} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right),
+&+\dfrac{\pi R_\text{N} \U \T}{4L}\left(10 a_{ \rho \text{N} x} \rho_{\text{N}x} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-7 a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right) +\\
+&+\dfrac{\pi \U^3}{2L}\left(a_{ \rho \text{N} x} \rho_{\text{N}x} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right) +\\
+&+\dfrac{\pi \U}{L}\left(a_{ \rho \text{N} x} \rho_{\text{N}x} h^0_{\text{N}} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x} h^0_{\text{N}_2} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right),
 \end{split}
 \end{equation}
 where $\Rho,\,\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ are given  in Equation (\ref{eq:aux_1d}) and:
