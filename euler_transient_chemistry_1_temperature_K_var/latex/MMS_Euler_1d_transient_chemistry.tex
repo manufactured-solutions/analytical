@@ -1,0 +1,547 @@
+\documentclass[10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath,amsfonts}
+\usepackage{geometry}
+\geometry{ top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage[authoryear]{natbib}
+\usepackage{pdflscape}
+%\geometry{papersize={216mm,330mm}, top=3cm, bottom=2.5cm, left=4cm, right=2cm}
+
+\newcommand{\D}{\partial}
+\newcommand{\Diff}[2] {\dfrac{\partial( #1)}{\partial #2}}
+\newcommand{\diff}[2] {\dfrac{\partial #1 }{\partial #2}}
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}% for vectors of Greek letters
+\newcommand{\grad}[1]{\gv{\nabla} #1}
+\newcommand{\bv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\bt}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\Lo}{\,\mathcal{L}}
+\newcommand{\Rho}{\,\mathtt{Rho}}
+\newcommand{\T}{\,\mathtt{T}}
+\newcommand{\U}{\,\mathtt{U}}
+
+%opening
+\title{Manufactured Solution for 1D Transient Euler Equations for Hypersonic Flows with Nitrogen Dissociation in Thermal Equilibrium using Maple\footnote{Work based on \citet*{Roy2002,Kirk2009}.}}
+\author{Kemelli C. Estacio-Hiroms}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The Method of Manufactured Solutions is a valuable approach for code verification, providing means to verify how accurately the numerical method solves the equations of interest. The method generates a related set of governing equations that has known analytical (manufactured) solution. Then, the modified set of equations may be discretized and solved numerically, and the numerical solution may be compared to the manufactured analytical solution  chosen \textit{a priori}.
+
+A choice of analytical solutions for the flow variables of the 1D transient Euler equations for chemically reacting hypersonic flows in thermal equilibrium  and their respective source terms are presented in this document.
+\end{abstract}
+
+
+
+
+
+\section{1D Euler Equations}
+The conservation of mass, momentum, and total energy for a inviscid compressible fluid composed of a chemically reacting mixture of gases N and N$_2$ in \textit{thermal equilibrium} may be written as:
+\begin{equation}
+\label{eq:euler01}
+\begin{array}{ccc}
+\diff{\rho_{\text{N}}}{t}+\nabla \cdot \left(\rho_{\text{N}} \bv{u}\right) &=& \dot{\omega}_{\text{N}},\vspace{5pt} \\
+\diff{\rho_{\text{N}_2}}{t}+\nabla \cdot \left(\rho_{\text{N}_2}\bv{u}\right) &=& \dot{\omega}_{\text{N}_2},\vspace{5pt} \\
+\diff{\rho\bv{u}}{t}+\nabla\cdot\left(\rho\bv{u}\bv{u}\right) &=& -\nabla p,\vspace{5pt} \\
+\diff{\rho E}{t}+\nabla\cdot\left(\rho \bv{u} H\right) &=& 0.
+\end{array}
+\end{equation}
+%
+% \begin{equation}
+% \label{eq:pde_comp_mass_N}
+% \nabla \cdot \left(\rho_{\text{N}} \bv{u}\right) = \dot{\omega}_{\text{N}},
+% \end{equation}
+% \begin{equation}
+% \label{eq:pde_comp_mass_N2}
+% \nabla \cdot \left(\rho_{\text{N}_2}\bv{u}\right) = \dot{\omega}_{\text{N}_2},
+% \end{equation}
+% \begin{equation}
+%  \label{eq:pde_comp_mom}
+% \nabla\cdot\left(\rho\bv{u}\bv{u}\right) = -\nabla p,
+% \end{equation}
+% \begin{equation}
+%  \label{eq:pde_comp_energy}
+% %\nabla \cdot (\rho\bv{u}e_t)+  \nabla\cdot(p  \bv{u})=0
+% \nabla\cdot\left(\rho \bv{u} H\right) = 0.
+% \end{equation}
+%
+where $\rho_s$ is the density of species $s$ (N or N$_2$), $\rho=\sum_s \rho_s$ is the mixture density and  $ \bv{u} $ is the mixture velocity. %, $E$ is the total energy per unit mass, and $p$ is the pressure.
+%
+The total enthalpy, $H$, may be expressed in terms of the total energy, density, and pressure:
+$$H = E + \dfrac{p}{\rho},$$
+where the total energy, $E$, is composed of internal and kinetic components: $$E = e^{\text{int}} + \dfrac{ u^2 }{2}.$$
+
+The total internal energy, $e^{\text{int}}$, has contributions from each of the distinct energy \emph{modes}:% - translational, rotational, vibrational and electronic. Specifically
+\begin{equation}
+ \begin{split}
+e^{\text{int}} &= e^{\text{trans}} + e^{\text{rot}} + e^{\text{vib}} + e^{\text{elec}} + h^0 \\
+ &= \sum_{s=1}^{ns} c_s e^{\text{trans}}_s + \sum_{s=mol} c_s e^{\text{rot}}_s + \sum_{s=mol} c_s e^{\text{vib}}_s + \sum_{s=1}^{ns} c_s e^{\text{elec}}_s + \sum_{s=1}^{ns} c_s h^0_s ,
+\label{eq:energy_partition}  
+ \end{split}
+\end{equation}
+where $c_s=\left(\rho_s/\rho\right)$ is the mass fraction of species $s$.
+
+The first four terms on the right of Equation~\eqref{eq:energy_partition} represent the energy due to molecular/atomic translation, molecular rotation, molecular vibration, and electronic excitation. The final term is the heat of formation of the mixture and accounts for the energy stored in chemical bonds \citep{Ait1996,Kirk2009}.
+
+Under the approximation that the translational and rotational states of the may be assumed fully populated, translational/rotational energy for each species may be expressed as:
+\begin{equation}
+ \label{eq:e_tr_combined}
+ e^{\text{trans}}_s + e^{\text{rot}}_s = e^{\text{tr}}_s = C^{\text{tr}}_{v,s}\, T ,
+\end{equation}
+where the translational/rotational specific heat, $C^{\text{tr}}_{v,s}$ is given by
+\begin{equation*}
+ C^{\text{tr}}_{v,s} =
+ \begin{cases}
+ \frac{5}{2} R_s & \text{for molecules}, \\
+ \frac{3}{2} R_s & \text{for atoms},
+ \end{cases}
+\end{equation*}
+where $R_s$ is the species gas constant, and $R_s = R/M_s$ where $R$ is the universal gas constant and $M_s$ is the species molar mass. The combined term $e^{\text{tr}}_s$ in Equation~\eqref{eq:e_tr_combined} represents the energy due to random thermal translational/rotational motion of a given species.
+%---------------
+
+In contrast to the translational/rotational states, the vibrational energy states are typically not fully populated. One approach for modeling the molecular vibrational energy is through analogy to a harmonic oscillator.  In this approach the energy potential between molecular nuclei is modeled as a quadratic function of separation distance.  Under this assumption, the vibrational energy for each molecular species can be modeled as:
+\begin{equation*}
+  \label{eq:species_vibrational_energy}
+  e^{\text{vib}}_s = 
+  \begin{cases}    
+    \frac{R_s\theta_{vs}}{\exp\left(\theta_{vs}/T_v\right) - 1} & \text{for molecules}, \\
+    0 & \text{for atoms},
+  \end{cases}
+\end{equation*}
+where $\theta_{vs}$ is the species characteristic temperature of vibration and $T_v$ is the mixture vibrational temperature.
+Recall that in the case of thermal equilibrium $T_r=T_t=T_v=T_e\equiv T$.%, therefore Equation (\ref{eq:species_vibrational_energy}) is simplified to:
+% \begin{equation}
+%   \label{eq:species_vibrational_energy2}
+%   e^{\text{vib}}_s = 
+%   \begin{cases}    
+%     \frac{R_s\theta_{vs}}{\exp\left(\theta_{vs}/T \right) - 1} & \text{for molecules}, \\
+%     0 & \text{for atoms.}
+%   \end{cases}
+% \end{equation}
+
+The energy contained in the excited electronic states for a given species, $e^{\text{elec}}_s$, can be obtained from the assumption that they are in a Boltzmann distribution governed by the electronic excitation temperature $T_e$~\citep{candler_thesis} as:
+\begin{equation}
+  \label{eq:elec_excitation}
+  e^{\text{elec}}_s = R_s \frac{\sum_{i=1}^\infty \theta^{\text{elec}}_{is} g_{is} \exp\left(-\theta^{\text{elec}}_{is}/T_e\right)}{g_{0s} + \sum_{i=1}^\infty g_{is} \exp\left(-\theta^{\text{elec}}_{is}/T_e\right)}.
+\end{equation}
+
+In practice, Equation~\eqref{eq:elec_excitation} can usually be omitted for non-ionized flows such as those considered in this work. \citet{park_book} observes that electronic transitions in molecules are caused mostly by the impact of free electrons.  Since there are no free electrons when there is no ionization, there will be very little electronic excitation.  In the present work we choose to \textit{neglect} Equation~\eqref{eq:elec_excitation}.
+
+
+
+Regardless of the thermal state of the mixture, once the translational/rotational temperature $T$ is determined the thermodynamic pressure of the mixture is readily obtained from Dalton's law of partial pressures:
+\begin{equation}
+ p = \sum_{s=1}^{ns} p_s = \sum_{s=1}^{ns} \rho_s R_s T .
+ \label{eq:p_eq_state}
+\end{equation}
+
+
+Therefore, for the Nitrogen dissociation, the expression for internal energy (\ref{eq:energy_partition}) simplifies to:
+\begin{equation}
+ \label{eq:rE-T-Tv-relationship}
+\begin{split}
+ e^{\text{int}} &= \sum_{s=1}^{ns} c_s C^{\text{tr}}_{v,s} T + \sum_{s=mol} c_s e^{\text{vib}}_s + \sum_{s=1}^{ns} c_s h^0_s\\
+&=\left(\frac{3}{2} c_{\text{N}} R_{\text{N}} T + \frac{5}{2} c_{\text{N}_2} R_{\text{N}_2} T\right)+ \left(\dfrac{R_{\text{N}_2} \theta_{v \text{N}_2}}{\exp\left(\frac{\theta_{v \text{N}_2}}{\T}\right)-1} \right)+ \left(   c_{\text{N}} h_{\text{N}}^0 + c_{\text{N}_2} h_{\text{N}_2}^0 \right),
+\end{split}
+\end{equation}
+with $c_s=\rho_s/\rho$, $R_s = R/M_s$ where $R$ is the universal gas constant and $M_s$ is the species molar mass for $s=\{\text{N},\text{N}_2\}$.
+%with $c_{\text{N}}=\rho_{\text{N}}/\rho$, $c_{\text{N}_2}=\rho_{\text{N}_2}/\rho$
+
+
+
+
+\subsection{Chemical Kinetics}
+The rate of production/destruction of the individual species, $\dot{\omega}_s$, is required to close the species continuity equations. For the dissociating Nitrogen flow ($  \text{N}_2 \rightleftharpoons 2 \text{N}$) case, let us consider the chemical reactions which occur among the five principal components of dissociating air -- $\text{N}_2,\text{O}_2,\text{NO},\text{N},\text{O}$ -- but neglecting three species in order to perform this 2--species problem. For this mixture, the single chemical reaction that occur is:
+\begin{align*}
+ \text{N}_2 + \mathcal{M} &\rightleftharpoons 2\text{N} + \mathcal{M} .
+\end{align*}
+
+This reaction can occur in either the forward or backward direction, as denoted by the bidirectional arrow. The reaction is presented such that they are endothermic in the forward direction, and $\mathcal{M}$ denotes a generic collision partner, which may be any of the species present in the flow, and  is unaltered by the reaction~\citep{Kirk2009}.
+The rate of each reaction is therefore a sum of the forward and backward rates,  $k_{f}$ and $k_{b}$:
+\begin{equation*}
+ \begin{split}
+\mathcal{R}_r &=  \mathcal{R}_{br} - \mathcal{R}_{fr} \\
+                &= k_{br} \prod_{s=1}^{ns} \left(\frac{\rho_s}{M_s}\right)^{\beta_{sr}} - k_{fr} \prod_{s=1}^{ns} \left(\frac{\rho_s}{M_s}\right)^{\alpha_{sr}}
+ \end{split}
+\end{equation*}
+where $\alpha_{sr}$ and $\beta_{sr}$ are the stoichiometric coefficients for reactants and products of species $s$.
+For the Nitrogen dissociation,
+\begin{align}\label{eq:reaction1}
+ \mathcal{R}_1 &= \sum_{m\in\mathcal{M}}\left(k_{b_1 m} \frac{\rho_{\text{N}}}{M_{\text{N}}}\frac{\rho_{\text{N}}}{M_{\text{N}}}\frac{\rho_{\text{m}}}{M_{\text{m}}} - k_{f_1 m}\frac{\rho_{\text{N}_2}}{M_{\text{N}_2}}\frac{\rho_{\text{m}}}{M_{\text{m}}} \right) \\
+%
+&= k_{b_1 \text{N}} \dfrac{\rho_{\text{N}}^3}{M_\text{N}^3} -
+k_{f_1 \text{N}}   \dfrac{\rho_{\text{N}_2} \rho_{\text{N}}}{2  M_\text{N}^2}+
+k_{b_1 \text{N}_2} \dfrac{\rho_\text{N}^2 \rho_{\text{N}_2}}{2M_\text{N}^3 }-
+k_{f_1 \text{N}_2} \dfrac{\rho_{\text{N}_2}^2}{4 M_\text{N}^2},
+\end{align}
+recalling that $M_{\text{N}_2}=2 M_\text{N}.$
+
+
+The species source terms $\dot{\omega}_s = M_s \sum_{r=1}^{nr}\left(\alpha_{sr}-\beta_{sr}\right)\left(\mathcal{R}_{br} - \mathcal{R}_{fr}\right)$ 
+% \begin{equation}
+%   \dot{\omega}_s = M_s \sum_{r=1}^{nr}\left(\alpha_{sr}-\beta_{sr}\right)\left(\mathcal{R}_{br} - \mathcal{R}_{fr}\right)
+% \end{equation}
+ where $nr$ is the number of reactions can now be expressed in terms of the individual reaction rates as follows:
+\begin{align*}
+ \dot{\omega}_{\text{N}_2} &= M_{\text{N}_2}\left(\mathcal{R}_1\right)= 2 M_\text{N} \mathcal{R}_1 ,\\
+ \dot{\omega}_{\text{N}} &= M_{\text{N}}\left(-2\mathcal{R}_1 \right)=-2 M_\text{N} \mathcal{R}_1. 
+\end{align*}
+Note that these source terms sum identically to zero, as required by conservation of mass \citep{Kessler2004}.
+
+
+
+The forward rate coefficients  $k_{fr}$  can then be expressed in a modified Arrhenius form as
+\begin{equation}
+  k_{fr}\left(\bar{T}\right) = C_{fr} \bar{T}^{\eta_r} \exp \left(-E_{ar}/R\bar{T}\right)
+\end{equation}
+where $C_{fr}$ is the reaction rate constant, $\eta_r$ is the so-called pre-exponential factor, $E_{ar}$ is the activation energy.  These three constants are determined from curve fits to experimental data (e.g. see \cite{Ait1996}). $\bar{T}$ is a function of the translational/rotational and vibrational temperatures, and in this work, $\bar{T}\equiv T$.
+
+The corresponding backward rate coefficient   $k_{br}$  can be found using the principle of detailed balance, which states
+\begin{equation}\label{eq:equilibrium_constant}
+  K_{eq} = \frac{k_{fr}\left(\bar{T}\right)}{k_{br}\left(\bar{T}\right)}
+\end{equation}
+where $K_{eq}$ is the equilibrium constant and may be obtained either by curve fits or through Gibbs' free energy techniques, such as Park's models. In this work, $K_{eq}=K(T)$.
+
+
+Therefore:
+\begin{equation}
+ \begin{split}
+\label{eq:forward_rates1}
+k_{f_1 \text{N}} &= C_{f_1 \text{N}} T^{\eta_{f_1 \text{N}}} \exp\left(\frac{-E_{a\text{N}}}{R T}\right) \qquad \,\mbox{and}\quad k_{b_1 \text{N}} = \dfrac{k_{f_1 \text{N}}}{K(T)},\\
+%
+k_{f_1 \text{N}_2} &= C_{f_1 \text{N}_2} T^{\eta_{f_1 \text{N}_2}} \exp\left(\dfrac{-E_{a\text{N}_2}}{R T}\right) \quad \mbox{and}\quad k_{b_1 \text{N}_2} = \dfrac{k_{f_1 \text{N}_2}}{K(T)},
+%
+%k_{b_1 \text{N}} &= \dfrac{k_{f_1 \text{N}}}{K(T)}\\
+%k_{b_1 \text{N}_2} &= \dfrac{k_{f_1 \text{N}_2}}{K(T)}
+ \end{split}
+\end{equation}
+are the forward and backward rates for Nitrogen atom and Nitrogen molecule, respectively.
+
+
+
+\section{Manufactured Solution}
+
+
+\citet{Roy2002} introduce the general form of the primitive manufactured solution variables to be  a function of sines and cosines in the spatial direction only. In this work, \citet{Roy2002}'s manufactured solutions are modified in order to address temporal accuracy as well:
+\begin{equation}
+ \label{eq:manufactured01}
+  \phi (x,t) = \phi_0+ \phi_x\, f_s \left(\frac{a_{\phi x} \pi x}{L} \right)+ \phi_t \,f_s\left(\frac{a_{\phi t} \pi t}{L}\right),
+\end{equation}
+where $\phi=\rho_{\text{N}},\rho_{\text{N}_2},u$ or $T$, and $f_s(\cdot)$ functions denote either sine or cosine function. Note that in this case, $\phi_x$ and $\phi_t$ are constants  and the subscripts do not denote differentiation.
+ Different choices of the constants used in the manufactured solutions for the 2D supersonic and subsonic cases of Euler and Navier-Stokes may be found in \citet{Roy2002}.
+
+Therefore, the manufactured analytical solution for each one of the variables in Equations (\ref{eq:euler01}) are:
+\begin{equation}
+\begin{split}
+\label{eq:manufactured02}
+\rho_{\text{N}}(x,t) &= \rho_{\text{N}0} + \rho_{\text{N}x} \sin\left(\frac{a_{  \rho \text{N} x }\pi x}{L}\right)+\rho_{\text{N}_t} \cos\left( \dfrac{ a_{ \rho \text{N} t}  \pi t}{L}\right),\\
+\rho_{\text{N}_2}(x,t) &= \rho_{\text{N}_2 0}+ \rho_{\text{N}_2 x} \cos\left(\frac{a_{ \rho \text{N}_2 x } \pi x}{L}\right)+\rho_{\text{N}_2 t} \sin\left( \dfrac{ a_{ \rho \text{N}_2 t}\pi t}{L}\right),\\
+u(x,t) &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right)+ u_t \cos\left( \dfrac{ a_{ut}\pi t}{L}\right),\\
+T(x,t) &= T_{0}+T_{x} \cos\left(\frac{a_{T x} \pi x}{L}\right)+ T_t \cos\left( \dfrac{ a_{Tt} \pi t}{L}\right).\\
+\end{split}
+\end{equation}
+
+Recalling that $\rho=\sum_s \rho_s$, the manufactured analytical solution for the density of the mixture  is:
+\begin{equation}
+\label{eq:manufactured03}
+\begin{split}
+\rho(x,t) &= \rho_{\text{N}}(x,t)+\rho_{\text{N}_2}(x,t).%\\
+     %                &= \rho_{\text{N}0} + \rho_{\text{N}_2 0} +\rho_{\text{N}x} \sin\left(\frac{a_{  \rho \text{N} x }\pi x}{L}\right) + \rho_{\text{N}_2 x} \cos\left(\frac{a_{ \rho \text{N}_2 x } \pi x}{L}\right) +\rho_{\text{N}_t} \cos\left( \dfrac{ a_{ \rho \text{N} t}  \pi t}{L}\right)+\rho_{\text{N}_2 t} \sin\left( \dfrac{ a_{ \rho \text{N}_2 t}\pi t}{L}\right).
+\end{split}
+\end{equation}
+
+
+
+%The governing equations (\ref{eq:euler2d_01}) -- (\ref{eq:euler2d_07}) are applied to the solutions in {\ref{eq:manufactured02}} using Maple and the resulting analytical source term are presented in the following sections.
+
+
+The MMS applied to 1D transient Euler equations for a chemically reacting mixture of  N and N$_{2}$ in thermal equilibrium consists in modifying  Equations~(\ref{eq:euler01}) by adding a source term to the right-hand side of each equation:
+\begin{equation}
+ \label{eq:euler_mod_2d}
+\begin{split}
+&\diff{\rho_{\text{N}}}{t}+\Diff{\rho_{\text{N}} u}{x} -\dot{\omega}_{\text{N}}= Q_{\rho_{\text{N}}},\\
+&\diff{\rho_{\text{N}_2}}{t}+\Diff{\rho_{\text{N}_2} u}{x} -\dot{\omega}_{\text{N}_2}= Q_{\rho_{\text{N}_2}},\\
+&\Diff{\rho u}{t}+\Diff{\rho u^2 }{x}+ \diff{p}{x} = Q_u,\\
+&\Diff{\rho E}{t}+\Diff{\rho u H}{x} = Q_{E},
+\end{split}
+\end{equation}
+%
+so the modified set of Equations (\ref{eq:euler_mod_2d}) conveniently has the analytical solutions given in Equations (\ref{eq:manufactured02}) and~(\ref{eq:manufactured03}).
+%
+Source terms $ Q_{\rho_{\text{N}}}$, $ Q_{\rho_{\text{N}_2}}$, $Q_u$ and $Q_{E}$ are obtained by symbolic manipulations of equations above using Maple and are presented in the following sections. The following auxiliary variables have been included in order to improve readability and computational efficiency:
+\begin{equation}
+ \begin{split}
+\label{eq:aux_1d}
+\Rho_{\text{N}} &= \rho_{\text{N}0} + \rho_{\text{N}x} \sin\left(\frac{a_{  \rho \text{N} x }\pi x}{L}\right)+\rho_{\text{N}_t} \cos\left( \dfrac{ a_{ \rho \text{N} t}  \pi t}{L}\right),\\
+\Rho_{\text{N}_2} &= \rho_{\text{N}_2 0}+ \rho_{\text{N}_2 x} \cos\left(\frac{a_{ \rho \text{N}_2 x } \pi x}{L}\right)+\rho_{\text{N}_2 t} \sin\left( \dfrac{ a_{ \rho \text{N}_2 t}\pi t}{L}\right),\\
+\Rho&=\Rho_{\text{N}}+\Rho_{\text{N}_2},\\
+\U &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right)+ u_t \cos\left( \dfrac{ a_{ut}\pi t}{L}\right),\\
+\T &= T_{0}+T_{x} \cos\left(\frac{a_{T x} \pi x}{L}\right)+ T_t \cos\left( \dfrac{ a_{Tt} \pi t}{L}\right).\\
+\end{split}
+\end{equation}
+
+
+
+\section{Euler mass conservation equation for Nitrogen atom}
+
+The mass conservation equation for Nitrogen atom (N), written as an operator, is:
+\begin{equation*}
+ \label{eq:euler1d_11}
+\Lo =  \diff{\rho_\text{N} }{t} + \Diff{\rho_\text{N} u}{x} - \dot{\omega}_{\text{N}}.
+\end{equation*}
+
+Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\text{N}}$  and $u$ using operator $\Lo$ defined above together with suitable substitution for ~$\dot{\omega}_\text{N}$ gives the source term $Q_{\rho_{\text{N}}}$:
+
+
+\begin{equation}
+\begin{split}
+Q_{\rho_\text{N}}&= \dfrac{a_{ \rho \text{N} x} \pi \rho_{\text{N}x} \U }{L}\cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)+\\
+&+\dfrac{a_{ux} \pi u_x \Rho_\text{N} }{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
+&+ \dfrac{\Rho_\text{N}^2}{M_{\text{N}}^2 K(\T)}\left(2 k_{f_1 \text{N}} \Rho_\text{N}+k_{f_1 \text{N}_2} \Rho_{\text{N}_2}\right)  +\\
+&-\dfrac{\Rho_{\text{N}_2}}{2M_{\text{N}}}\left(2 k_{f_1 \text{N}} \Rho_\text{N}+k_{f_1 \text{N}_2} \Rho_{\text{N}_2}\right) +\\
+&- \dfrac{a_{ \rho \text{N} t} \pi \rho_{\text{N} t} }{L} \sin\left(\dfrac{a_{ \rho \text{N} t} \pi t}{L}\right),
+\end{split}
+\end{equation}
+where $M_{\text{N}}$ is the molar mass of Nitrogen, and $k_{f_1 \text{N}}$ and $k_{f_1 \text{N}_2}$ are defined by:
+\begin{equation}
+ \begin{split}\label{eq:forward_rates}
+k_{f_1 \text{N}} &= C_{f_1 \text{N}} \T^{\eta_{f_1 \text{N}}} \exp\left(\dfrac{-E_{a\text{N}}}{R \T}\right),\\
+k_{f_1 \text{N}_2} &= C_{f_1 \text{N}_2} \T^{\eta_{f_1 \text{N}_2}} \exp\left(\dfrac{-E_{a\text{N}_2}}{R \T}\right).
+ \end{split}
+\end{equation}
+with $\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ defined in Equation (\ref{eq:aux_1d}). $K(T)$ is a to-be-defined function for the equilibruim constant (\ref{eq:equilibrium_constant}).
+
+\section{Euler mass conservation equation for Nitrogen molecule}
+
+The mass conservation equation for Nitrogen molecule ($\text{N}_2$), written as an operator, is:
+\begin{equation*}
+ \label{eq:euler1d_11a}
+\Lo =  \diff{\rho_{\text{N}_2}  }{t} +\Diff{\rho_{\text{N}_2} u }{x} - \dot{\omega}_{\text{N}_2}.
+\end{equation*}
+
+Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\text{N}_2}$ and $u$ using operator $\Lo$ defined above together with suitable substitution for $\dot{\omega}_{\text{N}_2}$ gives the source term $Q_{\rho_{\text{N}_2}}$:
+
+\begin{equation}
+\begin{split}
+Q_{\rho_{\text{N}_2}}=&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{\text{N}_2  x} \U }{L}\sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)+\\
+&+\dfrac{a_{ux} \pi u_x \Rho_{\text{N}_2} }{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
+&-\dfrac{\Rho_\text{N}^2}{M_{\text{N}}^2 K(\T)} \left(2 k_{f_1 \text{N}} \Rho_\text{N}+k_{f_1 \text{N}_2} \Rho_{\text{N}_2}\right) +\\
+&+\dfrac{\Rho_{\text{N}_2}}{2M_{\text{N}}}\left(2 k_{f_1 \text{N}} \Rho_\text{N}+k_{f_1 \text{N}_2} \Rho_{\text{N}_2}\right) +\\
+&+ \dfrac{a_{ \rho \text{N}_2 t} \pi \rho_{\text{N}_2 t} }{L} \cos\left(\dfrac{a_{ \rho \text{N}_2 t} \pi t}{L}\right),
+\end{split}
+\end{equation}
+where  $k_{f_1 \text{N}}$ and $k_{f_1 \text{N}_2}$ are given in Equation (\ref{eq:forward_rates}); and $\Rho_{\text{N}},\,\Rho_{\text{N}_2}$ and $\U$ are given in Equation (\ref{eq:aux_1d}). $K(T)$ is a to-be-defined function for the equilibruim constant (\ref{eq:equilibrium_constant}).
+
+
+\section{Euler momentum equation}
+
+For the generation of the analytical source term $Q_u$, the $x$ momentum equation in Equation (\ref{eq:euler01}) is written as an operator $\Lo$:
+\begin{equation*}
+ \label{eq:euler1d_12}
+\Lo = \Diff{\rho u  }{t} + \Diff{\rho u^2}{x} + \diff{p}{x},
+\end{equation*}
+which, when operated in to Equations (\ref{eq:manufactured02}) and (\ref{eq:manufactured03}), provides source term $Q_{u}$:
+
+\begin{equation}
+\begin{split}
+Q_u &= \dfrac{a_{ \rho \text{N} x} \pi \rho_{\text{N}x} \U^2 }{L}\cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)+\\
+&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{\text{N}_2  x} \U^2 }{L}\sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)+\\
+&-\dfrac{a_{Tx} \pi T_x R_\text{N} \Rho_\text{N} }{L}\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)+\\
+&-\dfrac{a_{Tx} \pi T_x R_\text{N} \Rho_{\text{N}_2} }{2L}\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)+\\
+&+\dfrac{2 a_{ux} \pi u_x \Rho \U }{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\
+&-\dfrac{\pi R_\text{N} \T}{2L} \left(-2 a_{ \rho \text{N} x} \rho_{\text{N}x} \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)+a_{ \rho \text{N}_2 x} \rho_{\text{N}_2  x} \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right)+\\
+&-\dfrac{a_{ \rho \text{N} t} \pi \rho_{\text{N} t}  \U }{L}\sin\left(\dfrac{a_{ \rho \text{N} t} \pi t}{L}\right) +\\
+&+\dfrac{a_{ \rho \text{N}_2 t} \pi \rho_{\text{N}_2 t}  \U }{L}\cos\left(\dfrac{a_{ \rho \text{N}_2 t} \pi t}{L}\right)+\\
+&-\dfrac{a_{ut} \pi u_t \Rho }{L}\sin\left(\dfrac{a_{ut} \pi t}{L}\right),
+\end{split}
+\end{equation}
+with $\Rho,\,\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ defined in Equation (\ref{eq:aux_1d}).
+
+\section{Euler energy equation}
+The total energy equation is written as an operator:
+\begin{equation*}
+ \label{eq:euler1d_14}
+\Lo =\diff{\rho E  }{t}+\diff{\rho u H}{x} ,
+\end{equation*}
+where $H= E+ \dfrac{p}{\rho} \quad \mbox{and}\quad E=e^{\text{int}} + \dfrac{u^2 }{2} ,$ with $p$ and $e^{\text{int}}$ as defined in Equations (\ref{eq:p_eq_state}) and (\ref{eq:rE-T-Tv-relationship}), respectively.
+
+Source term $Q_E$ is obtained by operating $\Lo$ on Equations (\ref{eq:manufactured02}) and (\ref{eq:manufactured03}):
+
+\begin{equation*}
+\begin{split}
+ Q_E &= \dfrac{3 a_{ux} \pi u_x \Rho \U^2 }{2L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right) +\\
+&-\dfrac{ (2 \Rho_\text{N} +\Rho_{\text{N}_2}) a_{Tx} \pi T_x R_\text{N}  \U }{2L}\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)+\\
+&+\dfrac{a_{ux} \pi u_x R_\text{N}  \T  (10 \Rho_\text{N} +7 \Rho_{\text{N}_2}) }{4L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right) +\\
+&+\dfrac{a_{ux} \pi u_x E_{vib, \text{N}_2} \Rho_{\text{N}_2} }{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right) +\\
+&-\dfrac{a_{ut} \pi u_t \Rho \U }{L}\sin\left(\dfrac{a_{ut} \pi t}{L}\right) +\\
+&+\dfrac{ a_{ux} \pi u_x (h^0_\text{N} \Rho_\text{N} +h^0_{\text{N}_2} \Rho_{\text{N}_2})}{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right) +\\
+&+\cdots
+\end{split}
+\end{equation*}
+\begin{equation}
+\begin{split}
+&+\cdots\\
+&- \dfrac{ \pi R_\text{N}  \Rho_{\text{N}_2} \U \T}{4L \Rho}\left[a_{ \rho \text{N} x} \rho_{\text{N} x}  \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x}  \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right]  +\\
+&+\dfrac{\pi R_\text{N}  \U \T}{2L}\left[5 a_{ \rho \text{N} x} \rho_{\text{N} x}  \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-4 a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x}  \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right]   +\\
+&+  \dfrac{\pi \U^3}{2L}\left[a_{ \rho \text{N} x} \rho_{\text{N} x}  \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x}  \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right]  +\\
+&- \dfrac{3\pi R_\text{N}  \Rho_\text{N}  \T}{2L \Rho}\left[a_{ \rho \text{N} t} \rho_{\text{N} t}  \sin\left(\dfrac{a_{ \rho \text{N} t} \pi t}{L}\right)-a_{ \rho \text{N}_2 t} \rho_{\text{N}_2 t}  \cos\left(\dfrac{a_{ \rho \text{N}_2 t} \pi t}{L}\right)\right]  +\\
+&-\dfrac{5\pi R_\text{N}  \Rho_{\text{N}_2} \T}{4L \Rho}\left[a_{ \rho \text{N} t} \rho_{\text{N} t}  \sin\left(\dfrac{a_{ \rho \text{N} t} \pi t}{L}\right)-a_{ \rho \text{N}_2 t} \rho_{\text{N}_2 t}  \cos\left(\dfrac{a_{ \rho \text{N}_2 t} \pi t}{L}\right)\right]   +\\
+&+ \dfrac{ \pi E_{vib, \text{N}_2} \Rho_{\text{N}_2} \U}{L \Rho}\left[a_{ \rho \text{N} x} \rho_{\text{N} x}  \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x}  \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right] +\\
+&-\dfrac{\pi \U^2}{2L}\left[a_{ \rho \text{N} t} \rho_{\text{N} t}  \sin\left(\dfrac{a_{ \rho \text{N} t} \pi t}{L}\right)-a_{ \rho \text{N}_2 t} \rho_{\text{N}_2 t}  \cos\left(\dfrac{a_{ \rho \text{N}_2 t} \pi t}{L}\right)\right]  +\\
+&- \dfrac{\pi E_{vib, \text{N}_2} \Rho_{\text{N}_2}}{L \Rho}\left[a_{ \rho \text{N} t} \rho_{\text{N} t}  \sin\left(\dfrac{a_{ \rho \text{N} t} \pi t}{L}\right)-a_{ \rho \text{N}_2 t} \rho_{\text{N}_2 t}  \cos\left(\dfrac{a_{ \rho \text{N}_2 t} \pi t}{L}\right)\right]  +\\
+&+\dfrac{\pi \U (h^0_\text{N} \Rho_\text{N} +h^0_{\text{N}_2} \Rho_{\text{N}_2}) }{L \Rho}\left[a_{ \rho \text{N} x} \rho_{\text{N} x}  \cos\left(\dfrac{a_{ \rho \text{N} x} \pi x}{L}\right)-a_{ \rho \text{N}_2 x} \rho_{\text{N}_2 x}  \sin\left(\dfrac{a_{ \rho \text{N}_2 x} \pi x}{L}\right)\right]  +\\
+&-\dfrac{ \pi (h^0_\text{N} \Rho_\text{N} +h^0_{\text{N}_2} \Rho_{\text{N}_2})}{L \Rho}\left[a_{ \rho \text{N} t} \rho_{\text{N} t}  \sin\left(\dfrac{a_{ \rho \text{N} t} \pi t}{L}\right)-a_{ \rho \text{N}_2 t} \rho_{\text{N}_2 t}  \cos\left(\dfrac{a_{ \rho \text{N}_2 t} \pi t}{L}\right)\right] ,
+\end{split}
+\end{equation}
+where $\Rho,\,\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ are given  in Equation (\ref{eq:aux_1d}) and:
+
+$$\alpha = \exp\left(\dfrac{\theta_{v \text{N}_2}}{\T}\right)\quad \mbox{and} \quad  E_{vib, \text{N}_2} = \dfrac{R_{\text{N}_2} \theta_{v \text{N}_2}}{(\alpha-1)}.$$
+% \begin{equation}
+%  \begin{split}
+% \alpha &= \exp\left(\dfrac{\theta_{v \text{N}_2}}{\T}\right)\\
+%   E_{vib, \text{N}_2} &= \dfrac{R_{\text{N}_2} \theta_{v \text{N}_2}}{(\alpha-1)}
+%  \end{split}
+% \end{equation}
+
+
+
+
+
+
+
+\section{Comments}
+
+
+Source terms $Q_{\rho_\text{N} }$, $Q_{\rho_{\text{N}_{2}}}$, $Q_u$ and $Q_E$ have been generated by replacing the analytical Expressions (\ref{eq:manufactured02}) and~(\ref{eq:manufactured03}) into respective Equations (\ref{eq:euler01}), followed by the usage of Maple commands for collecting, sorting and factorizing the terms. Files containing $C$ codes for the source terms have also been generated. They are: \texttt{ Euler\_1d\_transient\_chemistry\_1T\_rho\_N\_code.C, Euler\_1d\_transient\_chemistry\_1T\_rho\_N2\_code.C,\\ Euler\_1d\_transient\_chemistry\_1T\_u\_code.C,} and \texttt{Euler\_1d\_transient\_chemistry\_1T\_E\_code.C}.
+
+%\newpage
+An example of the automatically generated C file from the source term for the mass conservation equation of N is:
+\begin{footnotesize}
+ \begin{verbatim}
+double SourceQ_rho_N (double x, double t, double M_N, double h0_N, double h0_N2, double Cf1_N, double Cf1_N2,
+  double etaf1_N, double etaf1_N2, double Ea_N, double Ea_N2, double Function_to_Calculate_K)
+{
+  double Q_rho_N;
+  double RHO_N;
+  double RHO_N2;
+  double U;
+  double T;
+  double kf1_N;
+  double kf1_N2;
+  double K_eq;
+
+  K_eq = Function_to_Calculate_K;
+  RHO_N = rho_N_0 + rho_N_x * sin(a_rho_N_x * PI * x / L) + rho_N_t * cos(a_rho_N_t * PI * t / L);
+  RHO_N2 = rho_N2_0 + rho_N2_x * cos(a_rho_N2_x * PI * x / L) + rho_N2_t * sin(a_rho_N2_t * PI * t / L);
+  U = u_0 + u_x * sin(a_ux * PI * x / L) + u_t * cos(a_ut * PI * t / L);
+  T = T_0 + T_x * cos(a_Tx * PI * x / L) + T_t * cos(a_Tt * PI * t / L);
+  kf1_N = Cf1_N * pow(T, etaf1_N) * exp(-Ea_N / R / T);
+  kf1_N2 = Cf1_N2 * pow(T, etaf1_N2) * exp(-Ea_N2 / R / T);
+
+  Q_rho_N = a_rho_N_x * PI * rho_N_x * U * cos(a_rho_N_x * PI * x / L) / L
+    + a_ux * PI * u_x * RHO_N * cos(a_ux * PI * x / L) / L
+    - a_rho_N_t * PI * rho_N_t * sin(a_rho_N_t * PI * t / L) / L
+    + (0.2e1 * kf1_N * RHO_N + kf1_N2 * RHO_N2) * RHO_N * RHO_N * pow(M_N, -0.2e1) / K_eq
+    - (0.2e1 * kf1_N * RHO_N + kf1_N2 * RHO_N2) * RHO_N2 / M_N / 0.2e1;
+  return(Q_rho_N);
+}
+ \end{verbatim}
+\end{footnotesize}
+%
+and the source term for the total energy $E$ of the mixture is:
+%
+\begin{footnotesize}  
+\begin{verbatim}
+#include <math.h>
+
+double SourceQ_e (double x, double t, double R_N, double R_N2, double h0_N, double h0_N2, double theta_v_N2)
+{
+  double Q_e;
+  double RHO;
+  double RHO_N;
+  double RHO_N2;
+  double U;
+  double T;
+  double alpha;
+  double E_vib_N2;
+
+  RHO_N = rho_N_0 + rho_N_x * sin(a_rho_N_x * PI * x / L) + rho_N_t * cos(a_rho_N_t * PI * t / L);
+  RHO_N2 = rho_N2_0 + rho_N2_x * cos(a_rho_N2_x * PI * x / L) + rho_N2_t * sin(a_rho_N2_t * PI * t / L);
+  RHO = RHO_N + RHO_N2;
+  U = u_0 + u_x * sin(a_ux * PI * x / L) + u_t * cos(a_ut * PI * t / L);
+  T = T_0 + T_x * cos(a_Tx * PI * x / L) + T_t * cos(a_Tt * PI * t / L);
+  alpha = exp(theta_v_N2 / T);
+  E_vib_N2 = R_N * theta_v_N2 / (alpha - 0.1e1) / 0.2e1;
+
+  Q_e = 0.3e1 / 0.2e1 * a_ux * PI * u_x * RHO * U * U * cos(a_ux * PI * x / L) / L
+    - (0.2e1 * RHO_N + RHO_N2) * a_Tx * PI * T_x * R_N * U * sin(a_Tx * PI * x / L) / L / 0.2e1
+    + (0.10e2 * RHO_N + 0.7e1 * RHO_N2) * a_ux * PI * u_x * R_N * T * cos(a_ux * PI * x / L) / L / 0.4e1
+    + a_ux * PI * u_x * E_vib_N2 * RHO_N2 * cos(a_ux * PI * x / L) / L
+    - a_ut * PI * u_t * RHO * U * sin(a_ut * PI * t / L) / L
+    + (h0_N * RHO_N + h0_N2 * RHO_N2) * a_ux * PI * u_x * cos(a_ux * PI * x / L) / L
+    - (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L))
+      * PI * R_N * RHO_N2 * U * T / L / RHO / 0.4e1
+    + (0.5e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L)
+      - 0.4e1 * a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * R_N * U * T / L / 0.2e1
+    + (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L)
+      - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * pow(U, 0.3e1) / L / 0.2e1
+    - 0.3e1 / 0.2e1 * (a_rho_N_t * rho_N_t * sin(a_rho_N_t * PI * t / L)
+      - a_rho_N2_t * rho_N2_t * cos(a_rho_N2_t * PI * t / L)) * PI * R_N * RHO_N * T / L / RHO
+    - 0.5e1 / 0.4e1 * (a_rho_N_t * rho_N_t * sin(a_rho_N_t * PI * t / L)
+      - a_rho_N2_t * rho_N2_t * cos(a_rho_N2_t * PI * t / L)) * PI * R_N * RHO_N2 * T / L / RHO
+    + (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L))
+      * PI * E_vib_N2 * RHO_N2 * U / L / RHO
+    - (a_rho_N_t * rho_N_t * sin(a_rho_N_t * PI * t / L) - a_rho_N2_t * rho_N2_t * cos(a_rho_N2_t * PI * t / L))
+      * PI * U * U / L / 0.2e1
+    - (a_rho_N_t * rho_N_t * sin(a_rho_N_t * PI * t / L) - a_rho_N2_t * rho_N2_t * cos(a_rho_N2_t * PI * t / L))
+      * PI * E_vib_N2 * RHO_N2 / L / RHO
+    + (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L))
+      * (h0_N * RHO_N + h0_N2 * RHO_N2) * PI * U / L / RHO
+    - (a_rho_N_t * rho_N_t * sin(a_rho_N_t * PI * t / L) - a_rho_N2_t * rho_N2_t * cos(a_rho_N2_t * PI * t / L))
+      * (h0_N * RHO_N + h0_N2 * RHO_N2) * PI / L / RHO;
+  return(Q_e);
+}
+\end{verbatim}
+\end{footnotesize}
+
+Finally, the gradients of the analytical solutions (\ref{eq:manufactured02}) and (\ref{eq:manufactured03}) have also been computed and their respective C codes are presented in  \texttt{Euler\_1d\_chemistry\_manuf\_solutions\_grad\_and\_code.C}. Therefore,
+\begin{equation}
+\begin{array}{rrlrl}
+\nabla \rho_{\text{N}} &=&  \dfrac{ a_{ \rho \text{N} x} \pi \rho_{\text{N}x} }{L} \cos\left( \dfrac{ a_{\rho \text{N} x} \pi x }{L}\right),
+\quad
+\nabla \rho_{\text{N}_2} &=&  \dfrac{ a_{ \rho \text{N}_2 x} \pi \rho_{\text{N}_2 x} }{L} \sin\left( \dfrac{ a_{ \rho \text{N}_2 x} \pi x }{L}\right),\vspace{10pt}\\
+\quad
+%
+\nabla T &=& - \dfrac{ a_{Tx} \pi p_x }{L} \sin\left( \dfrac{ a_{Tx} \pi x }{L}\right),
+\quad\quad\quad
+%
+\nabla u &=& \dfrac{ a_{ux} \pi u_x}{L} \cos\left( \dfrac{ a_{ux} \pi x }{L}\right),
+\end{array}
+\end{equation}
+and $\nabla \rho =\nabla \left( \rho_\text{N}\right) + \nabla \left(\rho_{\text{N}_2} \right),$ are written in C language as:
+
+
+
+
+
+\begin{verbatim}
+grad_rho_an_N[0] = rho_N_x * cos(a_rho_N_x * pi * x / L) * a_rho_N_x * pi / L;
+grad_rho_an_N2[0] = -rho_N2_x * sin(a_rho_N2_x * pi * x / L) * a_rho_N2_x * pi / L;
+grad_rho_an[0] = rho_N_x * cos(a_rho_N_x * pi * x / L) * a_rho_N_x * pi / L
+               - rho_N2_x * sin(a_rho_N2_x * pi * x / L) * a_rho_N2_x * pi / L;
+grad_u_an[0] = u_x * cos(a_ux * pi * x / L) * a_ux * pi / L;
+grad_T_an[0] = -T_x * sin(a_Tx * pi * x / L) * a_Tx * pi / L;
+\end{verbatim}
+
+
+
+%---------------------------------------------------------------------------------------------------------
+%\bibliographystyle{ieeetr}
+\bibliographystyle{chicago} 
+\bibliography{../../MMS_bib}
+
+
+
+\end{document}
