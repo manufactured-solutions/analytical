@@ -193,7 +193,7 @@ Note that these source terms sum identically to zero, as required by conservatio
 
 
 The forward rate coefficients  $k_{fr}$  can then be expressed in a modified Arrhenius form as
-\begin{equation}
+\begin{equation}\label{eq:equilibrium_constant}
   k_{fr}\left(\bar{T}\right) = C_{fr} \bar{T}^{\eta_r} \exp \left(-E_{ar}/R\bar{T}\right)
 \end{equation}
 where $C_{fr}$ is the reaction rate constant, $\eta_r$ is the so-called pre-exponential factor, $E_{ar}$ is the activation energy.  These three constants are determined from curve fits to experimental data (e.g. see \cite{Ait1996}). $\bar{T}$ is a function of the translational/rotational and vibrational temperatures, and in this work, $\bar{T}\equiv T$.
@@ -295,7 +295,7 @@ The mass conservation equation for Nitrogen atom (N), written as an operator, is
 \Lo =  \diff{\rho_\text{N} u}{x} - \dot{\omega}_{\text{N}}.
 \end{equation*}
 
-Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\text{N}}$,  and $u$ using operator $\Lo$ defined above together with suitable substitution for ~$\dot{\omega}_\text{N}$ gives the source term $Q_{\rho_{\text{N}}}$:
+Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\text{N}}$  and $u$ using operator $\Lo$ defined above together with suitable substitution for ~$\dot{\omega}_\text{N}$ gives the source term $Q_{\rho_{\text{N}}}$:
 
 
 \begin{equation}
@@ -313,7 +313,7 @@ k_{f_1 \text{N}} &= C_{f_1 \text{N}} \T^{\eta_{f_1 \text{N}}} \exp\left(\dfrac{-
 k_{f_1 \text{N}_2} &= C_{f_1 \text{N}_2} \T^{\eta_{f_1 \text{N}_2}} \exp\left(\dfrac{-E_{a\text{N}_2}}{R \T}\right).
  \end{split}
 \end{equation}
-with $\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ defined in Equation (\ref{eq:aux_1d}).
+with $\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ defined in Equation (\ref{eq:aux_1d}).  $K(T)$ is a to-be-defined function for the equilibruim constant (\ref{eq:equilibrium_constant}).
 
 \section{Euler mass conservation equation for Nitrogen molecule}
 
@@ -323,7 +323,7 @@ The mass conservation equation for Nitrogen molecule ($\text{N}_2$), written as 
 \Lo =  \diff{\rho_{\text{N}_2} u }{x} - \dot{\omega}_{\text{N}_2}.
 \end{equation*}
 
-Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\text{N}_2}$, $u$ and $v$ using operator $\Lo$ defined above together with suitable substitution for $\dot{\omega}_{\text{N}_2}$ gives the source term $Q_{\rho_{\text{N}_2}}$:
+Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\text{N}_2}$ and $u$ using operator $\Lo$ defined above together with suitable substitution for $\dot{\omega}_{\text{N}_2}$ gives the source term $Q_{\rho_{\text{N}_2}}$:
 
 \begin{equation}
 \begin{split}
@@ -333,7 +333,7 @@ Q_{\rho_{\text{N}_2}}=&-\dfrac{a_{ \rho \text{N}_2 x} \pi \rho_{\text{N}_2 x} \U
 &+\dfrac{\Rho_{\text{N}_2}}{2M_{\text{N}}}\left(2 k_{f_1 \text{N}} \Rho_\text{N}+k_{f_1 \text{N}_2} \Rho_{\text{N}_2}\right) .
 \end{split}
 \end{equation}
-where  $k_{f_1 \text{N}}$ and $k_{f_1 \text{N}_2}$ are given in Equation (\ref{eq:forward_rates}); and $\Rho_{\text{N}},\,\Rho_{\text{N}_2}$ and $\U$ are given in Equation (\ref{eq:aux_1d}).
+where  $k_{f_1 \text{N}}$ and $k_{f_1 \text{N}_2}$ are given in Equation (\ref{eq:forward_rates}); and $\Rho_{\text{N}},\,\Rho_{\text{N}_2}$ and $\U$ are given in Equation (\ref{eq:aux_1d}).  $K(T)$ is a to-be-defined function for the equilibruim constant (\ref{eq:equilibrium_constant}).
 
 
 \section{Euler momentum equation}
