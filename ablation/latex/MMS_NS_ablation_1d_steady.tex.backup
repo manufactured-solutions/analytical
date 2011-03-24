@@ -1,0 +1,614 @@
+\documentclass[10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath,amsfonts}
+\usepackage{geometry}
+\geometry{ top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage[authoryear]{natbib}
+\usepackage{pdflscape}
+%\geometry{papersize={216mm,330mm}, top=3cm, bottom=2.5cm, left=4cm, right=2cm}
+
+\newcommand{\D}{\partial}
+\newcommand{\Diff}[2] {\dfrac{\partial( #1)}{\partial #2}}
+\newcommand{\diff}[2] {\dfrac{\partial #1 }{\partial #2}}
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}% for vectors of Greek letters
+\newcommand{\grad}[1]{\gv{\nabla} #1}
+\newcommand{\bv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\bt}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\Lo}{\,\mathcal{L}}
+\newcommand{\Rho}{\,\mathtt{Rho}}
+\newcommand{\T}{\,\mathtt{T}}
+\newcommand{\U}{\,\mathtt{U}}
+\newcommand{\MF}{\,\mathtt{MF}}
+\newcommand{\C}{\text{C}}
+\newcommand{\Oo}{\text{O}}
+\newcommand{\N}{\text{N}}
+%\newcommand{\MdotC3}{\,\dot{m_{C_3,C}}}
+
+
+%opening
+\title{Manufactured Solutions for 1D Steady Flows with Ablation}
+\author{Kemelli C. Estacio-Hiroms \thanks{Center for Predictive Engineering and Computational Sciences (PECOS), Institute for Computational
+    Engineering and Sciences, The University of Texas at Austin,
+    Austin, TX 78712 (kemelli@ices.utexas.edu)}}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\begin{abstract}
+The Method of Manufactured Solutions is a valuable approach for code verification, providing means to verify how accurately the numerical method solves the equations of interest. The method generates a related set of governing equations that has known analytical (manufactured) solution. Then, the modified set of equations may be discretized and solved numerically, and the numerical solution may be compared to the manufactured analytical solution  chosen \textit{a priori}.
+
+A choice of analytical solutions for the variables and their respective source terms for 1D steady \textbf{Carbon sublimation} of a \textbf{non-charring} ablator in an ablation model used for coupling with a hypersonic flow code are presented in this document.
+\end{abstract}
+
+
+
+
+\section{Mathematical Model}
+
+A re-entry vehicle entering the earth's atmosphere is exposed to intense heating due to aerodynamic friction and shock wave
+radiation. Since very few materials can withstand such an extreme hyperthermal environment, a sacrificial ablative material is used to
+protect the surfaces of the re-entry vehicle. The ablative material absorbs the intense heat and the material is decomposed, resulting in mass loss due to chemical reactions. The cooling effect caused by the out gassing helps to keep the underlying structure within safe operating temperatures \citep{Rochan2010b}.
+
+By itself, the ablation process requires a multi-scale, multi-physics modeling approach. Before attempting very complex in-depth models for ablation, it is essential to model and to verify the coupling process,
+in which matter and energy is exchanged between the ablator and the hypersonic boundary layer. In this
+work, we focus on the verification  of an ablation modeling process coupled to the external hypersonic flow, modeled by FIN-S \citep{Kirk2009}. 
+
+
+\subsection{Flow Equations}
+The conservation of mass, momentum, and total energy for an 1D steady compressible fluid composed of a mixture of Carbon (graphite) and triatomic Carbon in \textit{thermal equilibrium} may be written as:
+\begin{equation}
+ \label{eq:ns_01}
+\Diff{\rho_{\C_3}  u}{x}=0,
+\end{equation}
+%
+\begin{equation}
+ \label{eq:ns_01b}
+\Diff{\rho_{\C}  u}{x}=0,
+\end{equation}
+%
+\begin{equation}
+ \label{eq:ns_02}
+\Diff{\rho u^2 }{x}=- \Diff{p}{x} +\Diff{\tau_{xx}}{x},
+\end{equation}
+%
+\begin{equation}
+ \label{eq:ns_03}
+%\nabla \cdot (\rho u e_t)+  \nabla\cdot(p   u )=0
+%\nabla\cdot\left(\rho  u  H\right) =-   \nabla\cdot(p  \mathbf{u}) -\nabla\cdot \mathbf{q} +  \nabla \cdot (\bv{\tau} \cdot \mathbf{u}).
+\Diff{\rho ue_t}{x}=-\Diff{pu}{x} - \Diff{q_x}{x} + \Diff{u\tau_{xx}}{x} .
+\end{equation}
+%
+
+Equations (\ref{eq:ns_01})--(\ref{eq:ns_03}) are known as Navier--Stokes equations and, $\rho_s$ is the density of species $s$ (C or C$_3$), $\rho=\sum_s \rho_s$ is the mixture density,  $  u  $ is the mixture velocity, and $p$ is the pressure. 
+
+For a calorically perfect gas, the Navier--Stokes equations are closed with two auxiliary relations for energy and with the ideal gas equation of state:
+\begin{equation}
+ \label{eq:ns_04}
+e_t= e+\dfrac{u^2}{2},\quad e=\dfrac{1}{\gamma -1}RT , \quad\mbox{and}\quad p=\rho RT,
+\end{equation}
+where $\gamma$ is the ratio of specific heats, $R$ is the ideal (universal) gas constant and $T$ is temperature.
+
+The 1D component of shear stress tensor and of the heat flux are given, respectively, by:
+\begin{equation}
+   \tau_{xx}= \dfrac{2}{3}  \mu \left( 2 \diff{u}{x} \right),\quad\mbox{and}\quad  q_x = - k \diff{T}{x}
+ \end{equation}
+where $\mu$ is the absolute viscosity, and $k$ is the thermal conductivity, which can be determined by choosing the Prandtl number:
+$$k= \dfrac{\gamma R \mu}{ (\gamma-1) \text{Pr}}.$$
+
+
+\subsection{Ablation Equations}
+
+
+
+A simplified model for ablation consists of a solid-gas mixture energy balance, a gas phase continuity equation, and a solid phase continuity equation \citep{Amar2006}. Additional simplifying assumptions such as 1D Cartesian,
+chemically non-reactive transport of pyrolysis gases, thermal equilibrium between solid and gas phases, no thermal expansion (char swell), no radiative transfer within the medium, semi-infinite (back wall boundary condition not needed), and zero pressure gradients within the material are commonly employed \citep{Rochan2010,Rochan2010b}. 
+
+%A simplified model for ablation consists of a solid-gas mixture energy balance, a gas phase continuity equation, and a solid phase continuity equation \citep{Amar2006}. We make further simplifying assumptions that are usually employed \citep{Rochan2010}: 1-D Cartesian, chemically non-reactive transport of pyrolysis gases, thermal equilibrium between solid and gas phases, no thermal expansion (char swell), no radiative transfer within the medium, semi-infinite (back wall boundary condition not needed), and zero pressure gradients within the material. 
+
+
+\citet{Rochan2010} made further simplifications by attaching a  coordinate system to the receding surface, $x = z-s(t)$, and  applying a number of suppositions to the model, such as considering a  non-charring ablator and assuming that the recession rate $v_{cs}=\dfrac{ds}{dt}$ is constant. According to this approach there are $N_s+2$ governing equations for the interface between the flow and the wall, where ablation occurs: $N_s$ species conservation equations, interface energy balance equation and the overall mas balance equation (surface recession rate equation).
+
+$N_s$ species conservation equations:
+\begin{equation}\label{eq:non_charring_species_conservation} 
+J_i \vert_{gas,0^-} + \rho v_w C_i = \tilde{N}_i (C_i, T_w),  \quad i=1..N_s. \\
+\end{equation}
+
+Interface energy balance equation:
+\begin{equation}\label{eq:non_charring_energy_equation_final_form}
+- k_s \frac{\partial T}{\partial x} \vert_{gas,0^-} + \sum_{i=1}^{N_s} h_i(T_w) \tilde{N}_i
+- \alpha {\dot{q}_r}^{''} + \sigma \epsilon {T_w}^{4} = 0. 
+\end{equation}
+
+Surface recession rate equation:
+\begin{equation}\label{eq:non_charring_recession_rate}
+ {\dot{m}_C}^{''} = \rho_{c} v_{cs} = \rho v_w = {\dot{m}_{\Oo,\C}}^{''} + {\dot{m}_{\Oo_2,\C}}^{''} + {\dot{m}_{\N,\C}}^{''} + {\dot{m}_{\C_3,\C}}^{''}=f(T_w,C_i) .
+\end{equation}
+where $x=0^-$ is the gas side and $x=0^+$ is the solid side.\\
+
+\begin{tabular}{|p{1.5cm} p{13.5cm}|}
+\hline
+\small
+  $J_i$ & Diffusive mass flux of the $i^{th}$ chemical species $[kg\;m^{-2}s^{-1}]$ \\
+  $v_w$ & Blowing velocity of gases at the wall $[m\;s^{-1}]$ \\
+  $C_i$ & Mass fraction of the $i^{th}$ chemical species \\
+  $\tilde{N}_i$ & Mass production / consumption rate per area of the $i^{th}$ chemical species $[kg\;m^{-2} s^{-1}]$ \\
+  $h_i$ & Enthalpy of the $i^{th}$ chemical species $[J\;kg^{-1}]$ \\
+  $T_w$ & Temperature at the wall $[K]$ \\
+  ${\dot{q}_r}^{''}$ & Incident radiative heat flux $[W\;m^{-2}]$ \\
+  $ \alpha $ & Absorptivity of the char surface \\
+  $ \epsilon $ & Emissivity of the char surface \\
+  $ \sigma $ & Stefan-Boltzmann constant $\sigma = 5.6704 \times 10^{-8}$ ~ $[W\;m^{-2}K^{-4}]$ \\
+  $v_{cs}$ & Velocity of control surface or surface recession rate $[m\;s^{-1}]$ \\
+  $\rho_{c}$ & Density of the char $[kg\;m^{-3}]$ \\
+  ${\dot{m}_\C}^{''}$ & Mass loss rate per area of carbon at the surface $[kg\;m^{-2} s^{-1}]$ \\
+  ${\dot{m}_{\Oo,\C}}^{''}$ & Mass loss rate per area of surface carbon due to the reaction with $O$ ~ $[kg\;m^{-2} s^{-1}]$ \\
+  ${\dot{m}_{\Oo_2,\C}}^{''}$ & Mass loss rate per area of surface carbon due to reaction with $O_2$ ~ $[kg\;m^{-2} s^{-1}]$ \\
+  ${\dot{m}_{\N,\C}}^{''}$ & Mass loss rate per area of surface carbon due to reaction with $N$ ~ $[kg\;m^{-2} s^{-1}]$ \\
+  ${\dot{m}_{\C_3,\C}}^{''}$ & Mass loss rate per area of surface carbon due to reaction with $C_3$ ~ $[kg\;m^{-2} s^{-1}]$ \\
+  
+
+
+\hline
+\end{tabular}
+
+\vspace{12pt}
+
+Recall that the mass fraction of a species $i$ is given by $C_i= \rho_i/\rho$, where $\rho=\sum_i \rho_i$ is the mixture density. Therefore the mass fractions of C and C$_3$ are:
+\begin{equation*}
+ \label{eq:massfrac}
+C_{\C}=\dfrac{\rho_\C}{\rho} \quad \mbox{and}\quad C_{\C_3}=\dfrac{\rho_{\C_3}}{\rho}, 
+\end{equation*}
+with $\rho=\rho_{\C}+\rho_{\C_3}.$
+
+The equations need to be closed by relations for the gas mixture density, the species mass diffusion flux, the blowing velocity and the chemical reactions. The species diffusive flux has to be the same as that used in the flow solver, and a suitable choice is to use the friction-weighted self consistent effective binary diffusion approximation \citep{Ramshaw-Chang:1996}:
+$$J_i \vert_{gas,0^-} =- \rho  \tilde{D_i} \frac{\partial C_i}{\partial x}\vert_{gas,w} + C_i \sum_{j=1}^{N_s}  \rho  \tilde{D_j} \frac{\partial C_j}{\partial x} \vert_{gas,0^-} ,$$
+where   $\tilde{D}_i$ is the diffusivity  of the $i^{th}$ species $[m\;s^{-2}]$ to be used with Fick's law.
+
+The density is computed using the ideal gas mixture model:
+\begin{align*}
+\rho = \frac{p}{\left[ \sum_{i=1}^{N_s}(C_i/W_i)\right] RT} \label{eq:ideal_gas_density},
+\end{align*}
+where $p$  is the static (thermodynamic) pressure at the wall $[Pa]$, and $W_i$ is the molar mass of the $i^{th}$ chemical species, $W_i = N_{Avog} m_i$  $[kg\;kmol^{-1}]$.
+
+
+
+ The chemical reactions taken from  \citet{Park-Ahn:1999},  \citet{Chen-Milos:2005} are the following:
+% \begin{itemize}
+% \item 1: Char Oxidation Reaction {\small $C(s) + O = CO$}:\quad ${\dot{m}_{O,C}}^{''}=\rho C_O \sqrt {\frac{k_B T_w}{2 \pi m_O} }  \beta_O \frac{W_C}{W_O} \label{eq:carbon_oxidation1} $
+% 
+% \item 2: Char Oxidation Reaction {\small $C(s) + 1/2 O_2 = CO$}:\quad ${\dot{m}_{O_2,C}}^{''}=\rho C_{O_2} \sqrt {\frac{k_B T_w}{2 \pi m_{O_2}} }  \beta_{O_2} \frac{W_C}{W_{O_2}} \label{eq:carbon_oxidation2}$
+% 
+% \item 3: Char Nitridation Reaction {\small $C(s) + N = CN$}:\quad ${\dot{m}_{N,C}}^{''}=\rho C_N \sqrt {\frac{k_B T_w}{2 \pi m_N }} \beta_N \frac{W_C}{W_N} \label{eq:carbon_nitridation}$
+% 
+% \item 4: Char Sublimation Reaction: {\small $3C(s) = C_3$}:\quad ${\dot{m}_{C_3,C}}^{''}=\rho (C_{{C_3},E}-C_{C_3}) \sqrt {\frac{k_B T_w}{2 \pi m_{C_3}} } \beta_{C_3} \label{eq:carbon_sublimation} $
+% 
+% \end{itemize}
+%
+\begin{equation}\label{eq:chemical_reactions}
+\begin{array}{lll}
+  \mbox{Char Oxidation Reaction:} & \C(s) + \Oo = \C\Oo& {\dot{m}_{\Oo,\C}}^{''}=\rho \, C_\Oo \sqrt {\dfrac{k_B T_w}{2 \pi m_\Oo} }  \beta_\Oo \dfrac{W_\C}{W_\Oo} \vspace{10pt}\\
+%
+\mbox{Char Oxidation Reaction:} & \C(s) + 1/2 \Oo_2 = \C\Oo & {\dot{m}_{\Oo_2,\C}}^{''}=\rho \, C_{\Oo_2} \sqrt {\dfrac{k_B T_w}{2 \pi m_{\Oo_2}} }  \beta_{\Oo_2} \dfrac{W_\C}{W_{\Oo_2}} \vspace{10pt}\\
+%
+\mbox{Char Nitridation Reaction:} &\C(s) + \N = \C\N & {\dot{m}_{N,C}}^{''}=\rho  \,C_\N \sqrt {\dfrac{k_B T_w}{2 \pi m_\N }} \beta_\N \dfrac{W_\C}{W_\N} \vspace{10pt}\\
+%
+\mbox{Char Sublimation Reaction:} &3\C(s) = \C_3 &{\dot{m}_{\C_3,\C}}^{''}=\rho  \,(C_{{\C_3},E}-C_{\C_3}) \sqrt {\dfrac{k_B T_w}{2 \pi m_{\C_3}} } \beta_{\C_3}\vspace{10pt}\\
+%
+ \end{array}
+\end{equation}
+with $$C_{{\C_3},E} = \dfrac{A_{{\C_{3}E},{nc}} \exp \left(\dfrac{- E_{a\C_3 E,nc}}{T_w}\right)}{p}.$$
+
+The individual species production/consumption terms $\tilde{N}_i$
+can be computed from the carbon mass loss rates:
+\begin{equation}
+ \begin{array}{ll}
+  \tilde{N}_{\C \Oo} = {\dot{m}_{\Oo,\C}}^{''} \dfrac{W_{\C \Oo}}{W_\C} + {\dot{m}_{ \Oo_2,\C}}^{''}\dfrac{W_{\C \Oo}}{W_\C}, &
+\tilde{N}_{\C\N} = {\dot{m}_{\N,\C}}^{''} \dfrac{W_{\C\N}}{W_\C} \vspace{10pt}\\
+  \tilde{N}_{\C_3} = {\dot{m}_{\C_3,\C}}^{''}, & \tilde{N}_{\N} = - {\dot{m}_{\N,\C}}^{''} \dfrac{W_\N}{W_\C} \vspace{10pt}\\
+ \tilde{N}_{ \Oo} = - {\dot{m}_{ \Oo,\C}}^{''} \dfrac{W_ \Oo}{W_\C},& \tilde{N}_{ \Oo_2} = - {\dot{m}_{ \Oo_2,\C}}^{''} \dfrac{W_{ \Oo_2}}{2 W_\C}\vspace{10pt}\\
+ \tilde{N}_{\N_2} = \tilde{N}_{\N \Oo} = \tilde{N}_{C_2} = \tilde{N}_{\C} = 0
+ \end{array}
+\end{equation}
+
+\begin{tabular}{|p{1.5cm} p{12.5cm}|}
+\hline
+  $ A_{\C_3 E,nc} $ & Pre-exponential term of vapor pressure definition for non-charring ablator $[Pa]$ \\
+  $ E_{a\C_3 E,nc} $ & Term in the exponential of vapor pressure definition for non-charring ablator $[K]$ \\
+  $C_{{\C_3},E}$ & Equilibrium mass fraction of $\C_3$ at the surface \\
+  $ nc $ & Pertaining to a non-charring ablator such as graphite \\
+\hline
+\end{tabular}
+
+\vspace{12pt}
+
+
+
+%As per  \citet{Chen-Milos:2005}, we use as baseline values: $ \beta_O = 0.63 e^{-1160/T_w}$, $\beta_{O_2} = 0.25$, $\beta_N = 0.3$ and $ \beta_{C_3} = 1$ for the reaction probabilities, $A_{\C_3 E,nc} 5.19 \times 10^{14}$ and $E_{a\C\_3 E,nc} =90845 $.\
+
+\vspace{18pt}
+
+\textbf{Note:} Although there are $N_s$ conservation equations, only $N_s-1$ need to be solved with the final equation being:
+\begin{align}\label{eq:sum_mass_frac}
+\sum_{i=1}^{N_s} C_i = 1 ,
+\end{align}
+which is consistent with the definition in Equation (\ref{eq:massfrac}).
+
+More details about the ablation model may be found in \citet{Rochan2010,Rochan2010b}.
+
+\subsubsection{Further Simplifications}
+
+In this work, only non-charring ablators are considered. Moreover, we consider that there are only two species in the flow: Carbon (C(g), graphite) and triatomic Carbon (C$_3$). Therefore, there is only one chemical reaction happening on the ablator: \textbf{Carbon sublimation}.
+
+Accordingly, the expression for the recession rate (\ref{eq:non_charring_recession_rate}) simplifies to:
+\begin{equation}\label{eq:non_charring_recession_rate2}
+ {\dot{m}_\C}^{''} = \rho_{c} v_{cs} =  {\dot{m}_{\C_3,\C}}^{''}.
+\end{equation}
+
+Mass balance for triatomic Carbon (C$_3$) may be calculated using Equation (\ref{eq:non_charring_species_conservation}) whereas mass balance for C (graphite) is obtained simply by using Equation (\ref{eq:sum_mass_frac}).
+
+Finally, the radiative heat flux $ {\dot{q}_r}^{''}$ is considered constant.
+
+\section{Manufactured Solution}
+
+\citet{Roy2002} propose the general form of the primitive solution variables to be a function of sines and cosines:
+\begin{equation}
+ \label{eq:manufactured01}
+ \phi (x) = \phi_0+ \phi_x f_s\left(\frac{a_{\phi x} \pi x}{L}\right) ,
+\end{equation}
+where $\phi=\rho_{\C_3},\, \rho_\C, \, u$ or $T$, and $f_s(\cdot)$ functions denote either sine or cosine function. Note that in this case, $\phi_x$ is constant and the subscript does not denote differentiation\footnote{Different choices of the constants used in the manufactured solutions for the 2D supersonic and subsonic cases of Euler and Navier-Stokes may be found in \citet{Roy2002}.}.
+
+Therefore, the manufactured analytical solution for each one of the variables in the fluid flow equations coupled with ablation  are:
+\begin{equation}
+\begin{split}
+\label{eq:manufactured02}
+\rho_{\C_3}(x) &= \rho_{\C_3 0}+ \rho_{\C_3 x} \cos\left(\frac{a_{ \rho \C_3 x } \pi x}{L}\right),\\
+\rho_{\C}(x) &= \rho_{\C0} + \rho_{\C x} \sin\left(\frac{a_{  \rho \C x }\pi x}{L}\right),\\
+T(x)&= T_0+T_x \cos\left(\dfrac{a_{Tx} \pi x}{L}\right),\\
+u\left(x\right) &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right).
+\end{split}
+\end{equation}
+
+
+
+%The governing equations (\ref{eq:euler2d_01}) -- (\ref{eq:euler2d_07}) are applied to the solutions in {\ref{eq:manufactured02}} using Maple and the resulting analytical source term are presented in the following sections.
+
+
+The MMS applied to 1D steady flow with carbon sublimation (mixture of  C and C$_{3}$ only) consists in modifying both flow equations (Eq. (\ref{eq:ns_01})--(\ref{eq:ns_03}))  and ablation equations (Eq.~(\ref{eq:non_charring_species_conservation})--(\ref{eq:non_charring_recession_rate}) and (\ref{eq:sum_mass_frac})), by adding a source term to the right-hand side of each equation, so the modified sets of Equations conveniently have the analytical solutions given in Equation (\ref{eq:manufactured02}).
+
+Therefore the modified--flow equations are:
+\begin{equation}
+ \label{eq:ns_mod_2d}
+\begin{split}
+\Diff{\rho_{\C_3} u}{x} &= Q_{\rho_{\C_3}},\\
+\Diff{\rho_\C u}{x} &= Q_{\rho_\C},\\
+\Diff{\rho u^2 }{x}+ \Diff{p}{x} -\Diff{\tau_{xx}}{x}&= Q_u,\\
+\Diff{\rho ue_t}{x}+ \Diff{pu}{x}+ \Diff{q_x}{x}-\Diff{u\tau_{xx}}{x} &= Q_{e_t},
+\end{split}
+\end{equation}
+and the modified--ablation equations are:
+\begin{equation}
+ \label{eq:ablation_mod_2d}
+\begin{split}
+-\rho D_\C \diff{C_\C}{x}+ C_\C \left(\rho D_\C \diff{C_\C}{x}+\rho D_{\C_3} \diff{C_{\C_3}}{x}\right)+\rho v_w C_\C-\tilde{N}_\C&=Q_{\C},\\
+ C_\C+C_{\C_3} - 1&=Q_{\C_{3}},\\
+-k \diff{T}{x}-h_\C \tilde{N}_\C - h_{\C_3} \tilde{N}_{\C_3}+ \alpha  {\dot{q}_r}^{''}-\sigma \epsilon T_w^4 &=Q_{E}.
+\end{split}
+\end{equation}
+
+Equation (\ref{eq:manufactured02}) is the analytical manufactured solution for Equation (\ref{eq:ns_mod_2d}) in the interior of the domain and for Equation (\ref{eq:ablation_mod_2d}) at the interface.
+
+
+Source terms $Q_{\rho_{\C_3}}$, $Q_{\rho_{\C}}$, $Q_u$, $Q_{e_t}$, $ Q_{\C}$, $ Q_{\C_{3}}$ and $Q_E$ are obtained by symbolic manipulations of equations above using Maple 14 \citep{Maple} and are presented in the following sections. The following auxiliary variables have been included in order to improve readability and computational efficiency:
+\begin{equation}
+ \begin{split}
+\label{eq:aux_1d}
+\Rho_{\C} &= \rho_{\C0} + \rho_{\C x} \sin\left(\frac{a_{  \rho \C x }\pi x}{L}\right),\\
+\Rho_{\C_3} &= \rho_{\C_3 0}+ \rho_{\C_3 x} \cos\left(\frac{a_{ \rho \C_3 x } \pi x}{L}\right),\\
+\Rho &=\Rho_{\C_3}+\Rho_{\C},\\
+\T&= T_0+T_x \cos\left(\dfrac{a_{Tx} \pi x}{L}\right),\\
+\U &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right).
+ \end{split}
+\end{equation}
+
+
+\textbf{Note: } An additional term must be included in order to keep the coupling correct:
+\begin{equation}
+ Q_{u_\text{boundary}} = u - v_w
+\end{equation}
+This ``discrepancy term'' should be added in to the boundary terms when assigning a Dirichlet value for $u$.
+
+\section{Flow Source Terms}
+
+This section presents source terms for the modified Navier-Stokes equations  (\ref{eq:ns_mod_2d}) to be solved in the interior of the domain.
+
+
+\subsection{Mass Conservation of Triatomic Carbon $\C_3$}
+
+The mass conservation equation of triatomic Carbon, written as an operator, is:
+\begin{equation*}
+ \Lo= \Diff{\rho_{\C_3} u}{x}.
+\end{equation*}
+
+Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\C_3}$ and $u$  using operator $\Lo$ defined above gives  the source term $Q_{\rho_{\C_3}}$:
+\begin{equation}
+Q_{\rho_{\C_3}} = -\dfrac{a_{ \rho \C_3 x } \pi \rho_{\C_3 x} \U }{L} \sin\left(\dfrac{a_{ \rho \C_3 x } \pi x}{L}\right),
+\end{equation}
+where $\U$ is given in Equation (\ref{eq:aux_1d}).
+
+\subsection{Mass Conservation of Carbon $\C(g)$}
+
+The mass conservation equation of Carbon (graphite), written as an operator, is:
+\begin{equation*}
+ \Lo= \Diff{\rho_{\C} u}{x}.
+\end{equation*}
+
+Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\C}$ and $u$  using operator $\Lo$ defined above gives  the source term $Q_{\rho_{\C}}$:
+\begin{equation}
+Q_{\rho_{\C}} =  \dfrac{a_{ \rho \C x } \pi \rho_{\C x} \U }{L} \cos\left(\dfrac{a_{ \rho \C x } \pi x}{L}\right) ,
+\end{equation}
+with $\U$ given in Equation (\ref{eq:aux_1d}).
+
+
+\subsection{Momentum Conservation}
+
+For the generation of the analytical source term $Q_u$ for the $x$-momentum equation, Equation  (\ref{eq:ns_02}) is written as an  operator $\Lo$:
+\begin{equation*}
+ \Lo=\Diff{\rho u^2 }{x}+ \Diff{p}{x} -\Diff{\tau_{xx}}{x},
+\end{equation*}
+which, when operated in Equation (\ref{eq:manufactured02}), provides source term $Q_{u}$:
+\begin{equation}
+ \begin{split}
+Q_u = &-\dfrac{a_{ \rho \C_3 x } \pi \rho_{\C_3 x} R \T}{L W_{\C_3}}\sin\left(\dfrac{a_{ \rho \C_3 x } \pi x}{L}\right) +\\ 
+&+\dfrac{a_{ \rho \C x } \pi \rho_{\C x} R \T }{L W_{\C}} \cos\left(\dfrac{a_{ \rho \C x } \pi x}{L}\right) +\\ 
+&+\dfrac{4\mu a_{ux}^2 \pi^2 u_x }{3L^2}\sin\left(\dfrac{a_{ux} \pi x}{L}\right) +\\ 
+&+\dfrac{2 a_{ux} \pi u_x \Rho \U }{L} \cos\left(\dfrac{a_{ux} \pi x}{L}\right),
+ \end{split}
+\end{equation}
+where $\Rho, \U$ and $ \T$ are given in Equation (\ref{eq:aux_1d}), and $ W_{\C_3}$ and  $W_{\C}$ are the molar masses of $\C_3$ and C, respectively.
+
+
+\subsection{Energy Conservation}
+
+
+The last component of Navier--Stokes equations is written as an operator:
+\begin{equation*}
+ \Lo=\Diff{\rho ue_t}{x}+ \Diff{pu}{x}+ \Diff{q_x}{x}-\Diff{u\tau_{xx}}{x} .
+\end{equation*}
+
+
+Source term $Q_{e_t}$ is obtained by operating $\Lo$ on Equation  (\ref{eq:manufactured02}) together with the use of the  auxiliary relations~(\ref{eq:ns_04}) for energy:
+  \begin{equation}\label{eq:source_e}
+ \begin{split}
+Q_{e_t} = 
+&-\dfrac{a_{ \rho \C_3 x } \pi \rho_{\C_3 x} R \T \U }{L W_{\C_3}}\sin\left(\dfrac{a_{ \rho \C_3 x } \pi x}{L}\right) +\\ 
+&+\dfrac{a_{ \rho \C x } \pi \rho_{\C x} R \T \U }{L W_{\C}} \cos\left(\dfrac{a_{ \rho \C x } \pi x}{L}\right)+\\ 
+&+\dfrac{4 \mu a_{ux}^2 \pi^2 u_x \U }{3L^2}\sin\left(\dfrac{a_{ux} \pi x}{L}\right) +\\ 
+&-\dfrac{4 \mu a_{ux}^2 \pi^2 u_x^2 }{3L^2}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)^2 +\\ 
+&+\dfrac{a_{ux} \pi u_x P }{L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right) +\\ 
+&+\dfrac{a_{ux} \pi u_x R \Rho \T }{L(\gamma-1)}\cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\ 
+&+ \dfrac{3a_{ux} \pi u_x \Rho \U^2 }{2L}\cos\left(\dfrac{a_{ux} \pi x}{L}\right) +\\ 
+&-\dfrac{a_{Tx} \pi T_x R\Rho_{\C_3} \U }{L W_{\C_3}}\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)+\\ 
+&-\dfrac{a_{Tx} \pi T_x R \Rho_\C \U}{L W_\C}\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)+\\ 
+&-\dfrac{a_{Tx} \pi T_x R \Rho \U }{L(\gamma-1)}\sin\left(\dfrac{a_{Tx} \pi x}{L}\right) +\\ 
+&+\dfrac{k a_{Tx}^2 \pi^2 T_x }{L^2}\cos\left(\dfrac{a_{Tx} \pi x}{L}\right)+\\ 
+&- \dfrac{\pi R \T \U}{L(\gamma-1)}\left[a_{ \rho \C_3 x }\, \rho_{\C_3 x} \sin\left(\dfrac{a_{ \rho \C_3 x } \pi x}{L}\right)-a_{ \rho \C x }\, \rho_{\C x} \cos\left(\dfrac{a_{ \rho \C x } \pi x}{L}\right)\right]+\\ 
+&- \dfrac{\pi \U^3}{2L}  \left[a_{ \rho \C_3 x } \, \rho_{\C_3 x} \sin\left(\dfrac{a_{ \rho \C_3 x } \pi x}{L}\right)-a_{ \rho \C x } \,\rho_{\C x} \cos\left(\dfrac{a_{ \rho \C x } \pi x}{L}\right)\right],
+ \end{split}
+\end{equation}
+where
+\begin{equation}
+ \begin{split}\label{eq:aux_1d_02}
+P &= R \T \left(\dfrac{\Rho_\C}{W_{\C}} + \dfrac{\Rho_{\C_3}}{W_{\C_3}}\right),
+ \end{split}
+\end{equation}
+and $\Rho, \U$ and $ \T$ are given in Equation (\ref{eq:aux_1d}), and $ W_{\C_3}$ and  $W_{\C}$ are the molar masses of $\C_3$ and C, respectively. 
+
+\section{Ablation Source Terms}
+
+
+This section presents source terms for the modified ablation equations  (\ref{eq:ablation_mod_2d}) to be solved at the interface.
+
+
+\subsection{Mass Conservation of Triatomic Carbon $\C_3$}
+
+The mass conservation equation for Carbon (C$_3$), written as an operator, is:
+\begin{equation*}
+ \Lo =  \rho \tilde{D}_{\C_3} \diff{C_{\C_3}}{x}+ C_{\C_3} \left(\rho \tilde{D}_{\C_3} \diff{C_{\C_3}}{x}+\rho \tilde{D}_\C \diff{C_\C}{x}\right)+\rho v_w C_{\C_3}-\tilde{N}_{\C_3}.
+\end{equation*}
+
+
+Recalling that $C_{\C_3}=\rho_{\C_3}/\rho$ and $C_{\C}=\rho_{\C}/\rho$, and making suitable substitution for $\rho_{\C_3},\rho_{C}$ and $\rho$ given in Equation (\ref{eq:manufactured02}) into the operator above gives the source term $Q_{\C_3}$:
+\begin{equation}
+ \begin{split}
+  Q_{\C_3} &= \dfrac{a_{\rho \C x} \pi \rho_{\C x} \tilde{D}_{\C_3} \Rho_{\C_3}  }{L\Rho}\cos\left(\dfrac{a_{\rho \C x} \pi x}{L}\right)+\\
+&+ \dfrac{a_{\rho \C_3 x} \pi \rho_{\C_3 x} \tilde{D}_{\C_3} \Rho_{\C} }{L\Rho}  \sin\left(\dfrac{a_{\rho \C_3 x} \pi x}{L}\right)+\\
+&+ \dfrac{a_{\rho \C x} (\tilde{D}_{\C}-\tilde{D}_{\C_3}) \pi \rho_{\C x} \Rho_{\C_3}^2  }{L\Rho^2}\cos\left(\dfrac{a_{\rho \C x} \pi x}{L}\right)+\\
+&+ \dfrac{a_{\rho \C_3 x} (\tilde{D}_{\C}-\tilde{D}_{\C_3}) \pi \rho_{\C_3 x} \Rho_{\C} \Rho_{\C_3}  }{L\Rho^2} \sin\left(\dfrac{a_{\rho \C_3 x} \pi x}{L}\right)+\\
+&+ \dot{m}_{\C_3,\C}'' (\MF_{\C_3}-1), 
+ \end{split}
+\end{equation}
+%
+where 
+\begin{equation}
+ \begin{split}\label{eq:aux_1d_03}
+\dot{m}_{\C_3,\C}''&= \sqrt{\dfrac{\T k_B}{2\pi m_{\C_3}}}  (\MF_{\C_3,E}-\MF_{\C_3}) \Rho \beta_{\C_3},\\
+\MF_{\C_3}&=\dfrac{\Rho_{\C_3}}{\Rho},\\
+\MF_{\C_3,E} &= \dfrac{A_{\C_3 E, nc} \exp\left(-\dfrac{E_{a\C_3, nc}}{\T} \right) }{P},\\
+%P &= R \T \left(\dfrac{\Rho_\C}{W_{\C}} + \dfrac{\Rho_{\C_3}}{W_{\C_3}}\right),
+ \end{split}
+\end{equation}
+$\Rho_\C, \Rho_{\C_3}, \Rho,$ and $ \T$ are given in Equation (\ref{eq:aux_1d}), and $P$ is given in Equation (\ref{eq:aux_1d_02}).
+
+
+
+\subsection{Mass Conservation of Carbon \C(g)}
+
+The mass conservation equation for Carbon (graphite), written as an operator, is:
+
+\begin{equation*}
+ \Lo = C_\C+C_{\C_3} - 1
+\end{equation*}
+
+The source term $Q_\C $ for mass conservation of graphite is simply:
+\begin{equation}
+\begin{split}
+Q_\C =0.
+\end{split}
+\end{equation}
+
+
+\subsection{Interface Energy Balance Equation}
+
+The operator for the 1D steady interface energy equation is:
+\begin{equation*}
+\Lo=-k \diff{T}{x}-h_\C \tilde{N}_\C - h_{\C_3} \tilde{N}_{\C_3}+ \alpha  {\dot{q}_r}^{''}-\sigma \epsilon T_w^4 
+\end{equation*}
+
+Source term $Q_{E}$ is obtained by operating $\Lo$ defined above on Equation  (\ref{eq:manufactured02}):
+
+\begin{equation}
+ \begin{split}
+  Q_E &= \dfrac{k a_{Tx} \pi T_x}{L} \sin\left(\dfrac{a_{Tx} \pi x}{L}\right)  - h_{\C_3}(\T)\, \dot{m}_{\C_3,\C}''  +\alpha  {\dot{q}_r}^{''}-\sigma \epsilon \T^4 ,
+ \end{split}
+\end{equation}
+where $\T$ is given in Equation (\ref{eq:aux_1d}) and $\dot{m}_{\C_3,\C}''$ is given in Equation (\ref{eq:aux_1d_03}). 
+
+
+The enthalpy for $\C_3$ is a function of the temperature at the wall, $ h_{\C_3}=h_{\C_3}(\T)$, and must be calculated using an appropriate function, such as the curve fit proposed by \citet{Nasa_chemistry}. 
+Note that although the incident radiative flux $ {\dot{q}_r}^{''}$ is considered constant, a variable expression for it could be easily included into the source term.
+
+
+
+
+
+\section{Discrepancy Term}
+
+In order to integrate the effects of the flow velocity $u$ and the blowing velocity $v_w$ at the interface, an additional term must be included in the boundary terms when assigning a Dirichlet value for $u$:
+\begin{equation}
+ Q_{u_\text{boundary}} = u - v_w
+\end{equation}
+
+Replacing the manufactured solution for $u$ given in Equation (\ref{eq:manufactured02}) together with suitable substitution for $v_w$ using Equations (\ref{eq:non_charring_recession_rate}) and (\ref{eq:chemical_reactions}), the resulting discrepancy term is:
+\begin{equation}
+ Q_{u_\text{boundary}} = -\dfrac{\dot{m}_{\C_3,\C}''}{ \Rho} + \U,
+\end{equation}
+where $\U$ and $\Rho$ are given in (\ref{eq:aux_1d}) and $\dot{m}_{\C_3,\C}''$ is  given in Equation (\ref{eq:aux_1d_03}).
+
+\section{Comments}
+
+
+Source terms $Q_{\C}$, $Q_{\C_3}$  and $Q_E$ for the ablation problem have been generated by replacing the analytical Expressions (\ref{eq:manufactured02}) into respective Equations~(\ref{eq:non_charring_species_conservation})--(\ref{eq:non_charring_recession_rate}) and (\ref{eq:sum_mass_frac}), followed by the usage of Maple commands for collecting, sorting and factorizing the terms. 
+The modified ablation equations (\ref{eq:ablation_mod_2d}) have known analytical solutions and therefore their approximate  solutions obtained by a numerical method may be checked against the analytical ones and order of accuracy tests may be performed.
+The source terms have been translated into C codes in order to facilitate inclusion in the numerical method/solver chosen.  They are: \texttt{ Ablation\_1d\_steady\_C\_code.C, Ablation\_1d\_steady\_C3\_code.C, Ablation\_1d\_steady\_vw\_code.C,} and\\ \texttt{Ablation\_1d\_steady\_E\_code.C}. 
+
+Analogously, source terms $Q_{\rho_{\C}}$, $Q_{\rho_{\C_3}}$, $Q_{e_t}$ and $Q_u$ for the flow problem have been generated by replacing the analytical Expressions (\ref{eq:manufactured02}) into respective Equations~(\ref{eq:ns_01})--(\ref{eq:ns_03}), followed by the usage of the same Maple commands for symbolic manipulation of the terms. Accordingly, the  solutions obtained by numerical solving the  modified Navier-Stokes equations (\ref{eq:ns_mod_2d})  may be compared with analytical ones (\ref{eq:manufactured02}), and order of accuracy tests may be performed. The files cointaining C codes of source terms for Navier-Stokes equations are:\\ \texttt{NavierStokes\_ablation\_1d\_steady\_rho\_C3\_code.C, NavierStokes\_ablation\_1d\_steady\_rho\_C\_code.C}, \\ \texttt{NavierStokes\_ablation\_1d\_steady\_u\_code.C} and \texttt{NavierStokes\_ablation\_1d\_steady\_e\_code.C}. 
+
+
+
+An example of the automatically generated C file from the source term for the interface energy balance equation is:
+\begin{footnotesize}            
+ \begin{verbatim}#include <math.h>
+
+double SourceQ_E (double x, double W_C, double W_C3, double A_C3Enc, double E_aC3nc, double k_B, double beta_C3,
+  double m_C3, double qr, double alpha, double sigma, double epsilon, double Function_to_Calculate_h_C3)
+{
+  double Q_e;
+  double P;
+  double T;
+  double RHO;
+  double RHO_C;
+  double RHO_C3;
+  double MF_C3;
+  double MF_C3E;
+  double Mdot_C3C;
+  double H_C3;
+
+  RHO_C3 = rho_C3_0 + rho_C3_x * cos(a_rho_C3_x * PI * x / L);
+  RHO_C = rho_C_0 + rho_C_x * sin(a_rho_C_x * PI * x / L);
+  RHO = RHO_C + RHO_C3;
+  T = T_0 + T_x * cos(a_Tx * PI * x / L);
+  P = R * T * (RHO_C / W_C + RHO_C3 / W_C3);
+  MF_C3 = RHO_C3 / RHO;
+  MF_C3E = A_C3Enc * exp(-E_aC3nc / T) / P;
+  Mdot_C3C = sqrt(T * k_B / PI / m_C3) * sqrt(0.2e1) * (-MF_C3 + MF_C3E) * RHO * beta_C3 / 0.2e1;
+  H_C3 = Function_to_Calculate_h_C3;
+
+  Q_e = k * a_Tx * PI * T_x * sin(a_Tx * PI * x / L) / L - sigma * epsilon * pow(T, 0.4e1) 
+      - Mdot_C3C * H_C3 + alpha * qr;
+  return(Q_e);
+}
+ \end{verbatim}
+ \end{footnotesize}
+%
+and the source term $Q_{\C_3}$ for triatomic Carbon mass conservation equation at the interface is:
+%
+\begin{footnotesize}
+\begin{verbatim}#include <math.h>
+
+double SourceQ_rho_C3 (double x, double W_C, double W_C3, double A_C3Enc, double E_aC3nc, double k_B,
+  double beta_C3, double m_C3)
+{
+  double Q_rho_C3;
+  double RHO;
+  double RHO_C;
+  double RHO_C3;
+  double T;
+  double P;
+  double MF_C3;
+  double MF_C3E;
+  double Mdot_C3C;
+
+  RHO_C3 = rho_C3_0 + rho_C3_x * cos(a_rho_C3_x * PI * x / L);
+  RHO_C = rho_C_0 + rho_C_x * sin(a_rho_C_x * PI * x / L);
+  RHO = RHO_C + RHO_C3;
+  T = T_0 + T_x * cos(a_Tx * PI * x / L);
+  P = R * T * (RHO_C / W_C + RHO_C3 / W_C3);
+  MF_C3 = RHO_C3 / RHO;
+  MF_C3E = A_C3Enc * exp(-E_aC3nc / T) / P;
+  Mdot_C3C = sqrt(T * k_B / PI / m_C3) * sqrt(0.2e1) * (-MF_C3 + MF_C3E) * RHO * beta_C3 / 0.2e1;
+
+  Q_rho_C3 = a_rho_C_x * PI * rho_C_x * D_C3 * RHO_C3 * cos(a_rho_C_x * PI * x / L) / L / RHO 
+   + a_rho_C3_x * PI * rho_C3_x * D_C3 * RHO_C * sin(a_rho_C3_x * PI * x / L) / L / RHO 
+   + a_rho_C_x * (D_C - D_C3) * PI * rho_C_x * RHO_C3 * RHO_C3 * cos(a_rho_C_x * PI * x / L) / L * pow(RHO, -0.2e1) 
+   + a_rho_C3_x * (D_C - D_C3) * PI * rho_C3_x * RHO_C * RHO_C3 * sin(a_rho_C3_x * PI * x / L) / L * pow(RHO, -0.2e1) 
+   + Mdot_C3C * (MF_C3 - 0.1e1);
+  return(Q_rho_C3);
+}
+\end{verbatim}
+\end{footnotesize}
+
+Finally, the gradients of the analytical solutions (\ref{eq:manufactured02})  have also been computed and their respective C codes are presented in  \texttt{Ablation\_1d\_steady\_manuf\_solutions\_grad\_and\_code.C}. Therefore,
+\begin{equation}
+\begin{array}{rrlrl}
+\nabla \rho_{\C} &=&  \dfrac{ a_{ \rho \C x} \pi \rho_{\C x} }{L} \cos\left( \dfrac{ a_{\rho \C x} \pi x }{L}\right),
+\quad\quad\qquad\,\,
+\nabla \rho_{\C_3} &=&  \dfrac{ a_{ \rho \C_3 x} \pi \rho_{\C_3 x} }{L} \sin\left( \dfrac{ a_{ \rho \C_3 x} \pi x }{L}\right),\vspace{10pt}\\
+%
+\nabla T &=& - \dfrac{ a_{Tx}  \pi T_x  }{L} \sin\left(\dfrac{a_{Tx}  \pi  x }{L}\right),
+\quad\quad\quad\quad\quad\quad
+\nabla u &=& \dfrac{ a_{ux} \pi u_x}{L} \cos\left( \dfrac{ a_{ux} \pi x }{L}\right),
+\end{array}
+\end{equation}
+and $\nabla \rho =\nabla \left( \rho_\text{C}\right) + \nabla \left(\rho_{\text{C}_3} \right)$  are written in C language as:
+%
+\begin{verbatim}
+grad_rho_C3_an[0] = -rho_C3_x * sin(a_rho_C3_x * pi * x / L) * a_rho_C3_x * pi / L;
+grad_rho_C_an[0] = rho_C_x * cos(a_rho_C_x * pi * x / L) * a_rho_C_x * pi / L;
+grad_rho_an[0] = rho_C_x * cos(a_rho_C_x * pi * x / L) * a_rho_C_x * pi / L 
+	       - rho_C3_x * sin(a_rho_C3_x * pi * x / L) * a_rho_C3_x * pi / L;
+grad_u_an[0] = u_x * cos(a_ux * pi * x / L) * a_ux * pi / L;
+grad_T_an[0] = -T_x * sin(a_Tx * pi * x / L) * a_Tx * pi / L;
+\end{verbatim}
+
+
+
+%---------------------------------------------------------------------------------------------------------
+%\bibliographystyle{ieeetr}
+\bibliographystyle{chicago} 
+\bibliography{../../MMS_bib}
+
+
+
+\end{document}
