@@ -1,0 +1,52 @@
+\documentclass{article}
+\title{\bf{Radiation Verification Document}}
+\author{Nicholas Malaya, Marco Panesi \\ Institute for Computational Engineering and Sciences \\ University of Texas at Austin} \date{}
+
+\begin{document}
+\maketitle
+
+In order to verify the integration in the spectral radiation code, we will develop an analytical solution for 
+the summation of the components of several gaussian distributions, over the interval $[0,\infty]$. 
+\newline
+\newline
+In other words, we seek to calculate:
+\begin{equation}
+  \sum_i^n \int^\infty_0 g_i(x) dx
+\end{equation}
+\newline
+\newline
+$g_i(x)$ is a set of $i$ gaussian distributions, each with distinct mean ($\mu_i$), standard deviation ($\sigma_i$), and amplitude ($A_i$):
+\begin{equation}
+  g_i(x) = \frac{A_i}{\sqrt{(2 \pi)}}e^{\frac{-(x_i-\mu_i)^2}{2 \sigma_i^2}}
+\end{equation}
+\newline
+\newline
+Note that,
+\begin{equation}
+  \int^\infty_0 g(x) dx = \int^\infty_\infty g(x) dx  -  \int^0_{-\infty} g(x)dx
+\end{equation}
+In addition we can easily calculate the cumulative distribution function for a gaussian:
+\begin{equation}
+  \int^x_{-\infty} g(x) dx = A_i * \frac12 [1+\textrm{erf}(\frac{x_i-\mu_i}{\sigma_i})] = A_i * \Phi(\frac{x_i-\mu_i}{\sigma_i})
+\end{equation}
+Thus, 
+\begin{equation}
+  \sum_i^n \int^\infty_0 g_i(x) dx = \sum_i^n ( \int^\infty_{-\infty} g_i(x) dx  -  \int^0_{-\infty} g_i(x)dx)
+\end{equation}
+and,
+\begin{equation}
+  \sum_i^n \int^\infty_0 g_i(x) dx = \sum_i^n ( A_i  - A_i * \frac12 [1+\textrm{erf}(-\frac{\mu_i}{\sigma_i})])
+\end{equation}
+We now arrive at our solution:
+\begin{equation}
+  \sum_i^n \int^\infty_0 g_i(x) dx = \sum_i^n A_i ( 1  -  \Phi(-\frac{\mu_i}{\sigma_i}))
+\end{equation}
+\newline
+\newline
+Additionally, if a user wanted to set the bounds from $[0,\infty]$ to $[0,x]$:
+\begin{equation}
+  \sum_i^n \int^x_0 g_i(x) dx = \sum_i^n A_i ( \Phi(\frac{x_i-\mu_i}{\sigma_i}) - \Phi(-\frac{\mu_i}{\sigma_i}))
+\end{equation}
+
+
+\end{document}
