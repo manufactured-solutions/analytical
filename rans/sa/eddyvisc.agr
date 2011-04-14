@@ -72,39 +72,6 @@
 @map font 72 to "LMTypewriterVarWd10-LightOblique", "LMTypewriterVarWd10-LightOblique"
 @map font 73 to "LMTypewriterVarWd10-Oblique", "LMTypewriterVarWd10-Oblique"
 @map font 74 to "LMTypewriterVarWd10-Regular", "LMTypewriterVarWd10-Regular"
-@map font 75 to "Symbol", "Symbol"
-@map font 76 to "TeXGyreAdventor-Bold", "TeXGyreAdventor-Bold"
-@map font 77 to "TeXGyreAdventor-BoldItalic", "TeXGyreAdventor-BoldItalic"
-@map font 78 to "TeXGyreAdventor-Italic", "TeXGyreAdventor-Italic"
-@map font 79 to "TeXGyreAdventor-Regular", "TeXGyreAdventor-Regular"
-@map font 80 to "TeXGyreBonum-Bold", "TeXGyreBonum-Bold"
-@map font 81 to "TeXGyreBonum-BoldItalic", "TeXGyreBonum-BoldItalic"
-@map font 82 to "TeXGyreBonum-Italic", "TeXGyreBonum-Italic"
-@map font 83 to "TeXGyreBonum-Regular", "TeXGyreBonum-Regular"
-@map font 84 to "TeXGyreChorus-Italic", "TeXGyreChorus-Italic"
-@map font 85 to "TeXGyreCursor-Bold", "TeXGyreCursor-Bold"
-@map font 86 to "TeXGyreCursor-BoldItalic", "TeXGyreCursor-BoldItalic"
-@map font 87 to "TeXGyreCursor-Italic", "TeXGyreCursor-Italic"
-@map font 88 to "TeXGyreCursor-Regular", "TeXGyreCursor-Regular"
-@map font 89 to "TeXGyreHeros-Bold", "TeXGyreHeros-Bold"
-@map font 90 to "TeXGyreHeros-BoldItalic", "TeXGyreHeros-BoldItalic"
-@map font 91 to "TeXGyreHeros-Condensed", "TeXGyreHeros-Condensed"
-@map font 92 to "TeXGyreHeros-CondensedBold", "TeXGyreHeros-CondensedBold"
-@map font 93 to "TeXGyreHeros-CondensedBoldItalic", "TeXGyreHeros-CondensedBoldItalic"
-@map font 94 to "TeXGyreHeros-CondensedItalic", "TeXGyreHeros-CondensedItalic"
-@map font 95 to "TeXGyreHeros-Italic", "TeXGyreHeros-Italic"
-@map font 96 to "TeXGyreHeros-Regular", "TeXGyreHeros-Regular"
-@map font 97 to "TeXGyrePagella-Bold", "TeXGyrePagella-Bold"
-@map font 98 to "TeXGyrePagella-BoldItalic", "TeXGyrePagella-BoldItalic"
-@map font 99 to "TeXGyrePagella-Italic", "TeXGyrePagella-Italic"
-@map font 100 to "TeXGyrePagella-Regular", "TeXGyrePagella-Regular"
-@map font 101 to "TeXGyreSchola-Bold", "TeXGyreSchola-Bold"
-@map font 102 to "TeXGyreSchola-BoldItalic", "TeXGyreSchola-BoldItalic"
-@map font 103 to "TeXGyreSchola-Italic", "TeXGyreSchola-Italic"
-@map font 104 to "TeXGyreSchola-Regular", "TeXGyreSchola-Regular"
-@map font 105 to "TeXGyreTermes-Bold", "TeXGyreTermes-Bold"
-@map font 106 to "TeXGyreTermes-BoldItalic", "TeXGyreTermes-BoldItalic"
-@map font 107 to "TeXGyreTermes-Italic", "TeXGyreTermes-Italic"
 @map color 0 to (255, 255, 255), "white"
 @map color 1 to (0, 0, 0), "black"
 @map color 2 to (255, 0, 0), "red"
@@ -140,17 +107,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Tue Sep  7 00:32:01 2010"
-@with string
-@    string on
-@    string loctype view
-@    string 0.873949579832, 0.751050420168
-@    string color 1
-@    string rot 0
-@    string font 0
-@    string just 0
-@    string char size 1.000000
-@    string def "C=5; A=3.8"
+@timestamp def "Thu Sep 16 17:43:15 2010"
 @r0 off
 @link r0 to g0
 @r0 type above
@@ -219,27 +176,27 @@
 @    xaxis  bar on
 @    xaxis  bar color 1
 @    xaxis  bar linestyle 1
-@    xaxis  bar linewidth 1.0
+@    xaxis  bar linewidth 2.0
 @    xaxis  label ""
 @    xaxis  label layout para
 @    xaxis  label place auto
-@    xaxis  label char size 1.000000
+@    xaxis  label char size 1.480000
 @    xaxis  label font 0
 @    xaxis  label color 1
 @    xaxis  label place normal
 @    xaxis  tick on
 @    xaxis  tick major 0.2
-@    xaxis  tick minor ticks 1
+@    xaxis  tick minor ticks 4
 @    xaxis  tick default 6
 @    xaxis  tick place rounded true
 @    xaxis  tick in
 @    xaxis  tick major size 1.000000
 @    xaxis  tick major color 1
-@    xaxis  tick major linewidth 1.0
+@    xaxis  tick major linewidth 2.0
 @    xaxis  tick major linestyle 1
 @    xaxis  tick major grid off
 @    xaxis  tick minor color 1
-@    xaxis  tick minor linewidth 1.0
+@    xaxis  tick minor linewidth 2.0
 @    xaxis  tick minor linestyle 1
 @    xaxis  tick minor grid off
 @    xaxis  tick minor size 0.500000
@@ -259,7 +216,7 @@
 @    xaxis  ticklabel start 0.000000
 @    xaxis  ticklabel stop type auto
 @    xaxis  ticklabel stop 0.000000
-@    xaxis  ticklabel char size 1.000000
+@    xaxis  ticklabel char size 1.480000
 @    xaxis  ticklabel font 0
 @    xaxis  ticklabel color 1
 @    xaxis  tick place both
@@ -270,27 +227,27 @@
 @    yaxis  bar on
 @    yaxis  bar color 1
 @    yaxis  bar linestyle 1
-@    yaxis  bar linewidth 1.0
+@    yaxis  bar linewidth 2.0
 @    yaxis  label ""
 @    yaxis  label layout para
 @    yaxis  label place auto
-@    yaxis  label char size 1.000000
+@    yaxis  label char size 1.480000
 @    yaxis  label font 0
 @    yaxis  label color 1
 @    yaxis  label place normal
 @    yaxis  tick on
 @    yaxis  tick major 0.2
-@    yaxis  tick minor ticks 1
+@    yaxis  tick minor ticks 4
 @    yaxis  tick default 6
 @    yaxis  tick place rounded true
 @    yaxis  tick in
 @    yaxis  tick major size 1.000000
 @    yaxis  tick major color 1
-@    yaxis  tick major linewidth 1.0
+@    yaxis  tick major linewidth 2.0
 @    yaxis  tick major linestyle 1
 @    yaxis  tick major grid off
 @    yaxis  tick minor color 1
-@    yaxis  tick minor linewidth 1.0
+@    yaxis  tick minor linewidth 2.0
 @    yaxis  tick minor linestyle 1
 @    yaxis  tick minor grid off
 @    yaxis  tick minor size 0.500000
@@ -310,7 +267,7 @@
 @    yaxis  ticklabel start 0.000000
 @    yaxis  ticklabel stop type auto
 @    yaxis  ticklabel stop 0.000000
-@    yaxis  ticklabel char size 1.000000
+@    yaxis  ticklabel char size 1.480000
 @    yaxis  ticklabel font 0
 @    yaxis  ticklabel color 1
 @    yaxis  tick place both
@@ -320,22 +277,22 @@
 @    legend on
 @    legend loctype view
 @    legend 0.85, 0.8
-@    legend box color 1
+@    legend box color 0
 @    legend box pattern 1
-@    legend box linewidth 1.0
-@    legend box linestyle 1
+@    legend box linewidth 1.5
+@    legend box linestyle 0
 @    legend box fill color 0
 @    legend box fill pattern 1
 @    legend font 0
-@    legend char size 1.000000
+@    legend char size 1.250000
 @    legend color 1
-@    legend length 4
-@    legend vgap 1
-@    legend hgap 1
+@    legend length 8
+@    legend vgap 4
+@    legend hgap 2
 @    legend invert false
 @    frame type 0
 @    frame linestyle 1
-@    frame linewidth 1.0
+@    frame linewidth 1.5
 @    frame color 1
 @    frame pattern 1
 @    frame background color 0
@@ -355,7 +312,7 @@
 @    s0 symbol skip 0
 @    s0 line type 1
 @    s0 line linestyle 1
-@    s0 line linewidth 1.0
+@    s0 line linewidth 2.0
 @    s0 line color 1
 @    s0 line pattern 1
 @    s0 baseline type 0
@@ -388,107 +345,107 @@
 @    s0 errorbar riser clip off
 @    s0 errorbar riser clip length 0.100000
 @    s0 comment ""
-@    s0 legend  ""
+@    s0 legend  "nu"
 @target G0.S0
 @type xy
 0 0
-0.01010101 0.049636607
-0.02020202 0.097551992
-0.03030303 0.14376965
-0.04040404 0.18831309
-0.050505051 0.23120579
-0.060606061 0.27247127
-0.070707071 0.31213301
-0.080808081 0.35021452
-0.090909091 0.38673929
-0.1010101 0.42173083
-0.11111111 0.45521262
-0.12121212 0.48720817
-0.13131313 0.51774097
-0.14141414 0.54683453
-0.15151515 0.57451234
-0.16161616 0.6007979
-0.17171717 0.6257147
-0.18181818 0.64928625
-0.19191919 0.67153604
-0.2020202 0.69248757
-0.21212121 0.71216434
-0.22222222 0.73058985
-0.23232323 0.74778759
-0.24242424 0.76378106
-0.25252525 0.77859376
-0.26262626 0.79224919
-0.27272727 0.80477085
-0.28282828 0.81618223
-0.29292929 0.82650683
-0.3030303 0.83576815
-0.31313131 0.84398969
-0.32323232 0.85119494
-0.33333333 0.85740741
-0.34343434 0.86265059
-0.35353535 0.86694797
-0.36363636 0.87032307
-0.37373737 0.87279936
-0.38383838 0.87440037
-0.39393939 0.87514957
-0.4040404 0.87507047
-0.41414141 0.87418657
-0.42424242 0.87252136
-0.43434343 0.87009834
-0.44444444 0.86694102
-0.45454545 0.86307288
-0.46464646 0.85851743
-0.47474747 0.85329816
-0.48484848 0.84743857
-0.49494949 0.84096217
-0.50505051 0.83389244
-0.51515152 0.82625289
-0.52525253 0.81806701
-0.53535354 0.8093583
-0.54545455 0.80015026
-0.55555556 0.79046639
-0.56565657 0.78033019
-0.57575758 0.76976514
-0.58585859 0.75879476
-0.5959596 0.74744254
-0.60606061 0.73573198
-0.61616162 0.72368656
-0.62626263 0.71132981
-0.63636364 0.6986852
-0.64646465 0.68577624
-0.65656566 0.67262643
-0.66666667 0.65925926
-0.67676768 0.64569823
-0.68686869 0.63196685
-0.6969697 0.6180886
-0.70707071 0.60408699
-0.71717172 0.58998551
-0.72727273 0.57580766
-0.73737374 0.56157695
-0.74747475 0.54731686
-0.75757576 0.53305089
-0.76767677 0.51880255
-0.77777778 0.50459534
-0.78787879 0.49045274
-0.7979798 0.47639825
-0.80808081 0.46245539
-0.81818182 0.44864763
-0.82828283 0.43499849
-0.83838384 0.42153146
-0.84848485 0.40827003
-0.85858586 0.39523771
-0.86868687 0.38245798
-0.87878788 0.36995436
-0.88888889 0.35775034
-0.8989899 0.34586942
-0.90909091 0.33433509
-0.91919192 0.32317085
-0.92929293 0.3124002
-0.93939394 0.30204664
-0.94949495 0.29213366
-0.95959596 0.28268477
-0.96969697 0.27372346
-0.97979798 0.26527323
-0.98989899 0.25735758
-1 0.25
+0.02020202 0.010171321
+0.04040404 0.020492423
+0.060606061 0.030977049
+0.080808081 0.04163894
+0.1010101 0.052491838
+0.12121212 0.063549483
+0.14141414 0.074825618
+0.16161616 0.086333983
+0.18181818 0.098088321
+0.2020202 0.11010237
+0.22222222 0.12238988
+0.24242424 0.13496458
+0.26262626 0.14784022
+0.28282828 0.16103055
+0.3030303 0.17454929
+0.32323232 0.18841019
+0.34343434 0.202627
+0.36363636 0.21721346
+0.38383838 0.2321833
+0.4040404 0.24755027
+0.42424242 0.26332811
+0.44444444 0.27953056
+0.46464646 0.29617136
+0.48484848 0.31326426
+0.50505051 0.330823
+0.52525253 0.34886131
+0.54545455 0.36739294
+0.56565657 0.38643163
+0.58585859 0.40599112
+0.60606061 0.42608516
+0.62626263 0.44672747
+0.64646465 0.46793182
+0.66666667 0.48971193
+0.68686869 0.51208156
+0.70707071 0.53505443
+0.72727273 0.55864429
+0.74747475 0.58286489
+0.76767677 0.60772997
+0.78787879 0.63325325
+0.80808081 0.6594485
+0.82828283 0.68632945
+0.84848485 0.71390984
+0.86868687 0.74220341
+0.88888889 0.7712239
+0.90909091 0.80098506
+0.92929293 0.83150062
+0.94949495 0.86278434
+0.96969697 0.89484994
+0.98989899 0.92771117
+1.010101 0.96138178
+1.030303 0.9958755
+1.0505051 1.0312061
+1.0707071 1.0673872
+1.0909091 1.1044328
+1.1111111 1.1423563
+1.1313131 1.1811718
+1.1515152 1.2208927
+1.1717172 1.261533
+1.1919192 1.3031063
+1.2121212 1.3456265
+1.2323232 1.3891071
+1.2525253 1.433562
+1.2727273 1.4790049
+1.2929293 1.5254496
+1.3131313 1.5729098
+1.3333333 1.6213992
+1.3535354 1.6709316
+1.3737374 1.7215207
+1.3939394 1.7731802
+1.4141414 1.825924
+1.4343434 1.8797657
+1.4545455 1.9347191
+1.4747475 1.9907979
+1.4949495 2.0480159
+1.5151515 2.1063868
+1.5353535 2.1659243
+1.5555556 2.2266423
+1.5757576 2.2885544
+1.5959596 2.3516743
+1.6161616 2.4160159
+1.6363636 2.4815928
+1.6565657 2.5484188
+1.6767677 2.6165077
+1.6969697 2.6858731
+1.7171717 2.7565289
+1.7373737 2.8284887
+1.7575758 2.9017664
+1.7777778 2.9763756
+1.7979798 3.05233
+1.8181818 3.1296435
+1.8383838 3.2083298
+1.8585859 3.2884026
+1.8787879 3.3698757
+1.8989899 3.4527627
+1.9191919 3.5370775
+1.9393939 3.6228338
+1.959596 3.7100453
+1.979798 3.7987257
+2 3.8888889
 &

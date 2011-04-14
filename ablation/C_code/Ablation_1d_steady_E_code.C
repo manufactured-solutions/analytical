@@ -13,7 +13,7 @@ double SourceQ_E (
   double alpha,
   double sigma,
   double epsilon,
-  double Function_to_Calculate_h_C3)
+  double Function_to_Calculate_h_C3) 
 {
   double Q_e;
   double P;

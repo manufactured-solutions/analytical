@@ -203,8 +203,6 @@ Analogously to the 1D case, MMS applied to the 2D steady Euler consists in modif
 \end{equation}
 so the modified set of Equations (\ref{eq:euler2d_mod}) has Equation (\ref{eq:manufactured_2d}) as analytical solution.
 
-In the case of $Q_\rho$, $Q_u$, $Q_v$ and $Q_{e_t}$ are conveniently obtained by analytical differentiation of Equation~ ({\ref{eq:manufactured_2d}}) using Equations~ (\ref{eq:euler_01}) -- (\ref{eq:euler_03}) as differential operators, the solution of Equation (\ref{eq:euler2d_mod}) is Equation (\ref{eq:manufactured_2d}).
-
 
 
 
