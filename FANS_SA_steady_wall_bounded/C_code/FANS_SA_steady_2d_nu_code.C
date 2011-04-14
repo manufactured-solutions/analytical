@@ -46,7 +46,7 @@ double SourceQ_nu (double x, double y)
   Omega = sqrt(pow(0.196e3 * x * x * y_plus * d_eqplus_yplus * cos(A / u_inf * u_eq) + 0.15e2 * eta_v * y * y, 0.2e1) * u_tau * u_tau * pow(x, -0.4e1) * pow(y, -0.2e1)) / 0.196e3;
   Sm_orig = NU_SA * pow(kappa, -0.2e1) * pow(d, -0.2e1) * f_v2;
   Sm1 = Sm_orig;
-  Sm2 = Omega * (c_v2 * c_v2 * Omega + c_v3 * Sm_orig) / ((cv_3 + (-0.1e1) * 0.20e1 * c_v2) * Omega - Sm_orig);
+  Sm2 = Omega * (c_v2 * c_v2 * Omega + c_v3 * Sm_orig) / ((c_v3 + (-0.1e1) * 0.20e1 * c_v2) * Omega - Sm_orig);
   if (-c_v2 * Omega <= Sm_orig)
     Sm = Sm1;
   else
