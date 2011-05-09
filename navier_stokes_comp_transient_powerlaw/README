@@ -1,0 +1,19 @@
+A transient manufactured solution for the compressible Navier--Stokes
+equations with a power law viscosity
+
+Documentation:
+
+    writeup.tex: Discussion of the model and the manufactured solution
+    soln.py:     Generates C code for the solution and its derivatives
+                 Included by writeup.tex
+    forcing.c:   Step-by-step details of computing the necessary forcing
+                 Included by writeup.tex
+
+Implementation:
+
+    nsctpl.hpp:  C++ header file implementing the manufactured solution
+                 No namespaces used to allow #include-ing from other code,
+                 possibly within some anonymous namespace.
+    main.cpp:    Very simple driver used to ensure nsctpl.hpp compiles
+                 for several different precisions
+    Makefile:    Used to build main.cpp
