@@ -15,6 +15,7 @@ stepnumber=5,                   % the step between two line-numbers. If it's 1, 
                                 % will be numbered
 numbersep=5pt,                  % how far the line-numbers are from the code
 frame=single,                   % adds a frame around the code
+showstringspaces=false          % underline spaces within strings
 }
 
 \begin{document}
@@ -129,8 +130,8 @@ that users gradually ``turn on'' the more complicated features of the solution
 successful.
 
 The Python-based computer algebra system SymPy (\url{http://sympy.org})
-can both compute the derivatives and output C code for computing them
-at some $x$, $y$, $z$, and $t$:
+can both compute the derivatives and output C code for computing these
+values at some $x$, $y$, $z$, and $t$:
 \lstinputlisting[language=Python]{soln.py}
 
 \section{Forcing terms}
