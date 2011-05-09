@@ -1,0 +1,147 @@
+\documentclass[10pt,reqno]{amsart}
+
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\lstset{ %
+basicstyle=\scriptsize,         % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\tiny,              % the size of the fonts that are used for the line-numbers
+stepnumber=5,                   % the step between two line-numbers. If it's 1, each line
+                                % will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+frame=single,                   % adds a frame around the code
+}
+
+\begin{document}
+
+\title{
+    A transient manufactured solution for the compressible Navier--Stokes
+    equations with a power law viscosity
+}
+\author{Rhys Ulerich}
+
+\begin{abstract}
+A time-varying manufactured solution is presented for the compressible
+Navier--Stokes equations under the assumption of a constant Prandtl number,
+Newtonian perfect gas obeying a power law viscosity.  The solution form
+includes waveforms with adjustable phase offsets and mixed partial derivatives
+to bolster code coverage.  Temperature, rather than pressure, is selected to
+have a simple analytic form to aid verifying codes having temperature-based
+boundary conditions.
+\end{abstract}
+
+\maketitle
+
+\section{Mathematical model}
+
+Under assumptions of
+\begin{itemize}
+\item a Newtonian, compressible, perfect gas;
+\item the fluid's first viscosity obeys a power law in temperature;
+\item the second viscosity is a constant multiple of the first viscosity; and
+\item constant Prandtl number
+\end{itemize}
+the dimensional Navier--Stokes equations may take the form
+\begin{subequations}
+\label{eq:model}
+\begin{align}
+  \frac{\partial}{\partial{}t}\rho
+&=
+  - \nabla\cdot\rho{}\vec{u}
+  + Q_{\rho}
+  \\
+  \frac{\partial{}}{\partial{}t}\rho{}\vec{u}
+&=
+  - \nabla\cdot(\vec{u}\otimes{}\rho{}\vec{u})
+  -\nabla{} p
+  + \nabla\cdot{} \tau
+  + \vec{Q}_{\rho{}u}
+  \\
+  \frac{\partial}{\partial{}t} \rho{}e
+&=
+  - \nabla\cdot{}\rho{}eu
+  + \nabla\cdot{} \frac{\kappa_{r}}{\mu_{r}} \mu \nabla{} T
+  - \nabla\cdot{} p \vec{u}
+  + \nabla\cdot{}\tau{} \vec{u}
+  + Q_{\rho{}e}
+\intertext{
+  with the auxiliary relations
+}
+  p &=   \left(\gamma-1\right)\left(\rho{}e
+       - \rho\frac{\vec{u}\cdot{}\vec{u}}{2} \right)
+  \\
+  T &= \frac{p}{\rho{}R}
+  \\
+  \mu &= \mu_{r} \left( \frac{T}{T_{r}} \right)^{\beta}
+  \\
+  \lambda &= \frac{\lambda_{r}}{\mu_{r}} \mu
+  \\
+  \tau &=   \mu \left( \nabla{}\vec{u} + {\nabla{}\vec{u}}^{\mathsf{T}} \right)
+          + \lambda \left( \nabla\cdot{}\vec{u} \right) I
+\end{align}
+\end{subequations}
+with most symbols having their customary interpretations.  Note $e$ denotes the
+specific total energy and that later we refer to the components of $\vec{u}$ as
+the scalars $u$, $v$, and $w$.  The free constants in the model are the ratio
+of specific heats $\gamma$, the gas constant $R$, the viscosity power law
+exponent $\beta$, and the reference properties $\mu_r$, $T_r$, $\kappa_r$, and
+$\lambda_r$.  Selecting $\lambda_r = - 2 \mu_r / 3$ recovers Stokes'
+hypothesis.  The thermal conductivity $\kappa$ does not appear above as our
+constant Prandtl number assumption and the observation that $\kappa$ increases
+with $\mu$ implies $\mu/\mu_r = \kappa/\kappa_r$.  The arbitrary forcing terms
+$Q_{\rho}$, $\vec{Q}_{\rho{}u}$, and $Q_{\rho{}e}$ will be used to obtain the
+desired manufactured solution.
+
+
+\section{Manufactured solution}
+
+For all $\phi\in\left\{\rho, u, v, w, T\right\}$ we select analytical solutions
+of the form
+\begin{alignat}{20}
+\label{eq:solution}
+  \phi\!\left(x, y, z, t\right)
+&= &&a_{\phi{}0}  &&     &&             &&  &&  &&            &&  &&     &&             &&  &&  &&            &&   &&\sin(&&f_{\phi{}0 } &&t &&+ &&g_{\phi{}0 }&&)       \\
+&+ &&a_{\phi{}x } &&\sin(&&b_{\phi{}x } &&x &&+ &&c_{\phi{}x }&&) &&     &&             &&  &&  &&            &&   &&\sin(&&f_{\phi{}x } &&t &&+ &&g_{\phi{}x }&&) \notag\\
+&+ &&a_{\phi{}xy} &&\sin(&&b_{\phi{}xy} &&x &&+ &&c_{\phi{}xy}&&) &&\sin(&&d_{\phi{}xy} &&y &&+ &&e_{\phi{}xy}&&)  &&\sin(&&f_{\phi{}xy} &&t &&+ &&g_{\phi{}xy}&&) \notag\\
+&+ &&a_{\phi{}xz} &&\sin(&&b_{\phi{}xz} &&x &&+ &&c_{\phi{}xz}&&) &&\sin(&&d_{\phi{}xz} &&z &&+ &&e_{\phi{}xz}&&)  &&\sin(&&f_{\phi{}xz} &&t &&+ &&g_{\phi{}xz}&&) \notag\\
+&+ &&a_{\phi{}y } &&\sin(&&b_{\phi{}y } &&y &&+ &&c_{\phi{}y }&&) &&     &&             &&  &&  &&            &&   &&\sin(&&f_{\phi{}y } &&t &&+ &&g_{\phi{}y }&&) \notag\\
+&+ &&a_{\phi{}yz} &&\sin(&&b_{\phi{}yz} &&y &&+ &&c_{\phi{}yz}&&) &&\sin(&&d_{\phi{}yz} &&z &&+ &&e_{\phi{}yz}&&)  &&\sin(&&f_{\phi{}yz} &&t &&+ &&g_{\phi{}yz}&&) \notag\\
+&+ &&a_{\phi{}z } &&\sin(&&b_{\phi{}z } &&z &&+ &&c_{\phi{}z }&&) &&     &&             &&  &&  &&            &&   &&\sin(&&f_{\phi{}z } &&t &&+ &&g_{\phi{}z }&&) \notag
+\end{alignat}
+where $a$, $b$, $c$, $d$, $e$, $f$, and $g$ are fixed constant collections
+indexed by $\phi$ and one or more directions.  Partial derivatives $\phi_{t }$,
+$\phi_{x }$, $\phi_{y }$, $\phi_{z }$, $\phi_{xx}$, $\phi_{xy}$, $\phi_{xz}$,
+$\phi_{yy}$, $\phi_{yz}$, and $\phi_{zz}$ may be computed directly from the
+chosen solutions.
+
+Though they increase the solution's complexity significantly, mixed partial
+spatial derivatives are included to improve code coverage.  Each term has an
+adjustable amplitude and phase for all involved dimensions.  It is suggested
+that users gradually ``turn on'' the more complicated features of the solution
+(i.e. use non-zero coefficients) after ensuring simpler usage is successful.
+
+The Python-based computer algebra system SymPy (\url{http://sympy.org})
+can both compute the derivatives and output C code for computing them
+at some $x$, $y$, $z$, and $t$:
+\lstinputlisting[language=Python]{soln.py}
+
+\section{Forcing terms}
+
+The solutions given by \eqref{eq:solution} may be plugged into \eqref{eq:model}
+and solved for the forcing terms $Q_{\rho}$, $\vec{Q}_{\rho{}u}$, and
+$Q_{\rho{}e}$.  Solving for these terms entirely within the context of a
+computer algebra system causes an unwieldy explosion of terms.  Instead,
+starting from the solution and its the analytic derivatives, we use basic
+calculus and algebraic operations performed in floating point to obtain the
+necessary forcing.  The errors arising in this process behave like standard
+floating point truncation issues.
+
+In a C-like language the forcing computation looks as follows:
+\lstinputlisting[language=C]{forcing.c}
+
+\end{document}
