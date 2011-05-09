@@ -10,7 +10,7 @@
 /*     Q_rho, Q_rhou, Q_rhov, Q_rhow, Q_rhoe                   */
 /* necessary to force the solution rho, u, v, w, and T.        */
 
-/* Computations stemming from the constitutive relations */
+/* Computations stemming from the constitutive relationships */
 e        = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2;
 e_x      = R * T_x / (gamma - 1) + (u*u_x + v*v_x + w*w_x);
 e_y      = R * T_y / (gamma - 1) + (u*u_y + v*v_y + w*w_y);
@@ -28,14 +28,11 @@ lambda   = lambda_r / mu_r * mu;
 lambda_x = lambda_r / mu_r * mu_x;
 lambda_y = lambda_r / mu_r * mu_y;
 lambda_z = lambda_r / mu_r * mu_z;
-qx       = - k_r / mu_r * mu * T_x;
-qy       = - k_r / mu_r * mu * T_y;
-qz       = - k_r / mu_r * mu * T_z;
-qx_x     = - k_r / mu_r * (mu_x * T_x + mu * T_xx);
-qy_y     = - k_r / mu_r * (mu_y * T_y + mu * T_yy);
-qz_z     = - k_r / mu_r * (mu_z * T_z + mu * T_zz);
+qx_x     = k_r / mu_r * (mu_x * T_x + mu * T_xx);
+qy_y     = k_r / mu_r * (mu_y * T_y + mu * T_yy);
+qz_z     = k_r / mu_r * (mu_z * T_z + mu * T_zz);
 
-/* Computations stemming from the compressible Newtonian fluid model */
+/* Computations stemming from the compressible, Newtonian fluid model */
 rhou    = rho * u;
 rhov    = rho * v;
 rhow    = rho * w;
