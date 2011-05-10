@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 
+#include "nsctpl_fwd.hpp"
 #include "nsctpl.hpp"
 
 // Explicitly instantiate the solution for several floating point types
