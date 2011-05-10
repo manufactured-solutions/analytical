@@ -169,13 +169,13 @@ public:
     Scalar eval_exact_e  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_p  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_mu (Scalar x, Scalar y, Scalar z, Scalar t) const;
+    Scalar eval_g_e      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
+    Scalar eval_g_p      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
+    Scalar eval_g_mu     (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
     Scalar eval_q_rho    (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_q_rho_u  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_q_rho_v  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_q_rho_w  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_q_rho_e  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_g_e      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
-    Scalar eval_g_p      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
-    Scalar eval_g_mu     (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
 
 }; // end class

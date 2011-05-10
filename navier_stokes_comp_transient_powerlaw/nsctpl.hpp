@@ -1,3 +1,7 @@
+// ---------------------------------------------------------------------------
+// nsctpl_solution<Scalar> member implementations
+// ---------------------------------------------------------------------------
+
 template<typename Scalar>
 Scalar nsctpl_solution<Scalar>::operator()(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
@@ -62,4 +66,531 @@ template<typename Scalar>
 Scalar nsctpl_solution<Scalar>::_zz(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return -a_z*::std::pow(b_z,static_cast<Scalar>(2))*::std::cos(g_z + f_z*t)*::std::cos(c_z + b_z*z) - a_xz*::std::pow(d_xz,static_cast<Scalar>(2))*::std::cos(c_xz + b_xz*x)*::std::cos(g_xz + f_xz*t)*::std::cos(e_xz + d_xz*z) - a_yz*::std::pow(d_yz,static_cast<Scalar>(2))*::std::cos(c_yz + b_yz*y)*::std::cos(e_yz + d_yz*z)*::std::cos(g_yz + f_yz*t);
+}
+
+// ---------------------------------------------------------------------------
+// nsctpl<Scalar> analytical member implementations
+// ---------------------------------------------------------------------------
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_exact_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    return an_rho(x, y, z, t);
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_exact_u(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    return an_u(x, y, z, t);
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_exact_v(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    return an_v(x, y, z, t);
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_exact_w(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    return an_w(x, y, z, t);
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_exact_T(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    return an_T(x, y, z, t);
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_g_rho(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+{
+    switch (dir) {
+        case 1:  return an_rho._x(x, y, z, t);
+        case 2:  return an_rho._y(x, y, z, t);
+        case 3:  return an_rho._z(x, y, z, t);
+        default: return ::std::numeric_limits<Scalar>::signaling_NaN();
+    }
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_g_u(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+{
+    switch (dir) {
+        case 1:  return an_u._x(x, y, z, t);
+        case 2:  return an_u._y(x, y, z, t);
+        case 3:  return an_u._z(x, y, z, t);
+        default: return ::std::numeric_limits<Scalar>::signaling_NaN();
+    }
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_g_v(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+{
+    switch (dir) {
+        case 1:  return an_v._x(x, y, z, t);
+        case 2:  return an_v._y(x, y, z, t);
+        case 3:  return an_v._z(x, y, z, t);
+        default: return ::std::numeric_limits<Scalar>::signaling_NaN();
+    }
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_g_w(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+{
+    switch (dir) {
+        case 1:  return an_w._x(x, y, z, t);
+        case 2:  return an_w._y(x, y, z, t);
+        case 3:  return an_w._z(x, y, z, t);
+        default: return ::std::numeric_limits<Scalar>::signaling_NaN();
+    }
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_g_T(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+{
+    switch (dir) {
+        case 1:  return an_T._x(x, y, z, t);
+        case 2:  return an_T._y(x, y, z, t);
+        case 3:  return an_T._z(x, y, z, t);
+        default: return ::std::numeric_limits<Scalar>::signaling_NaN();
+    }
+}
+
+// ---------------------------------------------------------------------------
+// nsctpl<Scalar> member implementations derived from analytical results
+// ---------------------------------------------------------------------------
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_exact_e(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    const Scalar T = an_T(x, y, z, t);
+    const Scalar u = an_u(x, y, z, t);
+    const Scalar v = an_v(x, y, z, t);
+    const Scalar w = an_w(x, y, z, t);
+    const Scalar e = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2;
+    return e;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_exact_p(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    const Scalar T   = an_T(x, y, z, t);
+    const Scalar rho = an_rho(x, y, z, t);
+    const Scalar p   = rho * R * T;
+    return p;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_exact_mu(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    const Scalar T  = an_T(x, y, z, t);
+    const Scalar mu = mu_r * ::std::pow(T / T_r, beta);
+    return mu;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_g_e(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+{
+    const Scalar u = an_u(x, y, z, t);
+    const Scalar v = an_v(x, y, z, t);
+    const Scalar w = an_w(x, y, z, t);
+    Scalar dT, du, dv, dw;
+    switch (dir) {
+        case 1:
+            dT = an_T._x(x, y, z, t);
+            du = an_u._x(x, y, z, t);
+            dv = an_v._x(x, y, z, t);
+            dw = an_w._x(x, y, z, t);
+            break;
+        case 2:
+            dT = an_T._y(x, y, z, t);
+            du = an_u._y(x, y, z, t);
+            dv = an_v._y(x, y, z, t);
+            dw = an_w._y(x, y, z, t);
+            break;
+        case 3:
+            dT = an_T._z(x, y, z, t);
+            du = an_u._z(x, y, z, t);
+            dv = an_v._z(x, y, z, t);
+            dw = an_w._z(x, y, z, t);
+            break;
+        default: return ::std::numeric_limits<Scalar>::signaling_NaN();
+    }
+    const Scalar de = R * dT / (gamma - 1) + (u*du + v*dv + w*dw);
+    return de;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_g_p(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+{
+    const Scalar rho = an_rho(x, y, z, t);
+    const Scalar T   = an_rho(x, y, z, t);
+    Scalar drho, dT;
+    switch (dir) {
+        case 1:
+            dT   = an_T._x(x, y, z, t);
+            drho = an_rho._x(x, y, z, t);
+            break;
+        case 2:
+            dT   = an_T._y(x, y, z, t);
+            drho = an_rho._y(x, y, z, t);
+            break;
+        case 3:
+            dT   = an_T._z(x, y, z, t);
+            drho = an_rho._y(x, y, z, t);
+            break;
+        default: return ::std::numeric_limits<Scalar>::signaling_NaN();
+    }
+    const Scalar dp = drho * R * T + rho * R * dT;
+    return dp;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_g_mu(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+{
+    const Scalar T = an_rho(x, y, z, t);
+    Scalar dT;
+    switch (dir) {
+        case 1:
+            dT = an_T._x(x, y, z, t);
+            break;
+        case 2:
+            dT = an_T._y(x, y, z, t);
+            break;
+        case 3:
+            dT = an_T._z(x, y, z, t);
+            break;
+        default: return ::std::numeric_limits<Scalar>::signaling_NaN();
+    }
+    const Scalar dmu = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * dT;
+    return dmu;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_q_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    const Scalar rho   = an_rho   (x, y, z, t);
+    const Scalar rho_t = an_rho._t(x, y, z, t);
+    const Scalar rho_x = an_rho._x(x, y, z, t);
+    const Scalar rho_y = an_rho._y(x, y, z, t);
+    const Scalar rho_z = an_rho._z(x, y, z, t);
+
+    const Scalar u     = an_u   (x, y, z, t);
+    const Scalar u_x   = an_u._x(x, y, z, t);
+
+    const Scalar v     = an_v   (x, y, z, t);
+    const Scalar v_y   = an_v._y(x, y, z, t);
+
+    const Scalar w     = an_w   (x, y, z, t);
+    const Scalar w_z   = an_w._z(x, y, z, t);
+
+    /* Computations stemming from the compressible, Newtonian fluid model */
+    const Scalar rhou_x  = rho_x * u + rho * u_x;
+    const Scalar rhov_y  = rho_y * v + rho * v_y;
+    const Scalar rhow_z  = rho_z * w + rho * w_z;
+    const Scalar Q_rho   = rho_t  + rhou_x + rhov_y + rhow_z;
+    return Q_rho;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_q_rho_u(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    const Scalar rho   = an_rho   (x, y, z, t);
+    const Scalar rho_t = an_rho._t(x, y, z, t);
+    const Scalar rho_x = an_rho._x(x, y, z, t);
+    const Scalar rho_y = an_rho._y(x, y, z, t);
+    const Scalar rho_z = an_rho._z(x, y, z, t);
+
+    const Scalar u    = an_u    (x, y, z, t);
+    const Scalar u_t  = an_u._t (x, y, z, t);
+    const Scalar u_x  = an_u._x (x, y, z, t);
+    const Scalar u_xx = an_u._xx(x, y, z, t);
+    const Scalar u_y  = an_u._y (x, y, z, t);
+    const Scalar u_yy = an_u._yy(x, y, z, t);
+    const Scalar u_z  = an_u._z (x, y, z, t);
+    const Scalar u_zz = an_u._zz(x, y, z, t);
+
+    const Scalar v    = an_v    (x, y, z, t);
+    const Scalar v_x  = an_v._x (x, y, z, t);
+    const Scalar v_xy = an_v._xy(x, y, z, t);
+    const Scalar v_y  = an_v._y (x, y, z, t);
+
+    const Scalar w    = an_w    (x, y, z, t);
+    const Scalar w_x  = an_w._x (x, y, z, t);
+    const Scalar w_xz = an_w._xz(x, y, z, t);
+    const Scalar w_z  = an_w._z (x, y, z, t);
+
+    const Scalar T    = an_T    (x, y, z, t);
+    const Scalar T_x  = an_T._x (x, y, z, t);
+    const Scalar T_y  = an_T._y (x, y, z, t);
+    const Scalar T_z  = an_T._z (x, y, z, t);
+
+    /* Computations stemming from the constitutive relationships */
+    const Scalar p_x      = rho_x * R * T + rho * R * T_x;
+    const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
+    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_x;
+    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_y;
+    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_z;
+    const Scalar lambda   = lambda_r / mu_r * mu;
+    const Scalar lambda_x = lambda_r / mu_r * mu_x;
+
+    /* Computations stemming from the compressible, Newtonian fluid model */
+    const Scalar rhou_t  = rho_t * u + rho * u_t;
+
+    const Scalar rhouu_x = (rho_x * u * u) + (rho * u_x * u) + (rho * u * u_x);
+    const Scalar rhouv_y = (rho_y * u * v) + (rho * u_y * v) + (rho * u * v_y);
+    const Scalar rhouw_z = (rho_z * u * w) + (rho * u_z * w) + (rho * u * w_z);
+
+    const Scalar tauxx_x = mu_x * (u_x  + u_x ) + lambda_x * (u_x  + v_y  + w_z )
+                         + mu   * (u_xx + u_xx) + lambda   * (u_xx + v_xy + w_xz);
+
+    const Scalar tauxy_y = mu_y * (u_y + v_x) + mu * (u_yy + v_xy);
+    const Scalar tauxz_z = mu_z * (u_z + w_x) + mu * (u_zz + w_xz);
+
+    const Scalar Q_rhou = rhou_t + rhouu_x + rhouv_y + rhouw_z + p_x - tauxx_x - tauxy_y - tauxz_z;
+
+    return Q_rhou;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_q_rho_v(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    const Scalar rho   = an_rho   (x, y, z, t);
+    const Scalar rho_t = an_rho._t(x, y, z, t);
+    const Scalar rho_x = an_rho._x(x, y, z, t);
+    const Scalar rho_y = an_rho._y(x, y, z, t);
+    const Scalar rho_z = an_rho._z(x, y, z, t);
+
+    const Scalar u    = an_u    (x, y, z, t);
+    const Scalar u_x  = an_u._x (x, y, z, t);
+    const Scalar u_xy = an_u._xy(x, y, z, t);
+    const Scalar u_y  = an_u._y (x, y, z, t);
+
+    const Scalar v    = an_v    (x, y, z, t);
+    const Scalar v_t  = an_v._t (x, y, z, t);
+    const Scalar v_x  = an_v._x (x, y, z, t);
+    const Scalar v_xx = an_v._xx(x, y, z, t);
+    const Scalar v_y  = an_v._y (x, y, z, t);
+    const Scalar v_yy = an_v._yy(x, y, z, t);
+    const Scalar v_z  = an_v._z (x, y, z, t);
+    const Scalar v_zz = an_v._zz(x, y, z, t);
+
+    const Scalar w    = an_w    (x, y, z, t);
+    const Scalar w_y  = an_w._y (x, y, z, t);
+    const Scalar w_yz = an_w._yz(x, y, z, t);
+    const Scalar w_z  = an_w._z (x, y, z, t);
+
+    const Scalar T    = an_T    (x, y, z, t);
+    const Scalar T_x  = an_T._x (x, y, z, t);
+    const Scalar T_y  = an_T._y (x, y, z, t);
+    const Scalar T_z  = an_T._z (x, y, z, t);
+
+    /* Computations stemming from the constitutive relationships */
+    const Scalar p_y      = rho_y * R * T + rho * R * T_y;
+    const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
+    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_x;
+    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_y;
+    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_z;
+    const Scalar lambda   = lambda_r / mu_r * mu;
+    const Scalar lambda_y = lambda_r / mu_r * mu_y;
+
+    /* Computations stemming from the compressible, Newtonian fluid model */
+    const Scalar rhov_t  = rho_t * v + rho * v_t;
+
+    const Scalar rhouv_x = (rho_x * u * v) + (rho * u_x * v) + (rho * u * v_x);
+    const Scalar rhovv_y = (rho_y * v * v) + (rho * v_y * v) + (rho * v * v_y);
+    const Scalar rhovw_z = (rho_z * v * w) + (rho * v_z * w) + (rho * v * w_z);
+
+    const Scalar tauyy_y = mu_y * (v_y  + v_y ) + lambda_y * (u_x  + v_y  + w_z )
+                         + mu   * (v_yy + v_yy) + lambda   * (u_xy + v_yy + w_yz);
+
+    const Scalar tauxy_x = mu_x * (u_y + v_x) + mu * (u_xy + v_xx);
+    const Scalar tauyz_z = mu_z * (v_z + w_y) + mu * (v_zz + w_yz);
+
+    const Scalar Q_rhov = rhov_t + rhouv_x + rhovv_y + rhovw_z + p_y - tauxy_x - tauyy_y - tauyz_z;
+
+    return Q_rhov;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_q_rho_w(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    const Scalar rho   = an_rho   (x, y, z, t);
+    const Scalar rho_t = an_rho._t(x, y, z, t);
+    const Scalar rho_x = an_rho._x(x, y, z, t);
+    const Scalar rho_y = an_rho._y(x, y, z, t);
+    const Scalar rho_z = an_rho._z(x, y, z, t);
+
+    const Scalar u    = an_u    (x, y, z, t);
+    const Scalar u_x  = an_u._x (x, y, z, t);
+    const Scalar u_xz = an_u._xz(x, y, z, t);
+    const Scalar u_z  = an_u._z (x, y, z, t);
+
+    const Scalar v    = an_v    (x, y, z, t);
+    const Scalar v_y  = an_v._y (x, y, z, t);
+    const Scalar v_yz = an_v._yz(x, y, z, t);
+    const Scalar v_z  = an_v._z (x, y, z, t);
+
+    const Scalar w    = an_w    (x, y, z, t);
+    const Scalar w_t  = an_w._t (x, y, z, t);
+    const Scalar w_x  = an_w._x (x, y, z, t);
+    const Scalar w_xx = an_w._xx(x, y, z, t);
+    const Scalar w_y  = an_w._y (x, y, z, t);
+    const Scalar w_yy = an_w._yy(x, y, z, t);
+    const Scalar w_z  = an_w._z (x, y, z, t);
+    const Scalar w_zz = an_w._zz(x, y, z, t);
+
+    const Scalar T    = an_T    (x, y, z, t);
+    const Scalar T_x  = an_T._x (x, y, z, t);
+    const Scalar T_y  = an_T._y (x, y, z, t);
+    const Scalar T_z  = an_T._z (x, y, z, t);
+
+    /* Computations stemming from the constitutive relationships */
+    const Scalar p_z      = rho_z * R * T + rho * R * T_z;
+    const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
+    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_x;
+    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_y;
+    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_z;
+    const Scalar lambda   = lambda_r / mu_r * mu;
+    const Scalar lambda_z = lambda_r / mu_r * mu_z;
+
+    /* Computations stemming from the compressible, Newtonian fluid model */
+    const Scalar rhow_t  = rho_t * w + rho * w_t;
+
+    const Scalar rhouw_x = (rho_x * u * w) + (rho * u_x * w) + (rho * u * w_x);
+    const Scalar rhovw_y = (rho_y * v * w) + (rho * v_y * w) + (rho * v * w_y);
+    const Scalar rhoww_z = (rho_z * w * w) + (rho * w_z * w) + (rho * w * w_z);
+
+    const Scalar tauzz_z = mu_z * (w_z  + w_z ) + lambda_z * (u_x  + v_y  + w_z )
+                         + mu   * (w_zz + w_zz) + lambda   * (u_xz + v_yz + w_zz);
+
+    const Scalar tauxz_x = mu_x * (u_z + w_x) + mu * (u_xz + w_xx);
+    const Scalar tauyz_y = mu_y * (v_z + w_y) + mu * (v_yz + w_yy);
+
+    const Scalar Q_rhow = rhow_t + rhouw_x + rhovw_y + rhoww_z + p_z - tauxz_x - tauyz_y - tauzz_z;
+
+    return Q_rhow;
+}
+
+template<typename Scalar>
+Scalar nsctpl<Scalar>::eval_q_rho_e(Scalar x, Scalar y, Scalar z, Scalar t) const
+{
+    const Scalar rho   = an_rho   (x, y, z, t);
+    const Scalar rho_t = an_rho._t(x, y, z, t);
+    const Scalar rho_x = an_rho._x(x, y, z, t);
+    const Scalar rho_y = an_rho._y(x, y, z, t);
+    const Scalar rho_z = an_rho._z(x, y, z, t);
+
+    const Scalar u    = an_u    (x, y, z, t);
+    const Scalar u_t  = an_u._t (x, y, z, t);
+    const Scalar u_x  = an_u._x (x, y, z, t);
+    const Scalar u_xx = an_u._xx(x, y, z, t);
+    const Scalar u_xy = an_u._xy(x, y, z, t);
+    const Scalar u_xz = an_u._xz(x, y, z, t);
+    const Scalar u_y  = an_u._y (x, y, z, t);
+    const Scalar u_yy = an_u._yy(x, y, z, t);
+    const Scalar u_z  = an_u._z (x, y, z, t);
+    const Scalar u_zz = an_u._zz(x, y, z, t);
+
+    const Scalar v    = an_v    (x, y, z, t);
+    const Scalar v_t  = an_v._t (x, y, z, t);
+    const Scalar v_x  = an_v._x (x, y, z, t);
+    const Scalar v_xx = an_v._xx(x, y, z, t);
+    const Scalar v_xy = an_v._xy(x, y, z, t);
+    const Scalar v_y  = an_v._y (x, y, z, t);
+    const Scalar v_yy = an_v._yy(x, y, z, t);
+    const Scalar v_yz = an_v._yz(x, y, z, t);
+    const Scalar v_z  = an_v._z (x, y, z, t);
+    const Scalar v_zz = an_v._zz(x, y, z, t);
+
+    const Scalar w    = an_w    (x, y, z, t);
+    const Scalar w_t  = an_w._t (x, y, z, t);
+    const Scalar w_x  = an_w._x (x, y, z, t);
+    const Scalar w_xx = an_w._xx(x, y, z, t);
+    const Scalar w_xz = an_w._xz(x, y, z, t);
+    const Scalar w_y  = an_w._y (x, y, z, t);
+    const Scalar w_yy = an_w._yy(x, y, z, t);
+    const Scalar w_yz = an_w._yz(x, y, z, t);
+    const Scalar w_z  = an_w._z (x, y, z, t);
+    const Scalar w_zz = an_w._zz(x, y, z, t);
+
+    const Scalar T    = an_T    (x, y, z, t);
+    const Scalar T_t  = an_T._t (x, y, z, t);
+    const Scalar T_x  = an_T._x (x, y, z, t);
+    const Scalar T_xx = an_T._xx(x, y, z, t);
+    const Scalar T_y  = an_T._y (x, y, z, t);
+    const Scalar T_yy = an_T._yy(x, y, z, t);
+    const Scalar T_z  = an_T._z (x, y, z, t);
+    const Scalar T_zz = an_T._zz(x, y, z, t);
+
+    /* Computations stemming from the constitutive relationships */
+    const Scalar e        = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2;
+    const Scalar e_x      = R * T_x / (gamma - 1) + (u*u_x + v*v_x + w*w_x);
+    const Scalar e_y      = R * T_y / (gamma - 1) + (u*u_y + v*v_y + w*w_y);
+    const Scalar e_z      = R * T_z / (gamma - 1) + (u*u_z + v*v_z + w*w_z);
+    const Scalar e_t      = R * T_t / (gamma - 1) + (u*u_t + v*v_t + w*w_t);
+    const Scalar p        = rho * R * T;
+    const Scalar p_x      = rho_x * R * T + rho * R * T_x;
+    const Scalar p_y      = rho_y * R * T + rho * R * T_y;
+    const Scalar p_z      = rho_z * R * T + rho * R * T_z;
+    const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
+    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_x;
+    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_y;
+    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_z;
+    const Scalar lambda   = lambda_r / mu_r * mu;
+    const Scalar lambda_x = lambda_r / mu_r * mu_x;
+    const Scalar lambda_y = lambda_r / mu_r * mu_y;
+    const Scalar lambda_z = lambda_r / mu_r * mu_z;
+    const Scalar qx_x     = k_r / mu_r * (mu_x * T_x + mu * T_xx);
+    const Scalar qy_y     = k_r / mu_r * (mu_y * T_y + mu * T_yy);
+    const Scalar qz_z     = k_r / mu_r * (mu_z * T_z + mu * T_zz);
+
+    /* Computations stemming from the compressible, Newtonian fluid model */
+    const Scalar rhoe_t  = rho_t * e + rho * e_t;
+
+    const Scalar rhoue_x = (rho_x * u * e) + (rho * u_x * e) + (rho * u * e_x);
+    const Scalar rhove_y = (rho_y * v * e) + (rho * v_y * e) + (rho * v * e_y);
+    const Scalar rhowe_z = (rho_z * w * e) + (rho * w_z * e) + (rho * w * e_z);
+
+    const Scalar tauxx = mu * (u_x + u_x) + lambda * (u_x + v_y + w_z);
+    const Scalar tauyy = mu * (v_y + v_y) + lambda * (u_x + v_y + w_z);
+    const Scalar tauzz = mu * (w_z + w_z) + lambda * (u_x + v_y + w_z);
+    const Scalar tauxy = mu * (u_y + v_x);
+    const Scalar tauxz = mu * (u_z + w_x);
+    const Scalar tauyz = mu * (v_z + w_y);
+
+    const Scalar tauxx_x = mu_x * (u_x  + u_x ) + lambda_x * (u_x  + v_y  + w_z )
+                         + mu   * (u_xx + u_xx) + lambda   * (u_xx + v_xy + w_xz);
+    const Scalar tauyy_y = mu_y * (v_y  + v_y ) + lambda_y * (u_x  + v_y  + w_z )
+                         + mu   * (v_yy + v_yy) + lambda   * (u_xy + v_yy + w_yz);
+    const Scalar tauzz_z = mu_z * (w_z  + w_z ) + lambda_z * (u_x  + v_y  + w_z )
+                         + mu   * (w_zz + w_zz) + lambda   * (u_xz + v_yz + w_zz);
+
+    const Scalar tauxy_x = mu_x * (u_y + v_x) + mu * (u_xy + v_xx);
+    const Scalar tauxy_y = mu_y * (u_y + v_x) + mu * (u_yy + v_xy);
+    const Scalar tauxz_x = mu_x * (u_z + w_x) + mu * (u_xz + w_xx);
+    const Scalar tauxz_z = mu_z * (u_z + w_x) + mu * (u_zz + w_xz);
+    const Scalar tauyz_y = mu_y * (v_z + w_y) + mu * (v_yz + w_yy);
+    const Scalar tauyz_z = mu_z * (v_z + w_y) + mu * (v_zz + w_yz);
+
+    const Scalar pu_x = p_x * u + p * u_x;
+    const Scalar pv_y = p_y * v + p * v_y;
+    const Scalar pw_z = p_z * w + p * w_z;
+    const Scalar utauxx_x = u_x * tauxx + u * tauxx_x;
+    const Scalar vtauxy_x = v_x * tauxy + v * tauxy_x;
+    const Scalar wtauxz_x = w_x * tauxz + w * tauxz_x;
+    const Scalar utauxy_y = u_y * tauxy + u * tauxy_y;
+    const Scalar vtauyy_y = v_y * tauyy + v * tauyy_y;
+    const Scalar wtauyz_y = w_y * tauyz + w * tauyz_y;
+    const Scalar utauxz_z = u_z * tauxz + u * tauxz_z;
+    const Scalar vtauyz_z = v_z * tauyz + v * tauyz_z;
+    const Scalar wtauzz_z = w_z * tauzz + w * tauzz_z;
+
+    const Scalar Q_rhoe = rhoe_t + rhoue_x + rhove_y + rhowe_z + pu_x + pv_y + pw_z + qx_x + qy_y + qz_z
+                                 - utauxx_x - vtauxy_x - wtauxz_x
+                                 - utauxy_y - vtauyy_y - wtauyz_y
+                                 - utauxz_z - vtauyz_z - wtauzz_z;
+
+    return Q_rhoe;
 }

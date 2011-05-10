@@ -13,6 +13,11 @@ template class nsctpl_solution<float>;
 template class nsctpl_solution<double>;
 template class nsctpl_solution<long double>;
 
+// Explicitly instantiate the manufactured forcing
+template class nsctpl<float>;
+// template class nsctpl_solution<double>; // FIXME
+// template class nsctpl_solution<long double>; // FIXME
+
 // Used to output each solution parameter on std::cout
 void printer(const std::string &name, double value) {
     std::cout << '\t' << name << " = " << value << std::endl;
