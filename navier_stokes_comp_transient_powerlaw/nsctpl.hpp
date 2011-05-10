@@ -270,6 +270,7 @@ Scalar nsctpl<Scalar>::eval_g_mu(Scalar x, Scalar y, Scalar z, Scalar t, int dir
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
+    /* Computations retrieving manufactured solution details */
     const Scalar rho   = an_rho   (x, y, z, t);
     const Scalar rho_t = an_rho._t(x, y, z, t);
     const Scalar rho_x = an_rho._x(x, y, z, t);
@@ -296,6 +297,7 @@ Scalar nsctpl<Scalar>::eval_q_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho_u(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
+    /* Computations retrieving manufactured solution details */
     const Scalar rho   = an_rho   (x, y, z, t);
     const Scalar rho_t = an_rho._t(x, y, z, t);
     const Scalar rho_x = an_rho._x(x, y, z, t);
@@ -356,6 +358,7 @@ Scalar nsctpl<Scalar>::eval_q_rho_u(Scalar x, Scalar y, Scalar z, Scalar t) cons
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho_v(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
+    /* Computations retrieving manufactured solution details */
     const Scalar rho   = an_rho   (x, y, z, t);
     const Scalar rho_t = an_rho._t(x, y, z, t);
     const Scalar rho_x = an_rho._x(x, y, z, t);
@@ -416,6 +419,7 @@ Scalar nsctpl<Scalar>::eval_q_rho_v(Scalar x, Scalar y, Scalar z, Scalar t) cons
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho_w(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
+    /* Computations retrieving manufactured solution details */
     const Scalar rho   = an_rho   (x, y, z, t);
     const Scalar rho_t = an_rho._t(x, y, z, t);
     const Scalar rho_x = an_rho._x(x, y, z, t);
@@ -476,6 +480,7 @@ Scalar nsctpl<Scalar>::eval_q_rho_w(Scalar x, Scalar y, Scalar z, Scalar t) cons
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho_e(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
+    /* Computations retrieving manufactured solution details */
     const Scalar rho   = an_rho   (x, y, z, t);
     const Scalar rho_t = an_rho._t(x, y, z, t);
     const Scalar rho_x = an_rho._x(x, y, z, t);
