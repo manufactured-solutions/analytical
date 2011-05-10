@@ -8,9 +8,9 @@
 #include "nsctpl.hpp"
 
 // Explicitly instantiate the solution for several floating point types
-template class solution<float>;
-template class solution<double>;
-template class solution<long double>;
+template class nsctpl_solution<float>;
+template class nsctpl_solution<double>;
+template class nsctpl_solution<long double>;
 
 // Used to output each solution parameter on std::cout
 void printer(const std::string &name, double value) {
@@ -29,7 +29,7 @@ void initter(const std::string &name, double& value) {
 int main(int argc, char *argv[])
 {
     const double x = 0.5, y = 0.6, z = 0.7, t = 0.8;
-    solution<double> soln_rho("rho");
+    nsctpl_solution<double> soln_rho("rho");
 
     std::cout << "Parameters after construction:" << std::endl;
     soln_rho.forall_parameters(printer);
