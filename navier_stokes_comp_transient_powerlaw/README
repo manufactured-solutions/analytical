@@ -15,5 +15,5 @@ Implementation:
                  No namespaces used to allow #include-ing from other code,
                  possibly within some anonymous namespace.
     main.cpp:    Very simple driver used to ensure nsctpl.hpp compiles
-                 for several different precisions
+                 at several different precisions and behaves sanely.
     Makefile:    Used to build main.cpp

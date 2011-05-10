@@ -108,13 +108,13 @@ of the form
 \begin{alignat}{20}
 \label{eq:solution}
   \phi\!\left(x, y, z, t\right)
-&= &&a_{\phi{}0}  &&     &&             &&  &&  &&            &&  &&     &&             &&  &&  &&            &&   &&\sin(&&f_{\phi{}0 } &&t &&+ &&g_{\phi{}0 }&&)       \\
-&+ &&a_{\phi{}x } &&\sin(&&b_{\phi{}x } &&x &&+ &&c_{\phi{}x }&&) &&     &&             &&  &&  &&            &&   &&\sin(&&f_{\phi{}x } &&t &&+ &&g_{\phi{}x }&&) \notag\\
-&+ &&a_{\phi{}xy} &&\sin(&&b_{\phi{}xy} &&x &&+ &&c_{\phi{}xy}&&) &&\sin(&&d_{\phi{}xy} &&y &&+ &&e_{\phi{}xy}&&)  &&\sin(&&f_{\phi{}xy} &&t &&+ &&g_{\phi{}xy}&&) \notag\\
-&+ &&a_{\phi{}xz} &&\sin(&&b_{\phi{}xz} &&x &&+ &&c_{\phi{}xz}&&) &&\sin(&&d_{\phi{}xz} &&z &&+ &&e_{\phi{}xz}&&)  &&\sin(&&f_{\phi{}xz} &&t &&+ &&g_{\phi{}xz}&&) \notag\\
-&+ &&a_{\phi{}y } &&\sin(&&b_{\phi{}y } &&y &&+ &&c_{\phi{}y }&&) &&     &&             &&  &&  &&            &&   &&\sin(&&f_{\phi{}y } &&t &&+ &&g_{\phi{}y }&&) \notag\\
-&+ &&a_{\phi{}yz} &&\sin(&&b_{\phi{}yz} &&y &&+ &&c_{\phi{}yz}&&) &&\sin(&&d_{\phi{}yz} &&z &&+ &&e_{\phi{}yz}&&)  &&\sin(&&f_{\phi{}yz} &&t &&+ &&g_{\phi{}yz}&&) \notag\\
-&+ &&a_{\phi{}z } &&\sin(&&b_{\phi{}z } &&z &&+ &&c_{\phi{}z }&&) &&     &&             &&  &&  &&            &&   &&\sin(&&f_{\phi{}z } &&t &&+ &&g_{\phi{}z }&&) \notag
+&= &&a_{\phi{}0}  &&     &&             &&  &&  &&            &&  &&     &&             &&  &&  &&            &&   &&\cos(&&f_{\phi{}0 } &&t &&+ &&g_{\phi{}0 }&&)       \\
+&+ &&a_{\phi{}x } &&\cos(&&b_{\phi{}x } &&x &&+ &&c_{\phi{}x }&&) &&     &&             &&  &&  &&            &&   &&\cos(&&f_{\phi{}x } &&t &&+ &&g_{\phi{}x }&&) \notag\\
+&+ &&a_{\phi{}xy} &&\cos(&&b_{\phi{}xy} &&x &&+ &&c_{\phi{}xy}&&) &&\cos(&&d_{\phi{}xy} &&y &&+ &&e_{\phi{}xy}&&)  &&\cos(&&f_{\phi{}xy} &&t &&+ &&g_{\phi{}xy}&&) \notag\\
+&+ &&a_{\phi{}xz} &&\cos(&&b_{\phi{}xz} &&x &&+ &&c_{\phi{}xz}&&) &&\cos(&&d_{\phi{}xz} &&z &&+ &&e_{\phi{}xz}&&)  &&\cos(&&f_{\phi{}xz} &&t &&+ &&g_{\phi{}xz}&&) \notag\\
+&+ &&a_{\phi{}y } &&\cos(&&b_{\phi{}y } &&y &&+ &&c_{\phi{}y }&&) &&     &&             &&  &&  &&            &&   &&\cos(&&f_{\phi{}y } &&t &&+ &&g_{\phi{}y }&&) \notag\\
+&+ &&a_{\phi{}yz} &&\cos(&&b_{\phi{}yz} &&y &&+ &&c_{\phi{}yz}&&) &&\cos(&&d_{\phi{}yz} &&z &&+ &&e_{\phi{}yz}&&)  &&\cos(&&f_{\phi{}yz} &&t &&+ &&g_{\phi{}yz}&&) \notag\\
+&+ &&a_{\phi{}z } &&\cos(&&b_{\phi{}z } &&z &&+ &&c_{\phi{}z }&&) &&     &&             &&  &&  &&            &&   &&\cos(&&f_{\phi{}z } &&t &&+ &&g_{\phi{}z }&&) \notag
 \end{alignat}
 where $a$, $b$, $c$, $d$, $e$, $f$, and $g$ are fixed constant collections
 indexed by $\phi$ and one or more directions.  Partial derivatives $\phi_{t }$,
@@ -124,9 +124,10 @@ chosen solutions.
 
 Though they increase the solution's complexity significantly, mixed partial
 spatial derivatives are included to improve code coverage.  Each term has an
-adjustable amplitude and phase for all involved dimensions.  It is suggested
-that users gradually ``turn on'' the more complicated features of the solution
-(i.e. use non-zero coefficients) after ensuring simpler usage has been
+adjustable amplitude and phase for all involved dimensions.  Cosines were
+chosen so terms can be ``turned off'' by employing zero coefficients. It is
+suggested that users gradually ``turn on'' the more complicated features of the
+solution (i.e. use non-zero coefficients) after ensuring simpler usage has been
 successful.
 
 The Python-based computer algebra system SymPy (\url{http://sympy.org})
