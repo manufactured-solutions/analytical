@@ -1,5 +1,5 @@
 A transient manufactured solution for the compressible Navier--Stokes
-equations with a power law viscosity
+equations with a power law viscosity.
 
 Documentation:
 
@@ -12,13 +12,13 @@ Documentation:
 Implementation:
 
     nsctpl_fwd.hpp:  C++ header file with forward declarations for the
-                     manufactured solution No namespaces used to allow
-                     #include-ing from other code, possibly within some
-                     anonymous namespace.  No double-inclusion guards
-                     present.
+                     manufactured solution.  Code written to allow
+                     #include-ing from some other file, possibly within
+                     an anonymous namespace.  No double-inclusion
+                     guards present.
     nsctpl.hpp:      C++ header file containing templated implementation
                      details for nsctpl.hpp.  Similar #include comments
                      apply.
     main.cpp:        Very simple driver used to ensure nsctpl.hpp compiles
                      at several different precisions and behaves sanely.
-    Makefile:        Used to build main.cpp
+    Makefile:        Used to build main.cpp using GNU g++.

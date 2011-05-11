@@ -364,10 +364,13 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_u(
     /* Computations stemming from the constitutive relationships */
     const Scalar p_x      = rho_x * R * T + rho * R * T_x;
     const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
-    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_x;
-    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_y;
-    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_z;
-    const Scalar lambda   = lambda_r / mu_r * mu;
+    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_x;
+    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_y;
+    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_z;
+    const Scalar lambda_  = lambda_r / mu_r * mu;
     const Scalar lambda_x = lambda_r / mu_r * mu_x;
 
     /* Computations stemming from the compressible, Newtonian fluid model */
@@ -377,13 +380,16 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_u(
     const Scalar rhouv_y = (rho_y * u * v) + (rho * u_y * v) + (rho * u * v_y);
     const Scalar rhouw_z = (rho_z * u * w) + (rho * u_z * w) + (rho * u * w_z);
 
-    const Scalar tauxx_x = mu_x * (u_x  + u_x ) + lambda_x * (u_x  + v_y  + w_z )
-                         + mu   * (u_xx + u_xx) + lambda   * (u_xx + v_xy + w_xz);
+    const Scalar tauxx_x = mu_x * (u_x  + u_x )
+                         + lambda_x * (u_x  + v_y  + w_z )
+                         + mu   * (u_xx + u_xx)
+                         + lambda_  * (u_xx + v_xy + w_xz);
 
     const Scalar tauxy_y = mu_y * (u_y + v_x) + mu * (u_yy + v_xy);
     const Scalar tauxz_z = mu_z * (u_z + w_x) + mu * (u_zz + w_xz);
 
-    const Scalar Q_rhou = rhou_t + rhouu_x + rhouv_y + rhouw_z + p_x - tauxx_x - tauxy_y - tauxz_z;
+    const Scalar Q_rhou = rhou_t + rhouu_x + rhouv_y + rhouw_z
+                        + p_x - tauxx_x - tauxy_y - tauxz_z;
 
     return Q_rhou;
 }
@@ -426,10 +432,13 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_v(
     /* Computations stemming from the constitutive relationships */
     const Scalar p_y      = rho_y * R * T + rho * R * T_y;
     const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
-    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_x;
-    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_y;
-    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_z;
-    const Scalar lambda   = lambda_r / mu_r * mu;
+    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_x;
+    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_y;
+    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_z;
+    const Scalar lambda_  = lambda_r / mu_r * mu;
     const Scalar lambda_y = lambda_r / mu_r * mu_y;
 
     /* Computations stemming from the compressible, Newtonian fluid model */
@@ -439,13 +448,16 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_v(
     const Scalar rhovv_y = (rho_y * v * v) + (rho * v_y * v) + (rho * v * v_y);
     const Scalar rhovw_z = (rho_z * v * w) + (rho * v_z * w) + (rho * v * w_z);
 
-    const Scalar tauyy_y = mu_y * (v_y  + v_y ) + lambda_y * (u_x  + v_y  + w_z )
-                         + mu   * (v_yy + v_yy) + lambda   * (u_xy + v_yy + w_yz);
+    const Scalar tauyy_y = mu_y * (v_y  + v_y )
+                         + lambda_y * (u_x  + v_y  + w_z )
+                         + mu   * (v_yy + v_yy)
+                         + lambda_  * (u_xy + v_yy + w_yz);
 
     const Scalar tauxy_x = mu_x * (u_y + v_x) + mu * (u_xy + v_xx);
     const Scalar tauyz_z = mu_z * (v_z + w_y) + mu * (v_zz + w_yz);
 
-    const Scalar Q_rhov = rhov_t + rhouv_x + rhovv_y + rhovw_z + p_y - tauxy_x - tauyy_y - tauyz_z;
+    const Scalar Q_rhov = rhov_t + rhouv_x + rhovv_y + rhovw_z
+                        + p_y - tauxy_x - tauyy_y - tauyz_z;
 
     return Q_rhov;
 }
@@ -488,10 +500,13 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_w(
     /* Computations stemming from the constitutive relationships */
     const Scalar p_z      = rho_z * R * T + rho * R * T_z;
     const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
-    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_x;
-    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_y;
-    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_z;
-    const Scalar lambda   = lambda_r / mu_r * mu;
+    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_x;
+    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_y;
+    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_z;
+    const Scalar lambda_  = lambda_r / mu_r * mu;
     const Scalar lambda_z = lambda_r / mu_r * mu_z;
 
     /* Computations stemming from the compressible, Newtonian fluid model */
@@ -501,13 +516,16 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_w(
     const Scalar rhovw_y = (rho_y * v * w) + (rho * v_y * w) + (rho * v * w_y);
     const Scalar rhoww_z = (rho_z * w * w) + (rho * w_z * w) + (rho * w * w_z);
 
-    const Scalar tauzz_z = mu_z * (w_z  + w_z ) + lambda_z * (u_x  + v_y  + w_z )
-                         + mu   * (w_zz + w_zz) + lambda   * (u_xz + v_yz + w_zz);
+    const Scalar tauzz_z = mu_z * (w_z  + w_z )
+                         + lambda_z * (u_x  + v_y  + w_z )
+                         + mu   * (w_zz + w_zz)
+                         + lambda_  * (u_xz + v_yz + w_zz);
 
     const Scalar tauxz_x = mu_x * (u_z + w_x) + mu * (u_xz + w_xx);
     const Scalar tauyz_y = mu_y * (v_z + w_y) + mu * (v_yz + w_yy);
 
-    const Scalar Q_rhow = rhow_t + rhouw_x + rhovw_y + rhoww_z + p_z - tauxz_x - tauyz_y - tauzz_z;
+    const Scalar Q_rhow = rhow_t + rhouw_x + rhovw_y + rhoww_z
+                        + p_z - tauxz_x - tauyz_y - tauzz_z;
 
     return Q_rhow;
 }
@@ -576,10 +594,13 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_e(
     const Scalar p_y      = rho_y * R * T + rho * R * T_y;
     const Scalar p_z      = rho_z * R * T + rho * R * T_z;
     const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
-    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_x;
-    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_y;
-    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * T_z;
-    const Scalar lambda   = lambda_r / mu_r * mu;
+    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_x;
+    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_y;
+    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
+                          * T_z;
+    const Scalar lambda_  = lambda_r / mu_r * mu;
     const Scalar lambda_x = lambda_r / mu_r * mu_x;
     const Scalar lambda_y = lambda_r / mu_r * mu_y;
     const Scalar lambda_z = lambda_r / mu_r * mu_z;
@@ -594,19 +615,25 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_e(
     const Scalar rhove_y = (rho_y * v * e) + (rho * v_y * e) + (rho * v * e_y);
     const Scalar rhowe_z = (rho_z * w * e) + (rho * w_z * e) + (rho * w * e_z);
 
-    const Scalar tauxx = mu * (u_x + u_x) + lambda * (u_x + v_y + w_z);
-    const Scalar tauyy = mu * (v_y + v_y) + lambda * (u_x + v_y + w_z);
-    const Scalar tauzz = mu * (w_z + w_z) + lambda * (u_x + v_y + w_z);
+    const Scalar tauxx = mu * (u_x + u_x) + lambda_ * (u_x + v_y + w_z);
+    const Scalar tauyy = mu * (v_y + v_y) + lambda_ * (u_x + v_y + w_z);
+    const Scalar tauzz = mu * (w_z + w_z) + lambda_ * (u_x + v_y + w_z);
     const Scalar tauxy = mu * (u_y + v_x);
     const Scalar tauxz = mu * (u_z + w_x);
     const Scalar tauyz = mu * (v_z + w_y);
 
-    const Scalar tauxx_x = mu_x * (u_x  + u_x ) + lambda_x * (u_x  + v_y  + w_z )
-                         + mu   * (u_xx + u_xx) + lambda   * (u_xx + v_xy + w_xz);
-    const Scalar tauyy_y = mu_y * (v_y  + v_y ) + lambda_y * (u_x  + v_y  + w_z )
-                         + mu   * (v_yy + v_yy) + lambda   * (u_xy + v_yy + w_yz);
-    const Scalar tauzz_z = mu_z * (w_z  + w_z ) + lambda_z * (u_x  + v_y  + w_z )
-                         + mu   * (w_zz + w_zz) + lambda   * (u_xz + v_yz + w_zz);
+    const Scalar tauxx_x = mu_x * (u_x  + u_x )
+                         + lambda_x * (u_x  + v_y  + w_z )
+                         + mu   * (u_xx + u_xx)
+                         + lambda_  * (u_xx + v_xy + w_xz);
+    const Scalar tauyy_y = mu_y * (v_y  + v_y )
+                         + lambda_y * (u_x  + v_y  + w_z )
+                         + mu   * (v_yy + v_yy)
+                         + lambda_  * (u_xy + v_yy + w_yz);
+    const Scalar tauzz_z = mu_z * (w_z  + w_z )
+                         + lambda_z * (u_x  + v_y  + w_z )
+                         + mu   * (w_zz + w_zz)
+                         + lambda_  * (u_xz + v_yz + w_zz);
 
     const Scalar tauxy_x = mu_x * (u_y + v_x) + mu * (u_xy + v_xx);
     const Scalar tauxy_y = mu_y * (u_y + v_x) + mu * (u_yy + v_xy);
@@ -628,10 +655,12 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_e(
     const Scalar vtauyz_z = v_z * tauyz + v * tauyz_z;
     const Scalar wtauzz_z = w_z * tauzz + w * tauzz_z;
 
-    const Scalar Q_rhoe = rhoe_t + rhoue_x + rhove_y + rhowe_z + pu_x + pv_y + pw_z + qx_x + qy_y + qz_z
-                                 - utauxx_x - vtauxy_x - wtauxz_x
-                                 - utauxy_y - vtauyy_y - wtauyz_y
-                                 - utauxz_z - vtauyz_z - wtauzz_z;
+    const Scalar Q_rhoe = rhoe_t + rhoue_x + rhove_y + rhowe_z
+                        + pu_x + pv_y + pw_z
+                        + qx_x + qy_y + qz_z
+                        - utauxx_x - vtauxy_x - wtauxz_x
+                        - utauxy_y - vtauyy_y - wtauyz_y
+                        - utauxz_z - vtauyz_z - wtauzz_z;
 
     return Q_rhoe;
 }
