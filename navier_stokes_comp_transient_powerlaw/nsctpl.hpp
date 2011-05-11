@@ -225,7 +225,7 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_p(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
     const Scalar rho = an_rho(x, y, z, t);
-    const Scalar T   = an_rho(x, y, z, t);
+    const Scalar T   = an_T(x, y, z, t);
     Scalar drho, dT;
     switch (dir) {
         case 1:
@@ -238,7 +238,7 @@ Scalar nsctpl<Scalar>::eval_g_p(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
             break;
         case 3:
             dT   = an_T._z(x, y, z, t);
-            drho = an_rho._y(x, y, z, t);
+            drho = an_rho._z(x, y, z, t);
             break;
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
@@ -249,7 +249,7 @@ Scalar nsctpl<Scalar>::eval_g_p(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_mu(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
-    const Scalar T = an_rho(x, y, z, t);
+    const Scalar T = an_T(x, y, z, t);
     Scalar dT;
     switch (dir) {
         case 1:
