@@ -9,14 +9,14 @@
 #include "nsctpl.hpp"
 
 // Explicitly instantiate the solution for several floating point types
-template class nsctpl_solution<float>;
-template class nsctpl_solution<double>;
-template class nsctpl_solution<long double>;
+template class nsctpl::primitive_solution<float>;
+template class nsctpl::primitive_solution<double>;
+template class nsctpl::primitive_solution<long double>;
 
 // Explicitly instantiate the manufactured forcing
-template class nsctpl<float>;
-// template class nsctpl_solution<double>; // FIXME
-// template class nsctpl_solution<long double>; // FIXME
+template class nsctpl::manufactured_solution<float>;
+template class nsctpl::manufactured_solution<double>;
+template class nsctpl::manufactured_solution<long double>;
 
 // Used to output each solution parameter on std::cout
 void printer(const std::string &name, double value) {
@@ -35,7 +35,7 @@ void initter(const std::string &name, double& value) {
 int main(int argc, char *argv[])
 {
     const double x = 0.5, y = 0.6, z = 0.7, t = 0.8;
-    nsctpl_solution<double> soln_rho("rho");
+    nsctpl::primitive_solution<double> soln_rho("rho");
 
     std::cout << "Parameters after construction:" << std::endl;
     soln_rho.foreach_parameter(printer);

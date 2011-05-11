@@ -1,111 +1,131 @@
+namespace nsctpl {
+
 // ---------------------------------------------------------------------------
-// nsctpl_solution<Scalar> member implementations
+// primitive_solution<Scalar> member implementations
 // ---------------------------------------------------------------------------
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::operator()(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::operator()(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return a_0*::std::cos(g_0 + f_0*t) + a_x*::std::cos(c_x + b_x*x)*::std::cos(g_x + f_x*t) + a_y*::std::cos(g_y + f_y*t)*::std::cos(c_y + b_y*y) + a_z*::std::cos(g_z + f_z*t)*::std::cos(c_z + b_z*z) + a_xy*::std::cos(g_xy + f_xy*t)*::std::cos(c_xy + b_xy*x)*::std::cos(e_xy + d_xy*y) + a_xz*::std::cos(c_xz + b_xz*x)*::std::cos(g_xz + f_xz*t)*::std::cos(e_xz + d_xz*z) + a_yz*::std::cos(c_yz + b_yz*y)*::std::cos(e_yz + d_yz*z)*::std::cos(g_yz + f_yz*t);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_t(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_t(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return -a_0*f_0*::std::sin(g_0 + f_0*t) - a_x*f_x*::std::cos(c_x + b_x*x)*::std::sin(g_x + f_x*t) - a_y*f_y*::std::cos(c_y + b_y*y)*::std::sin(g_y + f_y*t) - a_z*f_z*::std::cos(c_z + b_z*z)*::std::sin(g_z + f_z*t) - a_xy*f_xy*::std::cos(c_xy + b_xy*x)*::std::cos(e_xy + d_xy*y)*::std::sin(g_xy + f_xy*t) - a_xz*f_xz*::std::cos(c_xz + b_xz*x)*::std::cos(e_xz + d_xz*z)*::std::sin(g_xz + f_xz*t) - a_yz*f_yz*::std::cos(c_yz + b_yz*y)*::std::cos(e_yz + d_yz*z)*::std::sin(g_yz + f_yz*t);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_x(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_x(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return -a_x*b_x*::std::cos(g_x + f_x*t)*::std::sin(c_x + b_x*x) - a_xy*b_xy*::std::cos(g_xy + f_xy*t)*::std::cos(e_xy + d_xy*y)*::std::sin(c_xy + b_xy*x) - a_xz*b_xz*::std::cos(g_xz + f_xz*t)*::std::cos(e_xz + d_xz*z)*::std::sin(c_xz + b_xz*x);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_xx(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_xx(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return -a_x*::std::pow(b_x,static_cast<Scalar>(2))*::std::cos(c_x + b_x*x)*::std::cos(g_x + f_x*t) - a_xy*::std::pow(b_xy,static_cast<Scalar>(2))*::std::cos(g_xy + f_xy*t)*::std::cos(c_xy + b_xy*x)*::std::cos(e_xy + d_xy*y) - a_xz*::std::pow(b_xz,static_cast<Scalar>(2))*::std::cos(c_xz + b_xz*x)*::std::cos(g_xz + f_xz*t)*::std::cos(e_xz + d_xz*z);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_xy(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_xy(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return a_xy*b_xy*d_xy*::std::cos(g_xy + f_xy*t)*::std::sin(c_xy + b_xy*x)*::std::sin(e_xy + d_xy*y);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_xz(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_xz(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return a_xz*b_xz*d_xz*::std::cos(g_xz + f_xz*t)*::std::sin(c_xz + b_xz*x)*::std::sin(e_xz + d_xz*z);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_y(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_y(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return -a_y*b_y*::std::cos(g_y + f_y*t)*::std::sin(c_y + b_y*y) - a_xy*d_xy*::std::cos(g_xy + f_xy*t)*::std::cos(c_xy + b_xy*x)*::std::sin(e_xy + d_xy*y) - a_yz*b_yz*::std::cos(e_yz + d_yz*z)*::std::cos(g_yz + f_yz*t)*::std::sin(c_yz + b_yz*y);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_yy(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_yy(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return -a_y*::std::pow(b_y,static_cast<Scalar>(2))*::std::cos(g_y + f_y*t)*::std::cos(c_y + b_y*y) - a_xy*::std::pow(d_xy,static_cast<Scalar>(2))*::std::cos(g_xy + f_xy*t)*::std::cos(c_xy + b_xy*x)*::std::cos(e_xy + d_xy*y) - a_yz*::std::pow(b_yz,static_cast<Scalar>(2))*::std::cos(c_yz + b_yz*y)*::std::cos(e_yz + d_yz*z)*::std::cos(g_yz + f_yz*t);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_yz(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_yz(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return a_yz*b_yz*d_yz*::std::cos(g_yz + f_yz*t)*::std::sin(c_yz + b_yz*y)*::std::sin(e_yz + d_yz*z);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_z(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_z(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return -a_z*b_z*::std::cos(g_z + f_z*t)*::std::sin(c_z + b_z*z) - a_xz*d_xz*::std::cos(c_xz + b_xz*x)*::std::cos(g_xz + f_xz*t)*::std::sin(e_xz + d_xz*z) - a_yz*d_yz*::std::cos(c_yz + b_yz*y)*::std::cos(g_yz + f_yz*t)*::std::sin(e_yz + d_yz*z);
 }
 
 template<typename Scalar>
-Scalar nsctpl_solution<Scalar>::_zz(Scalar x, Scalar y, Scalar z, Scalar t) const
+Scalar primitive_solution<Scalar>::_zz(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return -a_z*::std::pow(b_z,static_cast<Scalar>(2))*::std::cos(g_z + f_z*t)*::std::cos(c_z + b_z*z) - a_xz*::std::pow(d_xz,static_cast<Scalar>(2))*::std::cos(c_xz + b_xz*x)*::std::cos(g_xz + f_xz*t)*::std::cos(e_xz + d_xz*z) - a_yz*::std::pow(d_yz,static_cast<Scalar>(2))*::std::cos(c_yz + b_yz*y)*::std::cos(e_yz + d_yz*z)*::std::cos(g_yz + f_yz*t);
 }
 
 // ---------------------------------------------------------------------------
-// nsctpl<Scalar> analytical member implementations
+// generic_manufactured_solution<PrimitiveSolution,Scalar>
+// analytical member implementations
 // ---------------------------------------------------------------------------
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_exact_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_rho(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return soln_rho(x, y, z, t);
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_exact_u(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_u(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return soln_u(x, y, z, t);
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_exact_v(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_v(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return soln_v(x, y, z, t);
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_exact_w(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_w(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return soln_w(x, y, z, t);
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_exact_T(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_T(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     return soln_T(x, y, z, t);
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_g_rho(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_rho(
+        Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
-    switch (dir) {
+    switch (direction) {
         case 1:  return soln_rho._x(x, y, z, t);
         case 2:  return soln_rho._y(x, y, z, t);
         case 3:  return soln_rho._z(x, y, z, t);
@@ -113,10 +133,11 @@ Scalar nsctpl<Scalar>::eval_g_rho(Scalar x, Scalar y, Scalar z, Scalar t, int di
     }
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_g_u(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_u(
+        Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
-    switch (dir) {
+    switch (direction) {
         case 1:  return soln_u._x(x, y, z, t);
         case 2:  return soln_u._y(x, y, z, t);
         case 3:  return soln_u._z(x, y, z, t);
@@ -124,10 +145,11 @@ Scalar nsctpl<Scalar>::eval_g_u(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
     }
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_g_v(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_v(
+        Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
-    switch (dir) {
+    switch (direction) {
         case 1:  return soln_v._x(x, y, z, t);
         case 2:  return soln_v._y(x, y, z, t);
         case 3:  return soln_v._z(x, y, z, t);
@@ -135,10 +157,11 @@ Scalar nsctpl<Scalar>::eval_g_v(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
     }
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_g_w(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_w(
+        Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
-    switch (dir) {
+    switch (direction) {
         case 1:  return soln_w._x(x, y, z, t);
         case 2:  return soln_w._y(x, y, z, t);
         case 3:  return soln_w._z(x, y, z, t);
@@ -146,10 +169,11 @@ Scalar nsctpl<Scalar>::eval_g_w(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
     }
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_g_T(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_T(
+        Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
-    switch (dir) {
+    switch (direction) {
         case 1:  return soln_T._x(x, y, z, t);
         case 2:  return soln_T._y(x, y, z, t);
         case 3:  return soln_T._z(x, y, z, t);
@@ -158,11 +182,13 @@ Scalar nsctpl<Scalar>::eval_g_T(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
 }
 
 // ---------------------------------------------------------------------------
-// nsctpl<Scalar> member implementations derived from analytical results
+// generic_manufactured_solution<PrimitiveSolution,Scalar> member
+// implementations derived from analytical results
 // ---------------------------------------------------------------------------
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_exact_e(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_e(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     const Scalar T = soln_T(x, y, z, t);
     const Scalar u = soln_u(x, y, z, t);
@@ -172,8 +198,9 @@ Scalar nsctpl<Scalar>::eval_exact_e(Scalar x, Scalar y, Scalar z, Scalar t) cons
     return e;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_exact_p(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_p(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     const Scalar T   = soln_T(x, y, z, t);
     const Scalar rho = soln_rho(x, y, z, t);
@@ -181,22 +208,24 @@ Scalar nsctpl<Scalar>::eval_exact_p(Scalar x, Scalar y, Scalar z, Scalar t) cons
     return p;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_exact_mu(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_mu(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     const Scalar T  = soln_T(x, y, z, t);
     const Scalar mu = mu_r * ::std::pow(T / T_r, beta);
     return mu;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_g_e(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_e(
+        Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     const Scalar u = soln_u(x, y, z, t);
     const Scalar v = soln_v(x, y, z, t);
     const Scalar w = soln_w(x, y, z, t);
     Scalar dT, du, dv, dw;
-    switch (dir) {
+    switch (direction) {
         case 1:
             dT = soln_T._x(x, y, z, t);
             du = soln_u._x(x, y, z, t);
@@ -221,13 +250,14 @@ Scalar nsctpl<Scalar>::eval_g_e(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
     return de;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_g_p(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_p(
+        Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     const Scalar rho = soln_rho(x, y, z, t);
     const Scalar T   = soln_T(x, y, z, t);
     Scalar drho, dT;
-    switch (dir) {
+    switch (direction) {
         case 1:
             dT   = soln_T._x(x, y, z, t);
             drho = soln_rho._x(x, y, z, t);
@@ -246,12 +276,13 @@ Scalar nsctpl<Scalar>::eval_g_p(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
     return dp;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_g_mu(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_mu(
+        Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     const Scalar T = soln_T(x, y, z, t);
     Scalar dT;
-    switch (dir) {
+    switch (direction) {
         case 1:
             dT = soln_T._x(x, y, z, t);
             break;
@@ -267,10 +298,11 @@ Scalar nsctpl<Scalar>::eval_g_mu(Scalar x, Scalar y, Scalar z, Scalar t, int dir
     return dmu;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_q_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    /* Computations retrieving manufactured solution details */
+    /* Computations retrieving primitive solution details */
     const Scalar rho   = soln_rho   (x, y, z, t);
     const Scalar rho_t = soln_rho._t(x, y, z, t);
     const Scalar rho_x = soln_rho._x(x, y, z, t);
@@ -294,10 +326,11 @@ Scalar nsctpl<Scalar>::eval_q_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
     return Q_rho;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_q_rho_u(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_u(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    /* Computations retrieving manufactured solution details */
+    /* Computations retrieving primitive solution details */
     const Scalar rho   = soln_rho   (x, y, z, t);
     const Scalar rho_t = soln_rho._t(x, y, z, t);
     const Scalar rho_x = soln_rho._x(x, y, z, t);
@@ -355,10 +388,11 @@ Scalar nsctpl<Scalar>::eval_q_rho_u(Scalar x, Scalar y, Scalar z, Scalar t) cons
     return Q_rhou;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_q_rho_v(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_v(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    /* Computations retrieving manufactured solution details */
+    /* Computations retrieving primitive solution details */
     const Scalar rho   = soln_rho   (x, y, z, t);
     const Scalar rho_t = soln_rho._t(x, y, z, t);
     const Scalar rho_x = soln_rho._x(x, y, z, t);
@@ -416,10 +450,11 @@ Scalar nsctpl<Scalar>::eval_q_rho_v(Scalar x, Scalar y, Scalar z, Scalar t) cons
     return Q_rhov;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_q_rho_w(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_w(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    /* Computations retrieving manufactured solution details */
+    /* Computations retrieving primitive solution details */
     const Scalar rho   = soln_rho   (x, y, z, t);
     const Scalar rho_t = soln_rho._t(x, y, z, t);
     const Scalar rho_x = soln_rho._x(x, y, z, t);
@@ -477,10 +512,11 @@ Scalar nsctpl<Scalar>::eval_q_rho_w(Scalar x, Scalar y, Scalar z, Scalar t) cons
     return Q_rhow;
 }
 
-template<typename Scalar>
-Scalar nsctpl<Scalar>::eval_q_rho_e(Scalar x, Scalar y, Scalar z, Scalar t) const
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_q_rho_e(
+        Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    /* Computations retrieving manufactured solution details */
+    /* Computations retrieving primitive solution details */
     const Scalar rho   = soln_rho   (x, y, z, t);
     const Scalar rho_t = soln_rho._t(x, y, z, t);
     const Scalar rho_x = soln_rho._x(x, y, z, t);
@@ -599,3 +635,5 @@ Scalar nsctpl<Scalar>::eval_q_rho_e(Scalar x, Scalar y, Scalar z, Scalar t) cons
 
     return Q_rhoe;
 }
+
+} // end namespace nsctpl

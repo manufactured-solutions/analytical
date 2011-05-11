@@ -3,8 +3,10 @@
 // file inside any namespace, as is the consistent use of ::std instead of
 // merely std.
 
+namespace nsctpl {
+
 /**
- * POD-type providing operations for evaluating an analytical solution at a
+ * Class providing operations for evaluating an analytical solution at a
  * given location and time.  The solution is of the form
  * \verbatim
  *       a_0                                         *cos(f_0 *t + g_0 )
@@ -24,7 +26,7 @@
  * names like 'a_phix'.
  */
 template<typename Scalar>
-class nsctpl_solution {
+class primitive_solution {
 
 public:
 
@@ -53,7 +55,7 @@ public:
 
     //! Construct an instance using \c name in the reported parameter names.
     //! All parameters set to zero at construction time.
-    explicit nsctpl_solution(const ::std::string &name = "")
+    explicit primitive_solution(const ::std::string &name = "")
 #define APPLY(pre,suf) pre##suf(0),
         : FOR_ALL_SOLUTION_PARAMETERS(APPLY)  // has trailing comma
 #undef APPLY
@@ -123,12 +125,13 @@ public:
 
 
 /**
- * POD-type for evaluating a manufactured solution and the required forcing for
- * the transient, compressible Navier--Stokes equations with a power law
- * viscosity.
+ * Template that, given a primitive solution for \c rho, \c u, \c v, \c w, and
+ * \c T along with a floating point type, evaluates a manufactured solution and
+ * the required forcing for the transient, compressible Navier--Stokes
+ * equations with a power law viscosity.
  */
-template<typename Scalar>
-class nsctpl {
+template<template <typename T> class PrimitiveSolution, typename Scalar>
+class generic_manufactured_solution {
 
 public:
 
@@ -145,18 +148,52 @@ public:
 
     //! Analytic solutions (which contain additional parameters)
     //!@{
-    nsctpl_solution<Scalar> soln_rho;  //!< Analytic solution for rho
-    nsctpl_solution<Scalar> soln_u;    //!< Analytic solution for u
-    nsctpl_solution<Scalar> soln_v;    //!< Analytic solution for v
-    nsctpl_solution<Scalar> soln_w;    //!< Analytic solution for w
-    nsctpl_solution<Scalar> soln_T;    //!< Analytic solution for T
+    PrimitiveSolution<Scalar> soln_rho;  //!< Analytic solution for rho
+    PrimitiveSolution<Scalar> soln_u;    //!< Analytic solution for u
+    PrimitiveSolution<Scalar> soln_v;    //!< Analytic solution for v
+    PrimitiveSolution<Scalar> soln_w;    //!< Analytic solution for w
+    PrimitiveSolution<Scalar> soln_T;    //!< Analytic solution for T
     //!@}
 
     //! Default constructor
-    nsctpl()
+    generic_manufactured_solution()
         : gamma(0), R(0), beta(0), mu_r(0), T_r(0), k_r(0), lambda_r(0),
           soln_rho("rho"), soln_u("u"), soln_v("v"), soln_w("w"), soln_T("T")
     {
+    }
+
+    //! Invoke the binary function f on each parameter name and its value.
+    template<typename BinaryFunction>
+    void foreach_parameter(BinaryFunction f) const {
+        f(::std::string("gamma"),    gamma   );
+        f(::std::string("R"),        R       );
+        f(::std::string("beta"),     beta    );
+        f(::std::string("mu_r"),     mu_r    );
+        f(::std::string("T_r"),      T_r     );
+        f(::std::string("k_r"),      k_r     );
+        f(::std::string("lambda_r"), lambda_r);
+        soln_rho.foreach_parameter(f);
+        soln_u.foreach_parameter(f);
+        soln_v.foreach_parameter(f);
+        soln_w.foreach_parameter(f);
+        soln_T.foreach_parameter(f);
+    }
+
+    //! Invoke the binary function f on each parameter name and its value.
+    template<typename BinaryFunction>
+    void foreach_parameter(BinaryFunction f) {
+        f(::std::string("gamma"),    gamma   );
+        f(::std::string("R"),        R       );
+        f(::std::string("beta"),     beta    );
+        f(::std::string("mu_r"),     mu_r    );
+        f(::std::string("T_r"),      T_r     );
+        f(::std::string("k_r"),      k_r     );
+        f(::std::string("lambda_r"), lambda_r);
+        soln_rho.foreach_parameter(f);
+        soln_u.foreach_parameter(f);
+        soln_v.foreach_parameter(f);
+        soln_w.foreach_parameter(f);
+        soln_T.foreach_parameter(f);
     }
 
     // Analytically determined quantities
@@ -165,20 +202,20 @@ public:
     Scalar eval_exact_v  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_w  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_T  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_g_rho    (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
-    Scalar eval_g_u      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
-    Scalar eval_g_v      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
-    Scalar eval_g_w      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
-    Scalar eval_g_T      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
+    Scalar eval_g_rho    (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_g_u      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_g_v      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_g_w      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_g_T      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
 
     // Quantities built from the analytical solutions
     // TODO Build up eval_q_u, eval_q_v, eval_q_w, eval_q_e, eval_q_T, eval_q_p
     Scalar eval_exact_e  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_p  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_mu (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_g_e      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
-    Scalar eval_g_p      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
-    Scalar eval_g_mu     (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
+    Scalar eval_g_e      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_g_p      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_g_mu     (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
     Scalar eval_q_rho    (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_q_rho_u  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_q_rho_v  (Scalar x, Scalar y, Scalar z, Scalar t) const;
@@ -186,3 +223,14 @@ public:
     Scalar eval_q_rho_e  (Scalar x, Scalar y, Scalar z, Scalar t) const;
 
 }; // end class
+
+/**
+ * Template that, given a floating point type, evaluates a manufactured
+ * solution and the required forcing for the transient, compressible
+ * Navier--Stokes equations with a power law viscosity.
+ */
+template<typename Scalar>
+class manufactured_solution
+    : public generic_manufactured_solution<primitive_solution,Scalar> {};
+
+} // end namespace nsctpl
