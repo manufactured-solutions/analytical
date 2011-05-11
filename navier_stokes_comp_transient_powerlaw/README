@@ -6,19 +6,26 @@ Documentation:
     writeup.tex: Discussion of the model and the manufactured solution
     soln.py:     Generates C code for the solution and its derivatives
                  Included by writeup.tex
-    forcing.c:   Step-by-step details of computing the necessary forcing
+    forcing.py:  Step-by-step details of computing the necessary forcing
                  Included by writeup.tex
 
 Implementation:
 
     nsctpl_fwd.hpp:  C++ header file with forward declarations for the
                      manufactured solution.  Code written to allow
-                     #include-ing from some other file, possibly within
-                     an anonymous namespace.  No double-inclusion
-                     guards present.
+                     #include-ing from some other file, possibly within an
+                     anonymous namespace.  No double-inclusion guards present.
     nsctpl.hpp:      C++ header file containing templated implementation
-                     details for nsctpl.hpp.  Similar #include comments
-                     apply.
+                     details for nsctpl.hpp based upon output of running
+                     soln.py.  Similar #include comments apply.
+
+Tests:
+
+    test.py:         Using Sympy, computes high precision results for
+                     a particular set of solution coefficients.  Results
+                     employed in main.cpp.
     main.cpp:        Very simple driver used to ensure nsctpl.hpp compiles
                      at several different precisions and behaves sanely.
+                     Checks that ensure C++ implementation matches
+                     writeup.tex/soln.py/forcing.py to acceptable tolerance.
     Makefile:        Used to build main.cpp using GNU g++.

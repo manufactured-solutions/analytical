@@ -70,14 +70,14 @@ public:
 
     //! Invoke the binary function f on each parameter name and its value.
     template<typename BinaryFunction>
-    void foreach_parameter(BinaryFunction f) const {
+    void foreach_parameter(BinaryFunction& f) const {
         ::std::ostringstream os;
         FOR_ALL_SOLUTION_PARAMETERS(APPLY)
     }
 
     //! Invoke the binary function f on each parameter name and its value.
     template<typename BinaryFunction>
-    void foreach_parameter(BinaryFunction f) {
+    void foreach_parameter(BinaryFunction& f) {
         ::std::ostringstream os;
         FOR_ALL_SOLUTION_PARAMETERS(APPLY)
     }
@@ -164,7 +164,7 @@ public:
 
     //! Invoke the binary function f on each parameter name and its value.
     template<typename BinaryFunction>
-    void foreach_parameter(BinaryFunction f) const {
+    void foreach_parameter(BinaryFunction& f) const {
         f(::std::string("gamma"),    gamma   );
         f(::std::string("R"),        R       );
         f(::std::string("beta"),     beta    );
@@ -181,7 +181,7 @@ public:
 
     //! Invoke the binary function f on each parameter name and its value.
     template<typename BinaryFunction>
-    void foreach_parameter(BinaryFunction f) {
+    void foreach_parameter(BinaryFunction& f) {
         f(::std::string("gamma"),    gamma   );
         f(::std::string("R"),        R       );
         f(::std::string("beta"),     beta    );

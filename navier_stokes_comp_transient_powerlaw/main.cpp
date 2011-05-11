@@ -61,6 +61,11 @@ struct prime_it {
         assert(i < sizeof(primes)/sizeof(primes[0]));
         value = primes[i++];
     }
+
+    // Non-copyable as copying ruins the stateful behavior
+private:
+    prime_it (const prime_it &);
+    prime_it& operator=(const prime_it &);
 };
 
 // Helper macro to dump results to std::cout
@@ -69,9 +74,12 @@ struct prime_it {
 int main(int argc, char *argv[])
 {
     nsctpl::manufactured_solution<long double> ms;
+    {
+        prime_it<long double> p;
+        ms.foreach_parameter(p);
+    }
 
     std::cout << "Parameters after initialization:" << std::endl;
-    ms.foreach_parameter(prime_it<long double>());
     ms.foreach_parameter(print_it<long double>);
 
     std::cout.precision(std::numeric_limits<long double>::digits10);
