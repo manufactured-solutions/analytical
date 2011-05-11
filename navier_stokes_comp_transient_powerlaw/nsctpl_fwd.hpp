@@ -17,10 +17,10 @@
  * \endverbatim
  * The member method names are non-traditional but permitted by the language
  * standards and well-aligned with mathematical notation.  The
- * forall_parameters() member allows invoking an operation on each solution
+ * foreach_parameter() member allows invoking an operation on each solution
  * parameter to aid parameter registration, initialization, or output.
- * Parameters may have an infix name added for use with forall_parameters().
- * For example, setting the name 'phi' will cause forall_parameters() to report
+ * Parameters may have an infix name added for use with foreach_parameter().
+ * For example, setting the name 'phi' will cause foreach_parameter() to report
  * names like 'a_phix'.
  */
 template<typename Scalar>
@@ -47,14 +47,14 @@ public:
     FOR_ALL_SOLUTION_PARAMETERS(APPLY)
 #undef APPLY
 
-    //! The name used infix in forall_parameters' names.  For example,
+    //! The name used infix in foreach_parameter' names.  For example,
     //! name = 'phi' implies parameters names like 'a_phix'.
     const ::std::string name;
 
     //! Construct an instance using \c name in the reported parameter names.
-    //! All parameters set to NaN at construction time.
+    //! All parameters set to zero at construction time.
     explicit nsctpl_solution(const ::std::string &name = "")
-#define APPLY(pre,suf) pre##suf(::std::numeric_limits<Scalar>::quiet_NaN()),
+#define APPLY(pre,suf) pre##suf(0),
         : FOR_ALL_SOLUTION_PARAMETERS(APPLY)  // has trailing comma
 #undef APPLY
           name(name)
@@ -68,14 +68,14 @@ public:
 
     //! Invoke the binary function f on each parameter name and its value.
     template<typename BinaryFunction>
-    void forall_parameters(BinaryFunction f) const {
+    void foreach_parameter(BinaryFunction f) const {
         ::std::ostringstream os;
         FOR_ALL_SOLUTION_PARAMETERS(APPLY)
     }
 
     //! Invoke the binary function f on each parameter name and its value.
     template<typename BinaryFunction>
-    void forall_parameters(BinaryFunction f) {
+    void foreach_parameter(BinaryFunction f) {
         ::std::ostringstream os;
         FOR_ALL_SOLUTION_PARAMETERS(APPLY)
     }
@@ -145,12 +145,19 @@ public:
 
     //! Analytic solutions (which contain additional parameters)
     //!@{
-    nsctpl_solution<Scalar> an_rho;  //!< Analytic solution for rho
-    nsctpl_solution<Scalar> an_u;    //!< Analytic solution for u
-    nsctpl_solution<Scalar> an_v;    //!< Analytic solution for v
-    nsctpl_solution<Scalar> an_w;    //!< Analytic solution for w
-    nsctpl_solution<Scalar> an_T;    //!< Analytic solution for T
+    nsctpl_solution<Scalar> soln_rho;  //!< Analytic solution for rho
+    nsctpl_solution<Scalar> soln_u;    //!< Analytic solution for u
+    nsctpl_solution<Scalar> soln_v;    //!< Analytic solution for v
+    nsctpl_solution<Scalar> soln_w;    //!< Analytic solution for w
+    nsctpl_solution<Scalar> soln_T;    //!< Analytic solution for T
     //!@}
+
+    //! Default constructor
+    nsctpl()
+        : gamma(0), R(0), beta(0), mu_r(0), T_r(0), k_r(0), lambda_r(0),
+          soln_rho("rho"), soln_u("u"), soln_v("v"), soln_w("w"), soln_T("T")
+    {
+    }
 
     // Analytically determined quantities
     Scalar eval_exact_rho(Scalar x, Scalar y, Scalar z, Scalar t) const;
@@ -165,7 +172,7 @@ public:
     Scalar eval_g_T      (Scalar x, Scalar y, Scalar z, Scalar t, int dir) const;
 
     // Quantities built from the analytical solutions
-    // TODO Built up eval_q_u, eval_q_v, eval_q_w, eval_q_e, eval_q_T, eval_q_p
+    // TODO Build up eval_q_u, eval_q_v, eval_q_w, eval_q_e, eval_q_T, eval_q_p
     Scalar eval_exact_e  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_p  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_mu (Scalar x, Scalar y, Scalar z, Scalar t) const;

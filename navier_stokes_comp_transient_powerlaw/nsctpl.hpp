@@ -75,40 +75,40 @@ Scalar nsctpl_solution<Scalar>::_zz(Scalar x, Scalar y, Scalar z, Scalar t) cons
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_exact_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    return an_rho(x, y, z, t);
+    return soln_rho(x, y, z, t);
 }
 
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_exact_u(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    return an_u(x, y, z, t);
+    return soln_u(x, y, z, t);
 }
 
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_exact_v(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    return an_v(x, y, z, t);
+    return soln_v(x, y, z, t);
 }
 
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_exact_w(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    return an_w(x, y, z, t);
+    return soln_w(x, y, z, t);
 }
 
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_exact_T(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    return an_T(x, y, z, t);
+    return soln_T(x, y, z, t);
 }
 
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_rho(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
     switch (dir) {
-        case 1:  return an_rho._x(x, y, z, t);
-        case 2:  return an_rho._y(x, y, z, t);
-        case 3:  return an_rho._z(x, y, z, t);
+        case 1:  return soln_rho._x(x, y, z, t);
+        case 2:  return soln_rho._y(x, y, z, t);
+        case 3:  return soln_rho._z(x, y, z, t);
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
 }
@@ -117,9 +117,9 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_u(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
     switch (dir) {
-        case 1:  return an_u._x(x, y, z, t);
-        case 2:  return an_u._y(x, y, z, t);
-        case 3:  return an_u._z(x, y, z, t);
+        case 1:  return soln_u._x(x, y, z, t);
+        case 2:  return soln_u._y(x, y, z, t);
+        case 3:  return soln_u._z(x, y, z, t);
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
 }
@@ -128,9 +128,9 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_v(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
     switch (dir) {
-        case 1:  return an_v._x(x, y, z, t);
-        case 2:  return an_v._y(x, y, z, t);
-        case 3:  return an_v._z(x, y, z, t);
+        case 1:  return soln_v._x(x, y, z, t);
+        case 2:  return soln_v._y(x, y, z, t);
+        case 3:  return soln_v._z(x, y, z, t);
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
 }
@@ -139,9 +139,9 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_w(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
     switch (dir) {
-        case 1:  return an_w._x(x, y, z, t);
-        case 2:  return an_w._y(x, y, z, t);
-        case 3:  return an_w._z(x, y, z, t);
+        case 1:  return soln_w._x(x, y, z, t);
+        case 2:  return soln_w._y(x, y, z, t);
+        case 3:  return soln_w._z(x, y, z, t);
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
 }
@@ -150,9 +150,9 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_T(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
     switch (dir) {
-        case 1:  return an_T._x(x, y, z, t);
-        case 2:  return an_T._y(x, y, z, t);
-        case 3:  return an_T._z(x, y, z, t);
+        case 1:  return soln_T._x(x, y, z, t);
+        case 2:  return soln_T._y(x, y, z, t);
+        case 3:  return soln_T._z(x, y, z, t);
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
 }
@@ -164,10 +164,10 @@ Scalar nsctpl<Scalar>::eval_g_T(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_exact_e(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    const Scalar T = an_T(x, y, z, t);
-    const Scalar u = an_u(x, y, z, t);
-    const Scalar v = an_v(x, y, z, t);
-    const Scalar w = an_w(x, y, z, t);
+    const Scalar T = soln_T(x, y, z, t);
+    const Scalar u = soln_u(x, y, z, t);
+    const Scalar v = soln_v(x, y, z, t);
+    const Scalar w = soln_w(x, y, z, t);
     const Scalar e = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2;
     return e;
 }
@@ -175,8 +175,8 @@ Scalar nsctpl<Scalar>::eval_exact_e(Scalar x, Scalar y, Scalar z, Scalar t) cons
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_exact_p(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    const Scalar T   = an_T(x, y, z, t);
-    const Scalar rho = an_rho(x, y, z, t);
+    const Scalar T   = soln_T(x, y, z, t);
+    const Scalar rho = soln_rho(x, y, z, t);
     const Scalar p   = rho * R * T;
     return p;
 }
@@ -184,7 +184,7 @@ Scalar nsctpl<Scalar>::eval_exact_p(Scalar x, Scalar y, Scalar z, Scalar t) cons
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_exact_mu(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
-    const Scalar T  = an_T(x, y, z, t);
+    const Scalar T  = soln_T(x, y, z, t);
     const Scalar mu = mu_r * ::std::pow(T / T_r, beta);
     return mu;
 }
@@ -192,28 +192,28 @@ Scalar nsctpl<Scalar>::eval_exact_mu(Scalar x, Scalar y, Scalar z, Scalar t) con
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_e(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
-    const Scalar u = an_u(x, y, z, t);
-    const Scalar v = an_v(x, y, z, t);
-    const Scalar w = an_w(x, y, z, t);
+    const Scalar u = soln_u(x, y, z, t);
+    const Scalar v = soln_v(x, y, z, t);
+    const Scalar w = soln_w(x, y, z, t);
     Scalar dT, du, dv, dw;
     switch (dir) {
         case 1:
-            dT = an_T._x(x, y, z, t);
-            du = an_u._x(x, y, z, t);
-            dv = an_v._x(x, y, z, t);
-            dw = an_w._x(x, y, z, t);
+            dT = soln_T._x(x, y, z, t);
+            du = soln_u._x(x, y, z, t);
+            dv = soln_v._x(x, y, z, t);
+            dw = soln_w._x(x, y, z, t);
             break;
         case 2:
-            dT = an_T._y(x, y, z, t);
-            du = an_u._y(x, y, z, t);
-            dv = an_v._y(x, y, z, t);
-            dw = an_w._y(x, y, z, t);
+            dT = soln_T._y(x, y, z, t);
+            du = soln_u._y(x, y, z, t);
+            dv = soln_v._y(x, y, z, t);
+            dw = soln_w._y(x, y, z, t);
             break;
         case 3:
-            dT = an_T._z(x, y, z, t);
-            du = an_u._z(x, y, z, t);
-            dv = an_v._z(x, y, z, t);
-            dw = an_w._z(x, y, z, t);
+            dT = soln_T._z(x, y, z, t);
+            du = soln_u._z(x, y, z, t);
+            dv = soln_v._z(x, y, z, t);
+            dw = soln_w._z(x, y, z, t);
             break;
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
@@ -224,21 +224,21 @@ Scalar nsctpl<Scalar>::eval_g_e(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_p(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
-    const Scalar rho = an_rho(x, y, z, t);
-    const Scalar T   = an_T(x, y, z, t);
+    const Scalar rho = soln_rho(x, y, z, t);
+    const Scalar T   = soln_T(x, y, z, t);
     Scalar drho, dT;
     switch (dir) {
         case 1:
-            dT   = an_T._x(x, y, z, t);
-            drho = an_rho._x(x, y, z, t);
+            dT   = soln_T._x(x, y, z, t);
+            drho = soln_rho._x(x, y, z, t);
             break;
         case 2:
-            dT   = an_T._y(x, y, z, t);
-            drho = an_rho._y(x, y, z, t);
+            dT   = soln_T._y(x, y, z, t);
+            drho = soln_rho._y(x, y, z, t);
             break;
         case 3:
-            dT   = an_T._z(x, y, z, t);
-            drho = an_rho._z(x, y, z, t);
+            dT   = soln_T._z(x, y, z, t);
+            drho = soln_rho._z(x, y, z, t);
             break;
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
@@ -249,17 +249,17 @@ Scalar nsctpl<Scalar>::eval_g_p(Scalar x, Scalar y, Scalar z, Scalar t, int dir)
 template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_g_mu(Scalar x, Scalar y, Scalar z, Scalar t, int dir) const
 {
-    const Scalar T = an_T(x, y, z, t);
+    const Scalar T = soln_T(x, y, z, t);
     Scalar dT;
     switch (dir) {
         case 1:
-            dT = an_T._x(x, y, z, t);
+            dT = soln_T._x(x, y, z, t);
             break;
         case 2:
-            dT = an_T._y(x, y, z, t);
+            dT = soln_T._y(x, y, z, t);
             break;
         case 3:
-            dT = an_T._z(x, y, z, t);
+            dT = soln_T._z(x, y, z, t);
             break;
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
@@ -271,20 +271,20 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     /* Computations retrieving manufactured solution details */
-    const Scalar rho   = an_rho   (x, y, z, t);
-    const Scalar rho_t = an_rho._t(x, y, z, t);
-    const Scalar rho_x = an_rho._x(x, y, z, t);
-    const Scalar rho_y = an_rho._y(x, y, z, t);
-    const Scalar rho_z = an_rho._z(x, y, z, t);
+    const Scalar rho   = soln_rho   (x, y, z, t);
+    const Scalar rho_t = soln_rho._t(x, y, z, t);
+    const Scalar rho_x = soln_rho._x(x, y, z, t);
+    const Scalar rho_y = soln_rho._y(x, y, z, t);
+    const Scalar rho_z = soln_rho._z(x, y, z, t);
 
-    const Scalar u     = an_u   (x, y, z, t);
-    const Scalar u_x   = an_u._x(x, y, z, t);
+    const Scalar u     = soln_u   (x, y, z, t);
+    const Scalar u_x   = soln_u._x(x, y, z, t);
 
-    const Scalar v     = an_v   (x, y, z, t);
-    const Scalar v_y   = an_v._y(x, y, z, t);
+    const Scalar v     = soln_v   (x, y, z, t);
+    const Scalar v_y   = soln_v._y(x, y, z, t);
 
-    const Scalar w     = an_w   (x, y, z, t);
-    const Scalar w_z   = an_w._z(x, y, z, t);
+    const Scalar w     = soln_w   (x, y, z, t);
+    const Scalar w_z   = soln_w._z(x, y, z, t);
 
     /* Computations stemming from the compressible, Newtonian fluid model */
     const Scalar rhou_x  = rho_x * u + rho * u_x;
@@ -298,35 +298,35 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho_u(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     /* Computations retrieving manufactured solution details */
-    const Scalar rho   = an_rho   (x, y, z, t);
-    const Scalar rho_t = an_rho._t(x, y, z, t);
-    const Scalar rho_x = an_rho._x(x, y, z, t);
-    const Scalar rho_y = an_rho._y(x, y, z, t);
-    const Scalar rho_z = an_rho._z(x, y, z, t);
+    const Scalar rho   = soln_rho   (x, y, z, t);
+    const Scalar rho_t = soln_rho._t(x, y, z, t);
+    const Scalar rho_x = soln_rho._x(x, y, z, t);
+    const Scalar rho_y = soln_rho._y(x, y, z, t);
+    const Scalar rho_z = soln_rho._z(x, y, z, t);
 
-    const Scalar u    = an_u    (x, y, z, t);
-    const Scalar u_t  = an_u._t (x, y, z, t);
-    const Scalar u_x  = an_u._x (x, y, z, t);
-    const Scalar u_xx = an_u._xx(x, y, z, t);
-    const Scalar u_y  = an_u._y (x, y, z, t);
-    const Scalar u_yy = an_u._yy(x, y, z, t);
-    const Scalar u_z  = an_u._z (x, y, z, t);
-    const Scalar u_zz = an_u._zz(x, y, z, t);
+    const Scalar u    = soln_u    (x, y, z, t);
+    const Scalar u_t  = soln_u._t (x, y, z, t);
+    const Scalar u_x  = soln_u._x (x, y, z, t);
+    const Scalar u_xx = soln_u._xx(x, y, z, t);
+    const Scalar u_y  = soln_u._y (x, y, z, t);
+    const Scalar u_yy = soln_u._yy(x, y, z, t);
+    const Scalar u_z  = soln_u._z (x, y, z, t);
+    const Scalar u_zz = soln_u._zz(x, y, z, t);
 
-    const Scalar v    = an_v    (x, y, z, t);
-    const Scalar v_x  = an_v._x (x, y, z, t);
-    const Scalar v_xy = an_v._xy(x, y, z, t);
-    const Scalar v_y  = an_v._y (x, y, z, t);
+    const Scalar v    = soln_v    (x, y, z, t);
+    const Scalar v_x  = soln_v._x (x, y, z, t);
+    const Scalar v_xy = soln_v._xy(x, y, z, t);
+    const Scalar v_y  = soln_v._y (x, y, z, t);
 
-    const Scalar w    = an_w    (x, y, z, t);
-    const Scalar w_x  = an_w._x (x, y, z, t);
-    const Scalar w_xz = an_w._xz(x, y, z, t);
-    const Scalar w_z  = an_w._z (x, y, z, t);
+    const Scalar w    = soln_w    (x, y, z, t);
+    const Scalar w_x  = soln_w._x (x, y, z, t);
+    const Scalar w_xz = soln_w._xz(x, y, z, t);
+    const Scalar w_z  = soln_w._z (x, y, z, t);
 
-    const Scalar T    = an_T    (x, y, z, t);
-    const Scalar T_x  = an_T._x (x, y, z, t);
-    const Scalar T_y  = an_T._y (x, y, z, t);
-    const Scalar T_z  = an_T._z (x, y, z, t);
+    const Scalar T    = soln_T    (x, y, z, t);
+    const Scalar T_x  = soln_T._x (x, y, z, t);
+    const Scalar T_y  = soln_T._y (x, y, z, t);
+    const Scalar T_z  = soln_T._z (x, y, z, t);
 
     /* Computations stemming from the constitutive relationships */
     const Scalar p_x      = rho_x * R * T + rho * R * T_x;
@@ -359,35 +359,35 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho_v(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     /* Computations retrieving manufactured solution details */
-    const Scalar rho   = an_rho   (x, y, z, t);
-    const Scalar rho_t = an_rho._t(x, y, z, t);
-    const Scalar rho_x = an_rho._x(x, y, z, t);
-    const Scalar rho_y = an_rho._y(x, y, z, t);
-    const Scalar rho_z = an_rho._z(x, y, z, t);
+    const Scalar rho   = soln_rho   (x, y, z, t);
+    const Scalar rho_t = soln_rho._t(x, y, z, t);
+    const Scalar rho_x = soln_rho._x(x, y, z, t);
+    const Scalar rho_y = soln_rho._y(x, y, z, t);
+    const Scalar rho_z = soln_rho._z(x, y, z, t);
 
-    const Scalar u    = an_u    (x, y, z, t);
-    const Scalar u_x  = an_u._x (x, y, z, t);
-    const Scalar u_xy = an_u._xy(x, y, z, t);
-    const Scalar u_y  = an_u._y (x, y, z, t);
+    const Scalar u    = soln_u    (x, y, z, t);
+    const Scalar u_x  = soln_u._x (x, y, z, t);
+    const Scalar u_xy = soln_u._xy(x, y, z, t);
+    const Scalar u_y  = soln_u._y (x, y, z, t);
 
-    const Scalar v    = an_v    (x, y, z, t);
-    const Scalar v_t  = an_v._t (x, y, z, t);
-    const Scalar v_x  = an_v._x (x, y, z, t);
-    const Scalar v_xx = an_v._xx(x, y, z, t);
-    const Scalar v_y  = an_v._y (x, y, z, t);
-    const Scalar v_yy = an_v._yy(x, y, z, t);
-    const Scalar v_z  = an_v._z (x, y, z, t);
-    const Scalar v_zz = an_v._zz(x, y, z, t);
+    const Scalar v    = soln_v    (x, y, z, t);
+    const Scalar v_t  = soln_v._t (x, y, z, t);
+    const Scalar v_x  = soln_v._x (x, y, z, t);
+    const Scalar v_xx = soln_v._xx(x, y, z, t);
+    const Scalar v_y  = soln_v._y (x, y, z, t);
+    const Scalar v_yy = soln_v._yy(x, y, z, t);
+    const Scalar v_z  = soln_v._z (x, y, z, t);
+    const Scalar v_zz = soln_v._zz(x, y, z, t);
 
-    const Scalar w    = an_w    (x, y, z, t);
-    const Scalar w_y  = an_w._y (x, y, z, t);
-    const Scalar w_yz = an_w._yz(x, y, z, t);
-    const Scalar w_z  = an_w._z (x, y, z, t);
+    const Scalar w    = soln_w    (x, y, z, t);
+    const Scalar w_y  = soln_w._y (x, y, z, t);
+    const Scalar w_yz = soln_w._yz(x, y, z, t);
+    const Scalar w_z  = soln_w._z (x, y, z, t);
 
-    const Scalar T    = an_T    (x, y, z, t);
-    const Scalar T_x  = an_T._x (x, y, z, t);
-    const Scalar T_y  = an_T._y (x, y, z, t);
-    const Scalar T_z  = an_T._z (x, y, z, t);
+    const Scalar T    = soln_T    (x, y, z, t);
+    const Scalar T_x  = soln_T._x (x, y, z, t);
+    const Scalar T_y  = soln_T._y (x, y, z, t);
+    const Scalar T_z  = soln_T._z (x, y, z, t);
 
     /* Computations stemming from the constitutive relationships */
     const Scalar p_y      = rho_y * R * T + rho * R * T_y;
@@ -420,35 +420,35 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho_w(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     /* Computations retrieving manufactured solution details */
-    const Scalar rho   = an_rho   (x, y, z, t);
-    const Scalar rho_t = an_rho._t(x, y, z, t);
-    const Scalar rho_x = an_rho._x(x, y, z, t);
-    const Scalar rho_y = an_rho._y(x, y, z, t);
-    const Scalar rho_z = an_rho._z(x, y, z, t);
+    const Scalar rho   = soln_rho   (x, y, z, t);
+    const Scalar rho_t = soln_rho._t(x, y, z, t);
+    const Scalar rho_x = soln_rho._x(x, y, z, t);
+    const Scalar rho_y = soln_rho._y(x, y, z, t);
+    const Scalar rho_z = soln_rho._z(x, y, z, t);
 
-    const Scalar u    = an_u    (x, y, z, t);
-    const Scalar u_x  = an_u._x (x, y, z, t);
-    const Scalar u_xz = an_u._xz(x, y, z, t);
-    const Scalar u_z  = an_u._z (x, y, z, t);
+    const Scalar u    = soln_u    (x, y, z, t);
+    const Scalar u_x  = soln_u._x (x, y, z, t);
+    const Scalar u_xz = soln_u._xz(x, y, z, t);
+    const Scalar u_z  = soln_u._z (x, y, z, t);
 
-    const Scalar v    = an_v    (x, y, z, t);
-    const Scalar v_y  = an_v._y (x, y, z, t);
-    const Scalar v_yz = an_v._yz(x, y, z, t);
-    const Scalar v_z  = an_v._z (x, y, z, t);
+    const Scalar v    = soln_v    (x, y, z, t);
+    const Scalar v_y  = soln_v._y (x, y, z, t);
+    const Scalar v_yz = soln_v._yz(x, y, z, t);
+    const Scalar v_z  = soln_v._z (x, y, z, t);
 
-    const Scalar w    = an_w    (x, y, z, t);
-    const Scalar w_t  = an_w._t (x, y, z, t);
-    const Scalar w_x  = an_w._x (x, y, z, t);
-    const Scalar w_xx = an_w._xx(x, y, z, t);
-    const Scalar w_y  = an_w._y (x, y, z, t);
-    const Scalar w_yy = an_w._yy(x, y, z, t);
-    const Scalar w_z  = an_w._z (x, y, z, t);
-    const Scalar w_zz = an_w._zz(x, y, z, t);
+    const Scalar w    = soln_w    (x, y, z, t);
+    const Scalar w_t  = soln_w._t (x, y, z, t);
+    const Scalar w_x  = soln_w._x (x, y, z, t);
+    const Scalar w_xx = soln_w._xx(x, y, z, t);
+    const Scalar w_y  = soln_w._y (x, y, z, t);
+    const Scalar w_yy = soln_w._yy(x, y, z, t);
+    const Scalar w_z  = soln_w._z (x, y, z, t);
+    const Scalar w_zz = soln_w._zz(x, y, z, t);
 
-    const Scalar T    = an_T    (x, y, z, t);
-    const Scalar T_x  = an_T._x (x, y, z, t);
-    const Scalar T_y  = an_T._y (x, y, z, t);
-    const Scalar T_z  = an_T._z (x, y, z, t);
+    const Scalar T    = soln_T    (x, y, z, t);
+    const Scalar T_x  = soln_T._x (x, y, z, t);
+    const Scalar T_y  = soln_T._y (x, y, z, t);
+    const Scalar T_z  = soln_T._z (x, y, z, t);
 
     /* Computations stemming from the constitutive relationships */
     const Scalar p_z      = rho_z * R * T + rho * R * T_z;
@@ -481,53 +481,53 @@ template<typename Scalar>
 Scalar nsctpl<Scalar>::eval_q_rho_e(Scalar x, Scalar y, Scalar z, Scalar t) const
 {
     /* Computations retrieving manufactured solution details */
-    const Scalar rho   = an_rho   (x, y, z, t);
-    const Scalar rho_t = an_rho._t(x, y, z, t);
-    const Scalar rho_x = an_rho._x(x, y, z, t);
-    const Scalar rho_y = an_rho._y(x, y, z, t);
-    const Scalar rho_z = an_rho._z(x, y, z, t);
+    const Scalar rho   = soln_rho   (x, y, z, t);
+    const Scalar rho_t = soln_rho._t(x, y, z, t);
+    const Scalar rho_x = soln_rho._x(x, y, z, t);
+    const Scalar rho_y = soln_rho._y(x, y, z, t);
+    const Scalar rho_z = soln_rho._z(x, y, z, t);
 
-    const Scalar u    = an_u    (x, y, z, t);
-    const Scalar u_t  = an_u._t (x, y, z, t);
-    const Scalar u_x  = an_u._x (x, y, z, t);
-    const Scalar u_xx = an_u._xx(x, y, z, t);
-    const Scalar u_xy = an_u._xy(x, y, z, t);
-    const Scalar u_xz = an_u._xz(x, y, z, t);
-    const Scalar u_y  = an_u._y (x, y, z, t);
-    const Scalar u_yy = an_u._yy(x, y, z, t);
-    const Scalar u_z  = an_u._z (x, y, z, t);
-    const Scalar u_zz = an_u._zz(x, y, z, t);
+    const Scalar u    = soln_u    (x, y, z, t);
+    const Scalar u_t  = soln_u._t (x, y, z, t);
+    const Scalar u_x  = soln_u._x (x, y, z, t);
+    const Scalar u_xx = soln_u._xx(x, y, z, t);
+    const Scalar u_xy = soln_u._xy(x, y, z, t);
+    const Scalar u_xz = soln_u._xz(x, y, z, t);
+    const Scalar u_y  = soln_u._y (x, y, z, t);
+    const Scalar u_yy = soln_u._yy(x, y, z, t);
+    const Scalar u_z  = soln_u._z (x, y, z, t);
+    const Scalar u_zz = soln_u._zz(x, y, z, t);
 
-    const Scalar v    = an_v    (x, y, z, t);
-    const Scalar v_t  = an_v._t (x, y, z, t);
-    const Scalar v_x  = an_v._x (x, y, z, t);
-    const Scalar v_xx = an_v._xx(x, y, z, t);
-    const Scalar v_xy = an_v._xy(x, y, z, t);
-    const Scalar v_y  = an_v._y (x, y, z, t);
-    const Scalar v_yy = an_v._yy(x, y, z, t);
-    const Scalar v_yz = an_v._yz(x, y, z, t);
-    const Scalar v_z  = an_v._z (x, y, z, t);
-    const Scalar v_zz = an_v._zz(x, y, z, t);
+    const Scalar v    = soln_v    (x, y, z, t);
+    const Scalar v_t  = soln_v._t (x, y, z, t);
+    const Scalar v_x  = soln_v._x (x, y, z, t);
+    const Scalar v_xx = soln_v._xx(x, y, z, t);
+    const Scalar v_xy = soln_v._xy(x, y, z, t);
+    const Scalar v_y  = soln_v._y (x, y, z, t);
+    const Scalar v_yy = soln_v._yy(x, y, z, t);
+    const Scalar v_yz = soln_v._yz(x, y, z, t);
+    const Scalar v_z  = soln_v._z (x, y, z, t);
+    const Scalar v_zz = soln_v._zz(x, y, z, t);
 
-    const Scalar w    = an_w    (x, y, z, t);
-    const Scalar w_t  = an_w._t (x, y, z, t);
-    const Scalar w_x  = an_w._x (x, y, z, t);
-    const Scalar w_xx = an_w._xx(x, y, z, t);
-    const Scalar w_xz = an_w._xz(x, y, z, t);
-    const Scalar w_y  = an_w._y (x, y, z, t);
-    const Scalar w_yy = an_w._yy(x, y, z, t);
-    const Scalar w_yz = an_w._yz(x, y, z, t);
-    const Scalar w_z  = an_w._z (x, y, z, t);
-    const Scalar w_zz = an_w._zz(x, y, z, t);
+    const Scalar w    = soln_w    (x, y, z, t);
+    const Scalar w_t  = soln_w._t (x, y, z, t);
+    const Scalar w_x  = soln_w._x (x, y, z, t);
+    const Scalar w_xx = soln_w._xx(x, y, z, t);
+    const Scalar w_xz = soln_w._xz(x, y, z, t);
+    const Scalar w_y  = soln_w._y (x, y, z, t);
+    const Scalar w_yy = soln_w._yy(x, y, z, t);
+    const Scalar w_yz = soln_w._yz(x, y, z, t);
+    const Scalar w_z  = soln_w._z (x, y, z, t);
+    const Scalar w_zz = soln_w._zz(x, y, z, t);
 
-    const Scalar T    = an_T    (x, y, z, t);
-    const Scalar T_t  = an_T._t (x, y, z, t);
-    const Scalar T_x  = an_T._x (x, y, z, t);
-    const Scalar T_xx = an_T._xx(x, y, z, t);
-    const Scalar T_y  = an_T._y (x, y, z, t);
-    const Scalar T_yy = an_T._yy(x, y, z, t);
-    const Scalar T_z  = an_T._z (x, y, z, t);
-    const Scalar T_zz = an_T._zz(x, y, z, t);
+    const Scalar T    = soln_T    (x, y, z, t);
+    const Scalar T_t  = soln_T._t (x, y, z, t);
+    const Scalar T_x  = soln_T._x (x, y, z, t);
+    const Scalar T_xx = soln_T._xx(x, y, z, t);
+    const Scalar T_y  = soln_T._y (x, y, z, t);
+    const Scalar T_yy = soln_T._yy(x, y, z, t);
+    const Scalar T_z  = soln_T._z (x, y, z, t);
+    const Scalar T_zz = soln_T._zz(x, y, z, t);
 
     /* Computations stemming from the constitutive relationships */
     const Scalar e        = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2;

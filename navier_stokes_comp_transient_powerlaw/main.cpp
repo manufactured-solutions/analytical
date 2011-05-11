@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     nsctpl_solution<double> soln_rho("rho");
 
     std::cout << "Parameters after construction:" << std::endl;
-    soln_rho.forall_parameters(printer);
+    soln_rho.foreach_parameter(printer);
 
     std::cout << "Evaluation after construction:" << std::endl;
     std::cout << "\trho    = " << soln_rho    (x, y, z, t) << std::endl;
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     std::cout << "\trho_zz = " << soln_rho._zz(x, y, z, t) << std::endl;
 
     std::cout << "Parameters after initializing:" << std::endl;
-    soln_rho.forall_parameters(initter);
+    soln_rho.foreach_parameter(initter);
     soln_rho.a_0  = 11;
     soln_rho.b_x  = 13;
     soln_rho.c_xy = 17;
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     soln_rho.e_yz = 23;
     soln_rho.f_z  = 29;
     soln_rho.g_z  = 31;
-    soln_rho.forall_parameters(printer);
+    soln_rho.foreach_parameter(printer);
 
     std::cout << "Evaluation after initializing:" << std::endl;
     std::cout << "\trho    = " << soln_rho    (x, y, z, t) << std::endl;
