@@ -1,13 +1,13 @@
 # Assuming that we are given
-#     rho, rho_t, rho_x, rho_xy, rho_xz, rho_y, rho_yz, rho_z
-#     u,   u_t,   u_x,   u_xy,   u_xz,   u_y,   u_yz,   u_z
-#     v,   v_t,   v_x,   v_xy,   v_xz,   v_y,   v_yz,   v_z
-#     w,   w_t,   w_x,   w_xy,   w_xz,   w_y,   w_yz,   w_z
-#     T,   T_t,   T_x,   T_xy,   T_xz,   T_y,   T_yz,   T_z
+#   rho, rho_t, rho_x, rho_xx, rho_xy, rho_xz, rho_y, rho_yy, rho_yz, rho_z, rho_zz
+#   u,   u_t,   u_x,   u_xx,   u_xy,   u_xz,   u_y,   u_yy,   u_yz,   u_z,   u_zz
+#   v,   v_t,   v_x,   v_xx,   v_xy,   v_xz,   v_y,   v_yy,   v_yz,   v_z,   v_zz
+#   w,   w_t,   w_x,   w_xx,   w_xy,   w_xz,   w_y,   w_yy,   w_yz,   w_z,   w_zz
+#   T,   T_t,   T_x,   T_xx,   T_xy,   T_xz,   T_y,   T_yy,   T_yz,   T_z,   T_zz
 # and the coefficients
-#     gamma, R, beta, mu_r, T_r, k_r, lambda_r
+#   gamma, R, beta, mu_r, T_r, k_r, lambda_r
 # compute the source terms
-#     Q_rho, Q_rhou, Q_rhov, Q_rhow, Q_rhoe
+#   Q_rho, Q_rhou, Q_rhov, Q_rhow, Q_rhoe
 # necessary to force the solution rho, u, v, w, and T.
 
 # Computations stemming from the constitutive relationships
@@ -99,4 +99,4 @@ Q_rhoe = ( rhoe_t + rhoue_x + rhove_y + rhowe_z
                   + pu_x + pv_y + pw_z + qx_x + qy_y + qz_z
                   - utauxx_x - vtauxy_x - wtauxz_x
                   - utauxy_y - vtauyy_y - wtauyz_y
-                  - utauxz_z - vtauyz_z - wtauzz_ )
+                  - utauxz_z - vtauyz_z - wtauzz_z )

@@ -4,10 +4,10 @@
 # to ensure floating point precision losses are acceptable.
 
 # soln.py contains the nececssary sympy imports
-from soln import *
+execfile("soln.py")
 
 # Work in (possibly slow) extended precision
-PREC = 30
+PREC = 30;
 
 # Test solution parameters.  These are not physically
 # realizable but can be used to check the implementation.
@@ -423,6 +423,7 @@ params_T = {
 }
 
 # Choose where and when we compute the solution
+# This must match the choices made in main.cpp
 params_xyzt = {
     'x': Rational(5, 10),
     'y': Rational(6, 10),
@@ -496,3 +497,66 @@ T_yy = phi_yy.subs(params_T)
 T_yz = phi_yz.subs(params_T)
 T_z  = phi_z .subs(params_T)
 T_zz = phi_zz.subs(params_T)
+
+# Compute the forcing using the same equations appearing in writeup.tex
+# This also includes term-by-term intermediate values.
+execfile("forcing.py")
+
+# Prepare a list of the quantities that we should output.
+# This makes assumptions about the names of temporaries in forcing.py,
+# but that should not be a big problem.
+qoi = """
+    rho rho_t rho_x rho_xx rho_xy rho_xz rho_y rho_yy rho_yz rho_z rho_zz
+    u   u_t   u_x   u_xx   u_xy   u_xz   u_y   u_yy   u_yz   u_z   u_zz
+    v   v_t   v_x   v_xx   v_xy   v_xz   v_y   v_yy   v_yz   v_z   v_zz
+    w   w_t   w_x   w_xx   w_xy   w_xz   w_y   w_yy   w_yz   w_z   w_zz
+    T   T_t   T_x   T_xx   T_xy   T_xz   T_y   T_yy   T_yz   T_z   T_zz
+
+    gamma  R  beta  mu_r  T_r  k_r  lambda_r
+
+    e e_x e_y e_z e_t
+    p p_x p_y p_z mu
+    mu_x mu_y mu_z
+    lambda_ lambda_x lambda_y lambda_z
+    qx_x qy_y qz_z
+
+    rhou rhov rhow
+    rhou_x rhov_y rhow_z rhou_t
+    rhov_t rhow_t rhoe_t 
+
+    rhouu_x rhouv_y rhouw_z rhouv_x
+    rhovv_y rhovw_z rhouw_x rhovw_y
+    rhoww_z rhoue_x rhove_y rhowe_z
+
+    tauxx tauyy tauzz tauxy tauxz tauyz
+    tauxx_x tauyy_y tauzz_z tauxy_x tauxy_y tauxz_x tauxz_z tauyz_y tauyz_z
+
+    pu_x pv_y pw_z
+    utauxx_x vtauxy_x wtauxz_x
+    utauxy_y vtauyy_y wtauyz_y
+    utauxz_z vtauyz_z wtauzz_z
+
+    Q_rho Q_rhou Q_rhov Q_rhow Q_rhoe
+""".split()
+
+# Output C++ namespace containing expected results in as long double constants
+def dump(name, value):
+    print "    const long double", name, "=",
+    if isinstance(value, int):
+        print value,
+        sys.stdout.write(".0")
+    else:
+        print value.evalf(PREC),
+    sys.stdout.write("L;\n");
+
+print "namespace nsctpl {"
+print "namespace test {"
+dump('x', params_xyzt['x'])
+dump('y', params_xyzt['y'])
+dump('z', params_xyzt['z'])
+dump('t', params_xyzt['t'])
+for quantity in qoi:
+    dump(quantity, globals()[quantity])
+    sys.stdout.flush()
+print "} // end namespace test"
+print "} // end namespace nsctpl"
