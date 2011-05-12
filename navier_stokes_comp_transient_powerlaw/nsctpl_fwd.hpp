@@ -202,20 +202,20 @@ public:
     Scalar eval_exact_v  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_w  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_T  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_g_rho    (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_g_u      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_g_v      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_g_w      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_g_T      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_grad_rho (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_grad_u   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_grad_v   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_grad_w   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_grad_T   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
 
     // Quantities built from the analytical solutions
     // TODO Build up eval_q_u, eval_q_v, eval_q_w, eval_q_e, eval_q_T, eval_q_p
     Scalar eval_exact_e  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_p  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_exact_mu (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_g_e      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_g_p      (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_g_mu     (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_grad_e   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_grad_p   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    Scalar eval_grad_mu  (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
     Scalar eval_q_rho    (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_q_rho_u  (Scalar x, Scalar y, Scalar z, Scalar t) const;
     Scalar eval_q_rho_v  (Scalar x, Scalar y, Scalar z, Scalar t) const;

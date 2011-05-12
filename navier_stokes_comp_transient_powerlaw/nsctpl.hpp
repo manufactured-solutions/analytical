@@ -122,7 +122,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_T(
 }
 
 template<template <typename T> class PrimitiveSolution, typename Scalar>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_rho(
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_rho(
         Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     switch (direction) {
@@ -134,7 +134,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_rho(
 }
 
 template<template <typename T> class PrimitiveSolution, typename Scalar>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_u(
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_u(
         Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     switch (direction) {
@@ -146,7 +146,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_u(
 }
 
 template<template <typename T> class PrimitiveSolution, typename Scalar>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_v(
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_v(
         Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     switch (direction) {
@@ -158,7 +158,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_v(
 }
 
 template<template <typename T> class PrimitiveSolution, typename Scalar>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_w(
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_w(
         Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     switch (direction) {
@@ -170,7 +170,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_w(
 }
 
 template<template <typename T> class PrimitiveSolution, typename Scalar>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_T(
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_T(
         Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     switch (direction) {
@@ -218,7 +218,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_mu(
 }
 
 template<template <typename T> class PrimitiveSolution, typename Scalar>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_e(
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_e(
         Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     const Scalar u = soln_u(x, y, z, t);
@@ -251,7 +251,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_e(
 }
 
 template<template <typename T> class PrimitiveSolution, typename Scalar>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_p(
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_p(
         Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     const Scalar rho = soln_rho(x, y, z, t);
@@ -277,7 +277,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_p(
 }
 
 template<template <typename T> class PrimitiveSolution, typename Scalar>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_g_mu(
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_mu(
         Scalar x, Scalar y, Scalar z, Scalar t, int direction) const
 {
     const Scalar T = soln_T(x, y, z, t);
