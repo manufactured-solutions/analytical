@@ -5,10 +5,13 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <typeinfo>
 
 #include "nsctpl_fwd.hpp"
 #include "nsctpl.hpp"
 #include "test.hpp"
+
+#define STRINGIFY(foo) #foo
 
 // Explicitly instantiate the primitive solution to ensure compilation
 template class nsctpl::primitive_solution<float>;
@@ -75,30 +78,25 @@ private:
     std::cout << '\t' << #expr << " = " << (expr) << " has relerr "         \
               << ((expr)/(expected) - 1) << std::endl;
 
-int main(int argc, char *argv[])
+template<typename Scalar>
+void run_tests()
 {
-    std::cout.precision(std::numeric_limits<long double>::digits10);
+    std::cout.precision(std::numeric_limits<Scalar>::digits10 + 2);
 
-    nsctpl::manufactured_solution<long double> ms;
+    nsctpl::manufactured_solution<Scalar> ms;
     {
-        prime_it<long double> p;
+        prime_it<Scalar> p;
         ms.foreach_parameter(p);
     }
-
-    std::cout << "Parameters after initialization:" << std::endl;
-    ms.foreach_parameter(print_it<long double>);
 
     using nsctpl::test::x;
     using nsctpl::test::y;
     using nsctpl::test::z;
     using nsctpl::test::t;
-    std::cout << "Evaluation takes place at" << std::endl;
-    std::cout << "\tx = " << x << std::endl;
-    std::cout << "\ty = " << y << std::endl;
-    std::cout << "\tz = " << z << std::endl;
-    std::cout << "\tt = " << t << std::endl;
 
-    std::cout << "Analytic solution evaluations:" << std::endl;
+    std::cout << std::endl
+              << "Analytic solution evaluations for "
+              << typeid(Scalar).name() << std::endl;
     CHECK(ms.soln_rho    (x, y, z, t), nsctpl::test::rho);
     CHECK(ms.soln_rho._t (x, y, z, t), nsctpl::test::rho_t );
     CHECK(ms.soln_rho._x (x, y, z, t), nsctpl::test::rho_x );
@@ -155,8 +153,9 @@ int main(int argc, char *argv[])
     CHECK(ms.soln_T._z (x, y, z, t), nsctpl::test::T_z );
     CHECK(ms.soln_T._zz(x, y, z, t), nsctpl::test::T_zz);
 
-    std::cout << "Analytically determined quantities" << std::endl;
-    std::cout.precision(std::numeric_limits<long double>::digits10);
+    std::cout << std::endl
+              << "Analytically determined quantities for "
+              << typeid(Scalar).name() << std::endl;
     CHECK(ms.eval_exact_rho(x, y, z, t), nsctpl::test::rho);
     CHECK(ms.eval_exact_u  (x, y, z, t), nsctpl::test::u);
     CHECK(ms.eval_exact_v  (x, y, z, t), nsctpl::test::v);
@@ -178,7 +177,9 @@ int main(int argc, char *argv[])
     CHECK(ms.eval_grad_T  (x, y, z, t, 2), nsctpl::test::T_y);
     CHECK(ms.eval_grad_T  (x, y, z, t, 3), nsctpl::test::T_z);
 
-    std::cout << "Quantities built from the analytical solutions" << std::endl;
+    std::cout << std::endl
+              << "Quantities built from the analytical solutions for "
+              << typeid(Scalar).name() << std::endl;
     CHECK(ms.eval_exact_e (x, y, z, t), nsctpl::test::e);
     CHECK(ms.eval_exact_p (x, y, z, t), nsctpl::test::p);
     CHECK(ms.eval_exact_mu(x, y, z, t), nsctpl::test::mu);
@@ -196,6 +197,35 @@ int main(int argc, char *argv[])
     CHECK(ms.eval_q_rho_v (x, y, z, t), nsctpl::test::Q_rhov);
     CHECK(ms.eval_q_rho_w (x, y, z, t), nsctpl::test::Q_rhow);
     CHECK(ms.eval_q_rho_e (x, y, z, t), nsctpl::test::Q_rhoe);
+}
+
+int main(int argc, char *argv[])
+{
+    using std::cout;
+    using std::endl;
+
+    cout << "navier_stokes_comp_transient_powerlaw implementation test" << endl
+         << '\t' << STRINGIFY($Id$) << endl;
+
+    cout << endl
+         << "Solution parameters after initialization:" << endl;
+    nsctpl::manufactured_solution<double> ms;
+    prime_it<double> p;
+    ms.foreach_parameter(p);
+    ms.foreach_parameter(print_it<double>);
+
+    cout << endl
+         << "Evaluation takes place at" << endl
+         << "\tx = " << nsctpl::test::x << endl
+         << "\ty = " << nsctpl::test::y << endl
+         << "\tz = " << nsctpl::test::z << endl
+         << "\tt = " << nsctpl::test::t << endl;
+
+    run_tests<float>();
+    run_tests<double>();
+    run_tests<long double>();
 
     return EXIT_SUCCESS;
 }
+
+
