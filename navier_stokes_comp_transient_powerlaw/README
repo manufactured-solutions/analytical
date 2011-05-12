@@ -29,3 +29,17 @@ Tests:
                      Checks that ensure C++ implementation matches
                      writeup.tex/soln.py/forcing.py to acceptable tolerance.
     Makefile:        Used to build main.cpp using GNU g++.
+
+How to use this solution:
+
+    1) Run 'pdflatex writeup.tex' twice to build writeup.pdf.
+    2) Review the details of the manufactured solution in writeup.pdf.
+    3) Run 'make' to build the binary 'main'.
+    4) Execute 'main' and review the output.  This program computes the
+       relative error between the C++ implementation (nsctpl_fwd.hpp, nsctpl.hpp)
+       and high precision computations done directly from the writeup.pdf
+       details (soln.py, forcing.py).  Float-, double-, and long double-based
+       computations are shown.
+    5) Use nsctpl_fwd.hpp and nsctpl.hpp in your code by #include-ing them
+       verbatim into your code.  See the top of nsctpl_fwd.hpp for some
+       details.
