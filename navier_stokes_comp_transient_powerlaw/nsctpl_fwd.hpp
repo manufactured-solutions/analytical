@@ -18,14 +18,17 @@ namespace nsctpl {
  *     + a_z  * cos(b_z *z + c_z )                   *cos(f_z *t + g_z )
  * \endverbatim
  * The member method names are non-traditional but permitted by the language
- * standards and well-aligned with mathematical notation.  The
- * foreach_parameter() member allows invoking an operation on each solution
+ * standards and well-aligned with mathematical notation.  Location and
+ * time arguments are templated to allow extended precision intermediate
+ * computations (followed by truncation) when possible.
+ *
+ * The foreach_parameter() member allows invoking an operation on each solution
  * parameter to aid parameter registration, initialization, or output.
  * Parameters may have an infix name added for use with foreach_parameter().
  * For example, setting the name 'phi' will cause foreach_parameter() to report
  * names like 'a_phix'.
  */
-template<typename Scalar>
+template <typename Scalar>
 class primitive_solution {
 
 public:
@@ -69,14 +72,14 @@ public:
         f(os.str(), this->pre##suf);
 
     //! Invoke the binary function f on each parameter name and its value.
-    template<typename BinaryFunction>
+    template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) const {
         ::std::ostringstream os;
         FOR_ALL_SOLUTION_PARAMETERS(APPLY)
     }
 
     //! Invoke the binary function f on each parameter name and its value.
-    template<typename BinaryFunction>
+    template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) {
         ::std::ostringstream os;
         FOR_ALL_SOLUTION_PARAMETERS(APPLY)
@@ -89,37 +92,48 @@ public:
 #undef FOR_ALL_SOLUTION_PARAMETERS
 
     //! Evaluate the solution
-    Scalar operator()(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar operator()(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's derivative with respect to time
-    Scalar _t(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _t(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's derivative with respect to \c x
-    Scalar _x(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _x(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's second derivative with respect to \c x
-    Scalar _xx(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _xx(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's derivative with respect to \c x and \c y
-    Scalar _xy(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _xy(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's derivative with respect to \c x and \c z
-    Scalar _xz(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _xz(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's derivative with respect to \c y
-    Scalar _y(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _y(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's second derivative with respect to \c y
-    Scalar _yy(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _yy(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's derivative with respect to \c y and \c z
-    Scalar _yz(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _yz(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's derivative with respect to \c z
-    Scalar _z(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _z(T1 x, T2 y, T3 z, T4 t) const;
 
     //! Evaluate the solution's second derivative with respect to \c z
-    Scalar _zz(Scalar x, Scalar y, Scalar z, Scalar t) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar _zz(T1 x, T2 y, T3 z, T4 t) const;
 
 }; // end class
 
@@ -128,9 +142,11 @@ public:
  * Template that, given a primitive solution for \c rho, \c u, \c v, \c w, and
  * \c T along with a floating point type, evaluates a manufactured solution and
  * the required forcing for the transient, compressible Navier--Stokes
- * equations with a power law viscosity.
+ * equations with a power law viscosity.  Location and time arguments are
+ * templated to allow extended precision intermediate computations (followed by
+ * truncation) when possible.
  */
-template<template <typename T> class PrimitiveSolution, typename Scalar>
+template <template <typename T> class PrimitiveSolution, typename Scalar>
 class generic_manufactured_solution {
 
 public:
@@ -163,7 +179,7 @@ public:
     }
 
     //! Invoke the binary function f on each parameter name and its value.
-    template<typename BinaryFunction>
+    template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) const {
         f(::std::string("gamma"),    gamma   );
         f(::std::string("R"),        R       );
@@ -180,7 +196,7 @@ public:
     }
 
     //! Invoke the binary function f on each parameter name and its value.
-    template<typename BinaryFunction>
+    template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) {
         f(::std::string("gamma"),    gamma   );
         f(::std::string("R"),        R       );
@@ -197,30 +213,71 @@ public:
     }
 
     // Analytically determined quantities
-    Scalar eval_exact_rho(Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_exact_u  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_exact_v  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_exact_w  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_exact_T  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_grad_rho (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_grad_u   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_grad_v   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_grad_w   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_grad_T   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_rho(T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_u  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_v  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_w  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_T  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_grad_rho (T1 x, T2 y, T3 z, T4 t, int direction) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_grad_u   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_grad_v   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_grad_w   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_grad_T   (T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     // Quantities built from the analytical solutions
     // TODO Build up eval_q_u, eval_q_v, eval_q_w, eval_q_e, eval_q_T, eval_q_p
-    Scalar eval_exact_e  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_exact_p  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_exact_mu (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_grad_e   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_grad_p   (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_grad_mu  (Scalar x, Scalar y, Scalar z, Scalar t, int direction) const;
-    Scalar eval_q_rho    (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_q_rho_u  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_q_rho_v  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_q_rho_w  (Scalar x, Scalar y, Scalar z, Scalar t) const;
-    Scalar eval_q_rho_e  (Scalar x, Scalar y, Scalar z, Scalar t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_e  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_p  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_mu (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_grad_e   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_grad_p   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_grad_mu  (T1 x, T2 y, T3 z, T4 t, int direction) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_q_rho    (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_q_rho_u  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_q_rho_v  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_q_rho_w  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_q_rho_e  (T1 x, T2 y, T3 z, T4 t) const;
 
 }; // end class
 
@@ -229,7 +286,7 @@ public:
  * solution and the required forcing for the transient, compressible
  * Navier--Stokes equations with a power law viscosity.
  */
-template<typename Scalar>
+template <typename Scalar>
 class manufactured_solution
     : public generic_manufactured_solution<primitive_solution,Scalar> {};
 
