@@ -81,7 +81,7 @@ private:
 template<typename Scalar>
 void run_tests()
 {
-    std::cout.precision(std::numeric_limits<Scalar>::digits10 + 2);
+    std::cout.precision(std::numeric_limits<Scalar>::digits10);
 
     nsctpl::manufactured_solution<Scalar> ms;
     {
