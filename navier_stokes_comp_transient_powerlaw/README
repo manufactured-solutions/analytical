@@ -1,8 +1,21 @@
-A transient manufactured solution for the compressible Navier--Stokes
-equations with a power law viscosity.
+How to use this solution:
+
+    0) Assuming you have make, md5sum, g++, pdflatex, Python, and SymPy
+       installed, you can build the PDF documentation and a test program
+       called 'check' by running 'make'.
+    1) Review the generated 'writeup.pdf' to familiarize yourself with the
+       solution.
+    2) Run 'check' and review the relative errors shown to convince yourself
+       the C++ code in nsctpl_fwd.hpp and nsctpl.hpp correctly implements the
+       manufactured solution and the associated manufactured forcing.  Results
+       are shown for float, double, and long double computations.
+    3) Use nsctpl_fwd.hpp and nsctpl.hpp in your code by #include-ing them
+       verbatim into your code.  See the top of nsctpl_fwd.hpp for some
+       details and check.cpp for how you might use the provided classes.
 
 Documentation:
 
+    README:      This file
     writeup.tex: Discussion of the model and the manufactured solution
     soln.py:     Generates C code for the solution and its derivatives
                  Included by writeup.tex
@@ -22,24 +35,10 @@ Implementation:
 Tests:
 
     test.py:         Using Sympy, computes high precision results for
-                     a particular set of solution coefficients.  Results
-                     employed in main.cpp.
-    main.cpp:        Very simple driver used to ensure nsctpl.hpp compiles
+                     a particular set of solution coefficients using
+                     'soln.py' and 'forcing.py'.  Results saved into
+                     test.hpp and employed in check.cpp.
+    check.cpp:       Very simple driver used to ensure nsctpl.hpp compiles
                      at several different precisions and behaves sanely.
                      Checks that ensure C++ implementation matches
                      writeup.tex/soln.py/forcing.py to acceptable tolerance.
-    Makefile:        Used to build main.cpp using GNU g++.
-
-How to use this solution:
-
-    1) Run 'pdflatex writeup.tex' twice to build writeup.pdf.
-    2) Review the details of the manufactured solution in writeup.pdf.
-    3) Run 'make' to build the binary 'main'.
-    4) Execute 'main' and review the output.  This program computes the
-       relative error between the C++ implementation (nsctpl_fwd.hpp, nsctpl.hpp)
-       and high precision computations done directly from the writeup.pdf
-       details (soln.py, forcing.py).  Float-, double-, and long double-based
-       computations are shown.
-    5) Use nsctpl_fwd.hpp and nsctpl.hpp in your code by #include-ing them
-       verbatim into your code.  See the top of nsctpl_fwd.hpp for some
-       details.

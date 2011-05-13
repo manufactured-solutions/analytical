@@ -95,8 +95,10 @@ void run_tests()
     using nsctpl::test::t;
 
     std::cout << std::endl
-              << "Analytic solution evaluations for "
-              << typeid(Scalar).name() << std::endl;
+              << "Analytic solution evaluations for type "
+              << typeid(Scalar).name()
+              << " (digits10 = " << std::numeric_limits<Scalar>::digits10 << ")"
+              << std::endl;
     CHECK(ms.rho    (x, y, z, t), nsctpl::test::rho);
     CHECK(ms.rho._t (x, y, z, t), nsctpl::test::rho_t );
     CHECK(ms.rho._x (x, y, z, t), nsctpl::test::rho_x );
@@ -155,7 +157,9 @@ void run_tests()
 
     std::cout << std::endl
               << "Analytically determined quantities for "
-              << typeid(Scalar).name() << std::endl;
+              << typeid(Scalar).name()
+              << " (digits10 = " << std::numeric_limits<Scalar>::digits10 << ")"
+              << std::endl;
     CHECK(ms.grad_rho(x, y, z, t, 1), nsctpl::test::rho_x);
     CHECK(ms.grad_rho(x, y, z, t, 2), nsctpl::test::rho_y);
     CHECK(ms.grad_rho(x, y, z, t, 3), nsctpl::test::rho_z);
@@ -174,7 +178,9 @@ void run_tests()
 
     std::cout << std::endl
               << "Quantities built from the analytical solutions for "
-              << typeid(Scalar).name() << std::endl;
+              << typeid(Scalar).name()
+              << " (digits10 = " << std::numeric_limits<Scalar>::digits10 << ")"
+              << std::endl;
     CHECK(ms.e      (x, y, z, t),    nsctpl::test::e);
     CHECK(ms.p      (x, y, z, t),    nsctpl::test::p);
     CHECK(ms.mu     (x, y, z, t),    nsctpl::test::mu);

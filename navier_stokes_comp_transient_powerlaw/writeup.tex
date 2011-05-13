@@ -7,6 +7,7 @@
 \usepackage{fullpage}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{verbatim}
 
 \newcommand{\tensor}[1]{\accentset{\leftrightarrow}{#1}}
 
@@ -36,7 +37,10 @@ Newtonian perfect gas obeying a power law viscosity.  The solution form
 includes waveforms with adjustable phase offsets and mixed partial derivatives
 to bolster code coverage.  Temperature, rather than pressure, is selected to
 have a simple analytic form to aid verifying codes having temperature-based
-boundary conditions.
+boundary conditions.  A C++ implementation of the manufactured solution and the
+forcing it requires is provided.  Tests are included to ensure the
+implementation matches the solution form to within acceptable floating point
+loss.
 \end{abstract}
 
 \maketitle
@@ -109,6 +113,7 @@ and $Q_{\rho{}e}$ will be used to obtain the desired manufactured solution.
 
 
 \section{Manufactured solution}
+\label{sec:solution}
 
 For all $\phi\in\left\{\rho, u, v, w, T\right\}$ we select analytical solutions
 of the form
@@ -134,7 +139,7 @@ computed directly from the chosen solutions.
 Though they increase the solution's complexity significantly, mixed partial
 spatial derivatives are included to improve code coverage.  Each term has an
 adjustable amplitude, frequency, and phase for all spatial dimensions.  Cosines
-were chosen so terms can be ``turned off'' by employing zero coefficients. It
+were chosen so terms can be ``turned off'' by employing zero coefficients.  It
 is suggested that users gradually ``turn on'' the more complicated features of
 the solution (i.e. use non-zero coefficients) after ensuring simpler usage has
 been successful.
@@ -145,21 +150,41 @@ values at some $x$, $y$, $z$, and $t$:
 \lstinputlisting[language=Python]{soln.py}
 
 \section{Forcing terms}
+\label{sec:forcing}
 
 The solutions given by equation~\eqref{eq:solution} may be plugged into
 equation~\eqref{eq:model} and solved for the forcing terms $Q_{\rho}$,
 $\vec{Q}_{\rho{}u}$, and $Q_{\rho{}e}$.  However, solving for these complete
 terms entirely within the context of a computer algebra system causes an
-unwieldy explosion of terms.
+unwieldy explosion of terms.  As the fully expanded forcing terms are too
+large to be usable in any meaningful way, they are not shown.
 
 Instead, starting from the solution and its the analytic derivatives, we use
-basic calculus and algebraic operations performed in floating point to obtain
-the necessary forcing.  The errors arising in this process behave like standard
-floating point truncation issues.  Many of the computations are independent of
-the constitutive relations used and could be employed for other manufactured
-solutions.
+basic calculus followed by algebraic operations performed in floating point to
+obtain the necessary forcing \emph{at runtime}.  The errors arising in this
+process behave like standard floating point truncation issues.  Many of the
+computations are independent of the constitutive relations used and could be
+employed for other manufactured solutions.
 
 Computing the forcing terms looks as follows:
 \lstinputlisting[language=python]{forcing.py}
+
+\section{Implementation}
+
+A templated, precision-agnostic C++ implementation for evaluating the
+manufactured solution and its associated forcing is included.  Also included is
+a high precision test case which ensures the implementation computes exactly
+what is described in this documentation.  The test can do so because it
+executes the same Python source files used to generate this document.
+
+One can ensure the implementation files match this documentation by comparing
+against the following MD5 checksums:
+
+\verbatiminput{CHECKSUMS}
+
+More details on the implementation and tests can be found in the solution's
+README:
+
+\verbatiminput{README}
 
 \end{document}

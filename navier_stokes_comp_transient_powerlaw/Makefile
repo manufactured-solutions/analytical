@@ -1,10 +1,15 @@
-all: main
+all: writeup.pdf check
+
+writeup.pdf: writeup.tex soln.py forcing.py nsctpl_fwd.hpp nsctpl.hpp
+	md5sum soln.py forcing.py nsctpl_fwd.hpp nsctpl.hpp > CHECKSUMS
+	pdflatex writeup
+	pdflatex writeup
 
 test.hpp: test.py soln.py forcing.py
 	test.py | tee test.hpp
 
-main: main.cpp nsctpl_fwd.hpp nsctpl.hpp test.hpp
-	g++ -g -O0 -fno-unsafe-math-optimizations -Wall -pedantic main.cpp -o main
+check: check.cpp nsctpl_fwd.hpp nsctpl.hpp test.hpp
+	g++ -g -O0 -fno-unsafe-math-optimizations -Wall -pedantic check.cpp -o check
 
 clean:
-	rm -fv *.o main test.hpp soln.c soln.h
+	rm -fv *.o check test.hpp soln.c soln.h *.aux *.log *.out writeup.pdf
