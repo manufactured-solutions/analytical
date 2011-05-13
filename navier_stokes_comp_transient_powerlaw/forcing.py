@@ -28,9 +28,12 @@ lambda_  = lambda_r / mu_r * mu   # "lambda" is a Python keyword
 lambda_x = lambda_r / mu_r * mu_x
 lambda_y = lambda_r / mu_r * mu_y
 lambda_z = lambda_r / mu_r * mu_z
-qx_x     = k_r / mu_r * (mu_x * T_x + mu * T_xx)
-qy_y     = k_r / mu_r * (mu_y * T_y + mu * T_yy)
-qz_z     = k_r / mu_r * (mu_z * T_z + mu * T_zz)
+qx       = - k_r / mu_r *  mu   * T_x
+qy       = - k_r / mu_r *  mu   * T_y
+qz       = - k_r / mu_r *  mu   * T_z
+qx_x     = - k_r / mu_r * (mu_x * T_x + mu * T_xx)
+qy_y     = - k_r / mu_r * (mu_y * T_y + mu * T_yy)
+qz_z     = - k_r / mu_r * (mu_z * T_z + mu * T_zz)
 
 # Computations stemming from the compressible, Newtonian fluid model
 rhou    = rho * u
