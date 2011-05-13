@@ -243,6 +243,38 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_mu(
 
 template <template <typename T> class PrimitiveSolution, typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_rho_u(
+        T1 x, T2 y, T3 z, T4 t) const
+{
+    return eval_exact_rho(x, y, z, t) * eval_exact_u(x, y, z, t);
+}
+
+template <template <typename T> class PrimitiveSolution, typename Scalar>
+template <typename T1, typename T2, typename T3, typename T4>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_rho_v(
+        T1 x, T2 y, T3 z, T4 t) const
+{
+    return eval_exact_rho(x, y, z, t) * eval_exact_v(x, y, z, t);
+}
+
+template <template <typename T> class PrimitiveSolution, typename Scalar>
+template <typename T1, typename T2, typename T3, typename T4>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_rho_w(
+        T1 x, T2 y, T3 z, T4 t) const
+{
+    return eval_exact_rho(x, y, z, t) * eval_exact_w(x, y, z, t);
+}
+
+template <template <typename T> class PrimitiveSolution, typename Scalar>
+template <typename T1, typename T2, typename T3, typename T4>
+Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_exact_rho_e(
+        T1 x, T2 y, T3 z, T4 t) const
+{
+    return eval_exact_rho(x, y, z, t) * eval_exact_e(x, y, z, t);
+}
+
+template <template <typename T> class PrimitiveSolution, typename Scalar>
+template <typename T1, typename T2, typename T3, typename T4>
 Scalar generic_manufactured_solution<PrimitiveSolution,Scalar>::eval_grad_e(
         T1 x, T2 y, T3 z, T4 t, int direction) const
 {

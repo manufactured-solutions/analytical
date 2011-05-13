@@ -520,9 +520,9 @@ qoi = """
     lambda_ lambda_x lambda_y lambda_z
     qx_x qy_y qz_z
 
-    rhou rhov rhow
-    rhou_x rhov_y rhow_z rhou_t
-    rhov_t rhow_t rhoe_t 
+    rhou rhov rhow rhoe
+    rhou_x rhov_y rhow_z
+    rhou_t rhov_t rhow_t rhoe_t
 
     rhouu_x rhouv_y rhouw_z rhouv_x
     rhovv_y rhovw_z rhouw_x rhovw_y

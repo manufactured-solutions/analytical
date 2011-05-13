@@ -183,6 +183,10 @@ void run_tests()
     CHECK(ms.eval_exact_e (x, y, z, t), nsctpl::test::e);
     CHECK(ms.eval_exact_p (x, y, z, t), nsctpl::test::p);
     CHECK(ms.eval_exact_mu(x, y, z, t), nsctpl::test::mu);
+    CHECK(ms.eval_exact_rho_u(x, y, z, t), nsctpl::test::rhou);
+    CHECK(ms.eval_exact_rho_v(x, y, z, t), nsctpl::test::rhov);
+    CHECK(ms.eval_exact_rho_w(x, y, z, t), nsctpl::test::rhow);
+    CHECK(ms.eval_exact_rho_e(x, y, z, t), nsctpl::test::rhoe);
     CHECK(ms.eval_grad_e  (x, y, z, t, 1), nsctpl::test::e_x);
     CHECK(ms.eval_grad_e  (x, y, z, t, 2), nsctpl::test::e_y);
     CHECK(ms.eval_grad_e  (x, y, z, t, 3), nsctpl::test::e_z);

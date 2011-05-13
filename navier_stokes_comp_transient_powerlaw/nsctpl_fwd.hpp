@@ -256,6 +256,18 @@ public:
     Scalar eval_exact_mu (T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_rho_u  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_rho_v  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_rho_w  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
+    Scalar eval_exact_rho_e  (T1 x, T2 y, T3 z, T4 t) const;
+
+    template <typename T1, typename T2, typename T3, typename T4>
     Scalar eval_grad_e   (T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     template <typename T1, typename T2, typename T3, typename T4>

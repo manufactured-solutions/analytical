@@ -39,6 +39,7 @@ qz_z     = - k_r / mu_r * (mu_z * T_z + mu * T_zz)
 rhou    = rho * u
 rhov    = rho * v
 rhow    = rho * w
+rhoe    = rho * e
 rhou_x  = rho_x * u + rho * u_x
 rhov_y  = rho_y * v + rho * v_y
 rhow_z  = rho_z * w + rho * w_z
