@@ -164,17 +164,17 @@ public:
 
     //! Analytic solutions (which contain additional parameters)
     //!@{
-    PrimitiveSolution<Scalar> soln_rho;  //!< Analytic solution for rho
-    PrimitiveSolution<Scalar> soln_u;    //!< Analytic solution for u
-    PrimitiveSolution<Scalar> soln_v;    //!< Analytic solution for v
-    PrimitiveSolution<Scalar> soln_w;    //!< Analytic solution for w
-    PrimitiveSolution<Scalar> soln_T;    //!< Analytic solution for T
+    PrimitiveSolution<Scalar> rho;  //!< Analytic solution for rho
+    PrimitiveSolution<Scalar> u;    //!< Analytic solution for u
+    PrimitiveSolution<Scalar> v;    //!< Analytic solution for v
+    PrimitiveSolution<Scalar> w;    //!< Analytic solution for w
+    PrimitiveSolution<Scalar> T;    //!< Analytic solution for T
     //!@}
 
     //! Default constructor
     generic_manufactured_solution()
         : gamma(0), R(0), beta(0), mu_r(0), T_r(0), k_r(0), lambda_r(0),
-          soln_rho("rho"), soln_u("u"), soln_v("v"), soln_w("w"), soln_T("T")
+          rho("rho"), u("u"), v("v"), w("w"), T("T")
     {
     }
 
@@ -188,11 +188,11 @@ public:
         f(::std::string("T_r"),      T_r     );
         f(::std::string("k_r"),      k_r     );
         f(::std::string("lambda_r"), lambda_r);
-        soln_rho.foreach_parameter(f);
-        soln_u.foreach_parameter(f);
-        soln_v.foreach_parameter(f);
-        soln_w.foreach_parameter(f);
-        soln_T.foreach_parameter(f);
+        rho.foreach_parameter(f);
+        u.foreach_parameter(f);
+        v.foreach_parameter(f);
+        w.foreach_parameter(f);
+        T.foreach_parameter(f);
     }
 
     //! Invoke the binary function f on each parameter name and its value.
@@ -205,91 +205,78 @@ public:
         f(::std::string("T_r"),      T_r     );
         f(::std::string("k_r"),      k_r     );
         f(::std::string("lambda_r"), lambda_r);
-        soln_rho.foreach_parameter(f);
-        soln_u.foreach_parameter(f);
-        soln_v.foreach_parameter(f);
-        soln_w.foreach_parameter(f);
-        soln_T.foreach_parameter(f);
+        rho.foreach_parameter(f);
+        u.foreach_parameter(f);
+        v.foreach_parameter(f);
+        w.foreach_parameter(f);
+        T.foreach_parameter(f);
     }
 
     // Analytically determined quantities
+    // Note that PrimitiveSolution members can be used directly.
+    // For example, T(x,y,z,t) or T._xx(x,y,z,t)
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_rho(T1 x, T2 y, T3 z, T4 t) const;
+    Scalar grad_rho (T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_u  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar grad_u   (T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_v  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar grad_v   (T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_w  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar grad_w   (T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_T  (T1 x, T2 y, T3 z, T4 t) const;
-
-    template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_grad_rho (T1 x, T2 y, T3 z, T4 t, int direction) const;
-
-    template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_grad_u   (T1 x, T2 y, T3 z, T4 t, int direction) const;
-
-    template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_grad_v   (T1 x, T2 y, T3 z, T4 t, int direction) const;
-
-    template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_grad_w   (T1 x, T2 y, T3 z, T4 t, int direction) const;
-
-    template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_grad_T   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_T   (T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     // Quantities built from the analytical solutions
-    // TODO Build up eval_q_u, eval_q_v, eval_q_w, eval_q_e, eval_q_T, eval_q_p
+    // TODO Build up q_u, q_v, q_w, q_e, q_T, q_p
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_e  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar e(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_p  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar p(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_mu (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar mu(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_rho_u  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar rhou(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_rho_v  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar rhov(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_rho_w  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar rhow(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_exact_rho_e  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar rhoe(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_grad_e   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_e(T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_grad_p   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_p(T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_grad_mu  (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_mu(T1 x, T2 y, T3 z, T4 t, int direction) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_q_rho    (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar Q_rho(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_q_rho_u  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar Q_rhou(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_q_rho_v  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar Q_rhov(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_q_rho_w  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar Q_rhow(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar eval_q_rho_e  (T1 x, T2 y, T3 z, T4 t) const;
+    Scalar Q_rhoe(T1 x, T2 y, T3 z, T4 t) const;
 
 }; // end class
 
