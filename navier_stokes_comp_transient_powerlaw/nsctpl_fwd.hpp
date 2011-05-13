@@ -146,7 +146,9 @@ public:
  * templated to allow extended precision intermediate computations (followed by
  * truncation) when possible.
  */
-template <template <typename T> class PrimitiveSolution, typename Scalar>
+template <template <typename T> class PrimitiveSolution,
+          typename Scalar,
+          int IndexBase = 0>
 class generic_manufactured_solution {
 
 public:
@@ -216,19 +218,19 @@ public:
     // Note that PrimitiveSolution members can be used directly.
     // For example, T(x,y,z,t) or T._xx(x,y,z,t)
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar grad_rho (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_rho (T1 x, T2 y, T3 z, T4 t, int index) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar grad_u   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_u   (T1 x, T2 y, T3 z, T4 t, int index) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar grad_v   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_v   (T1 x, T2 y, T3 z, T4 t, int index) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar grad_w   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_w   (T1 x, T2 y, T3 z, T4 t, int index) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar grad_T   (T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_T   (T1 x, T2 y, T3 z, T4 t, int index) const;
 
     // Quantities built from the analytical solutions
     // TODO Build up q_u, q_v, q_w, q_e, q_T, q_p
@@ -255,13 +257,13 @@ public:
     Scalar rhoe(T1 x, T2 y, T3 z, T4 t) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar grad_e(T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_e(T1 x, T2 y, T3 z, T4 t, int index) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar grad_p(T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_p(T1 x, T2 y, T3 z, T4 t, int index) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
-    Scalar grad_mu(T1 x, T2 y, T3 z, T4 t, int direction) const;
+    Scalar grad_mu(T1 x, T2 y, T3 z, T4 t, int index) const;
 
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar Q_rho(T1 x, T2 y, T3 z, T4 t) const;
@@ -283,10 +285,10 @@ public:
 /**
  * Template that, given a floating point type, evaluates a manufactured
  * solution and the required forcing for the transient, compressible
- * Navier--Stokes equations with a power law viscosity.
+ * Navier--Stokes equations with a power law viscosity.  Indices start at one.
  */
 template <typename Scalar>
 class manufactured_solution
-    : public generic_manufactured_solution<primitive_solution,Scalar> {};
+    : public generic_manufactured_solution<primitive_solution,Scalar,1> {};
 
 } // end namespace nsctpl
