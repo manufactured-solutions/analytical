@@ -5,124 +5,146 @@ namespace nsctpl {
 // ---------------------------------------------------------------------------
 
 template <typename Scalar>
+const Scalar primitive_solution<Scalar>::twopi = 8 * std::atan(Scalar(1));
+
+template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::operator()(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::operator()(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return a_0*cos(g_0 + f_0*t) + a_x*cos(c_x + b_x*x)*cos(g_x + f_x*t) + a_y*cos(g_y + f_y*t)*cos(c_y + b_y*y) + a_z*cos(g_z + f_z*t)*cos(c_z + b_z*z) + a_xy*cos(g_xy + f_xy*t)*cos(c_xy + b_xy*x)*cos(e_xy + d_xy*y) + a_xz*cos(c_xz + b_xz*x)*cos(g_xz + f_xz*t)*cos(e_xz + d_xz*z) + a_yz*cos(c_yz + b_yz*y)*cos(e_yz + d_yz*z)*cos(g_yz + f_yz*t);
+    return a_0*cos(g_0 + f_0*t) + a_x*cos(c_x + b_x*twopi_invLx*x)*cos(g_x + f_x*t) + a_y*cos(g_y + f_y*t)*cos(c_y + b_y*twopi_invLy*y) + a_z*cos(g_z + f_z*t)*cos(c_z + b_z*twopi_invLz*z) + a_xy*cos(g_xy + f_xy*t)*cos(c_xy + b_xy*twopi_invLx*x)*cos(e_xy + d_xy*twopi_invLy*y) + a_xz*cos(g_xz + f_xz*t)*cos(c_xz + b_xz*twopi_invLx*x)*cos(e_xz + d_xz*twopi_invLz*z) + a_yz*cos(c_yz + b_yz*twopi_invLy*y)*cos(e_yz + d_yz*twopi_invLz*z)*cos(g_yz + f_yz*t);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_t(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_t(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return -a_0*f_0*sin(g_0 + f_0*t) - a_x*f_x*cos(c_x + b_x*x)*sin(g_x + f_x*t) - a_y*f_y*cos(c_y + b_y*y)*sin(g_y + f_y*t) - a_z*f_z*cos(c_z + b_z*z)*sin(g_z + f_z*t) - a_xy*f_xy*cos(c_xy + b_xy*x)*cos(e_xy + d_xy*y)*sin(g_xy + f_xy*t) - a_xz*f_xz*cos(c_xz + b_xz*x)*cos(e_xz + d_xz*z)*sin(g_xz + f_xz*t) - a_yz*f_yz*cos(c_yz + b_yz*y)*cos(e_yz + d_yz*z)*sin(g_yz + f_yz*t);
+    return -a_0*f_0*sin(g_0 + f_0*t) - a_x*f_x*cos(c_x + b_x*twopi_invLx*x)*sin(g_x + f_x*t) - a_y*f_y*cos(c_y + b_y*twopi_invLy*y)*sin(g_y + f_y*t) - a_z*f_z*cos(c_z + b_z*twopi_invLz*z)*sin(g_z + f_z*t) - a_xy*f_xy*cos(c_xy + b_xy*twopi_invLx*x)*cos(e_xy + d_xy*twopi_invLy*y)*sin(g_xy + f_xy*t) - a_xz*f_xz*cos(c_xz + b_xz*twopi_invLx*x)*cos(e_xz + d_xz*twopi_invLz*z)*sin(g_xz + f_xz*t) - a_yz*f_yz*cos(c_yz + b_yz*twopi_invLy*y)*cos(e_yz + d_yz*twopi_invLz*z)*sin(g_yz + f_yz*t);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_x(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_x(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return -a_x*b_x*cos(g_x + f_x*t)*sin(c_x + b_x*x) - a_xy*b_xy*cos(g_xy + f_xy*t)*cos(e_xy + d_xy*y)*sin(c_xy + b_xy*x) - a_xz*b_xz*cos(g_xz + f_xz*t)*cos(e_xz + d_xz*z)*sin(c_xz + b_xz*x);
+    return -a_x*b_x*twopi_invLx*cos(g_x + f_x*t)*sin(c_x + b_x*twopi_invLx*x) - a_xy*b_xy*twopi_invLx*cos(g_xy + f_xy*t)*cos(e_xy + d_xy*twopi_invLy*y)*sin(c_xy + b_xy*twopi_invLx*x) - a_xz*b_xz*twopi_invLx*cos(g_xz + f_xz*t)*cos(e_xz + d_xz*twopi_invLz*z)*sin(c_xz + b_xz*twopi_invLx*x);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_xx(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_xx(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return -a_x*b_x*b_x*cos(c_x + b_x*x)*cos(g_x + f_x*t) - a_xy*b_xy*b_xy*cos(g_xy + f_xy*t)*cos(c_xy + b_xy*x)*cos(e_xy + d_xy*y) - a_xz*b_xz*b_xz*cos(c_xz + b_xz*x)*cos(g_xz + f_xz*t)*cos(e_xz + d_xz*z);
+    return -a_x*b_x*b_x*twopi_invLx*twopi_invLx*cos(c_x + b_x*twopi_invLx*x)*cos(g_x + f_x*t) - a_xy*b_xy*b_xy*twopi_invLx*twopi_invLx*cos(g_xy + f_xy*t)*cos(c_xy + b_xy*twopi_invLx*x)*cos(e_xy + d_xy*twopi_invLy*y) - a_xz*b_xz*b_xz*twopi_invLx*twopi_invLx*cos(g_xz + f_xz*t)*cos(c_xz + b_xz*twopi_invLx*x)*cos(e_xz + d_xz*twopi_invLz*z);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_xy(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_xy(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
 
-    return a_xy*b_xy*d_xy*cos(g_xy + f_xy*t)*sin(c_xy + b_xy*x)*sin(e_xy + d_xy*y);
+    return a_xy*b_xy*d_xy*twopi_invLx*twopi_invLy*cos(g_xy + f_xy*t)*sin(c_xy + b_xy*twopi_invLx*x)*sin(e_xy + d_xy*twopi_invLy*y);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_xz(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_xz(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return a_xz*b_xz*d_xz*cos(g_xz + f_xz*t)*sin(c_xz + b_xz*x)*sin(e_xz + d_xz*z);
+    return a_xz*b_xz*d_xz*twopi_invLx*twopi_invLz*cos(g_xz + f_xz*t)*sin(c_xz + b_xz*twopi_invLx*x)*sin(e_xz + d_xz*twopi_invLz*z);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_y(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_y(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return -a_y*b_y*cos(g_y + f_y*t)*sin(c_y + b_y*y) - a_xy*d_xy*cos(g_xy + f_xy*t)*cos(c_xy + b_xy*x)*sin(e_xy + d_xy*y) - a_yz*b_yz*cos(e_yz + d_yz*z)*cos(g_yz + f_yz*t)*sin(c_yz + b_yz*y);
+    return -a_y*b_y*twopi_invLy*cos(g_y + f_y*t)*sin(c_y + b_y*twopi_invLy*y) - a_xy*d_xy*twopi_invLy*cos(g_xy + f_xy*t)*cos(c_xy + b_xy*twopi_invLx*x)*sin(e_xy + d_xy*twopi_invLy*y) - a_yz*b_yz*twopi_invLy*cos(e_yz + d_yz*twopi_invLz*z)*cos(g_yz + f_yz*t)*sin(c_yz + b_yz*twopi_invLy*y);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_yy(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_yy(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return -a_y*b_y*b_y*cos(g_y + f_y*t)*cos(c_y + b_y*y) - a_xy*d_xy*d_xy*cos(g_xy + f_xy*t)*cos(c_xy + b_xy*x)*cos(e_xy + d_xy*y) - a_yz*b_yz*b_yz*cos(c_yz + b_yz*y)*cos(e_yz + d_yz*z)*cos(g_yz + f_yz*t);
+    return -a_y*b_y*b_y*twopi_invLy*twopi_invLy*cos(g_y + f_y*t)*cos(c_y + b_y*twopi_invLy*y) - a_xy*d_xy*d_xy*twopi_invLy*twopi_invLy*cos(g_xy + f_xy*t)*cos(c_xy + b_xy*twopi_invLx*x)*cos(e_xy + d_xy*twopi_invLy*y) - a_yz*b_yz*b_yz*twopi_invLy*twopi_invLy*cos(c_yz + b_yz*twopi_invLy*y)*cos(e_yz + d_yz*twopi_invLz*z)*cos(g_yz + f_yz*t);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_yz(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_yz(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return a_yz*b_yz*d_yz*cos(g_yz + f_yz*t)*sin(c_yz + b_yz*y)*sin(e_yz + d_yz*z);
+    return a_yz*b_yz*d_yz*twopi_invLy*twopi_invLz*cos(g_yz + f_yz*t)*sin(c_yz + b_yz*twopi_invLy*y)*sin(e_yz + d_yz*twopi_invLz*z);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_z(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_z(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return -a_z*b_z*cos(g_z + f_z*t)*sin(c_z + b_z*z) - a_xz*d_xz*cos(c_xz + b_xz*x)*cos(g_xz + f_xz*t)*sin(e_xz + d_xz*z) - a_yz*d_yz*cos(c_yz + b_yz*y)*cos(g_yz + f_yz*t)*sin(e_yz + d_yz*z);
+    return -a_z*b_z*twopi_invLz*cos(g_z + f_z*t)*sin(c_z + b_z*twopi_invLz*z) - a_xz*d_xz*twopi_invLz*cos(g_xz + f_xz*t)*cos(c_xz + b_xz*twopi_invLx*x)*sin(e_xz + d_xz*twopi_invLz*z) - a_yz*d_yz*twopi_invLz*cos(c_yz + b_yz*twopi_invLy*y)*cos(g_yz + f_yz*t)*sin(e_yz + d_yz*twopi_invLz*z);
 }
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_zz(
-        T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive_solution<Scalar>::_zz(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
+    const Scalar twopi_invLx = twopi / Lx;
+    const Scalar twopi_invLy = twopi / Ly;
+    const Scalar twopi_invLz = twopi / Lz;
 
-    return -a_z*b_z*b_z*cos(g_z + f_z*t)*cos(c_z + b_z*z) - a_xz*d_xz*d_xz*cos(c_xz + b_xz*x)*cos(g_xz + f_xz*t)*cos(e_xz + d_xz*z) - a_yz*d_yz*d_yz*cos(c_yz + b_yz*y)*cos(e_yz + d_yz*z)*cos(g_yz + f_yz*t);
+    return -a_z*b_z*b_z*twopi_invLz*twopi_invLz*cos(g_z + f_z*t)*cos(c_z + b_z*twopi_invLz*z) - a_xz*d_xz*d_xz*twopi_invLz*twopi_invLz*cos(g_xz + f_xz*t)*cos(c_xz + b_xz*twopi_invLx*x)*cos(e_xz + d_xz*twopi_invLz*z) - a_yz*d_yz*d_yz*twopi_invLz*twopi_invLz*cos(c_yz + b_yz*twopi_invLy*y)*cos(e_yz + d_yz*twopi_invLz*z)*cos(g_yz + f_yz*t);
 }
 
 // ---------------------------------------------------------------------------

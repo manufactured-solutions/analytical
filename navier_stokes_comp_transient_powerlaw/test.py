@@ -213,6 +213,9 @@ g_Txz    = Real(1217, PREC)
 g_Ty     = Real(1223, PREC)
 g_Tyz    = Real(1229, PREC)
 g_Tz     = Real(1231, PREC)
+Lx       = Real(1237, PREC)
+Ly       = Real(1249, PREC)
+Lz       = Real(1259, PREC)
 
 # Prepare substitution dictionaries for each analytic solution.  Necessary
 # since our analytic solution form is repeated for rho, u, v, w, and T.
@@ -423,12 +426,18 @@ params_T = {
 }
 
 # Choose where and when we compute the solution
-# This must match the choices made in main.cpp
+# Note that we provide the (2*pi/L)-like terms expected by soln.py
 params_xyzt = {
     'x': Rational(5, 10),
     'y': Rational(6, 10),
     'z': Rational(7, 10),
-    't': Rational(8, 10)
+    't': Rational(8, 10),
+    'Lx': Lx,
+    'Ly': Ly,
+    'Lz': Lz,
+    'twopi_invLx': (2*pi / Lx),
+    'twopi_invLy': (2*pi / Ly),
+    'twopi_invLz': (2*pi / Lz)
 }
 params_rho.update(params_xyzt)
 params_u.update(params_xyzt)
@@ -555,6 +564,9 @@ dump('x', params_xyzt['x'])
 dump('y', params_xyzt['y'])
 dump('z', params_xyzt['z'])
 dump('t', params_xyzt['t'])
+dump('Lx', params_xyzt['Lx'])
+dump('Ly', params_xyzt['Ly'])
+dump('Lz', params_xyzt['Lz'])
 for quantity in qoi:
     dump(quantity, globals()[quantity])
     sys.stdout.flush()

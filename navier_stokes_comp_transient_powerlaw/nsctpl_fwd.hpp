@@ -57,12 +57,16 @@ public:
     const ::std::string name;
 
     //! Construct an instance using \c name in the reported parameter names.
+    //! The domain sizes are referenced from some external Lx, Ly, and Lz.
     //! All parameters set to zero at construction time.
-    explicit primitive_solution(const ::std::string &name = "")
+    explicit primitive_solution(const Scalar& Lx,
+                                const Scalar& Ly,
+                                const Scalar& Lz,
+                                const ::std::string &name = "")
 #define APPLY(pre,suf) pre##suf(0),
         : FOR_ALL_SOLUTION_PARAMETERS(APPLY)  // has trailing comma
 #undef APPLY
-          name(name)
+          name(name), Lx(Lx), Ly(Ly), Lz(Lz)
     {}
 
 #define APPLY_STRINGIFY(s) #s
@@ -135,6 +139,13 @@ public:
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar _zz(T1 x, T2 y, T3 z, T4 t) const;
 
+private:
+
+    const Scalar& Lx;           //!< Domain extent in x direction
+    const Scalar& Ly;           //!< Domain extent in y direction
+    const Scalar& Lz;           //!< Domain extent in z direction
+    static const Scalar twopi;  //!< \f$2\pi\f$ to \c Scalar precision
+
 }; // end class
 
 
@@ -166,21 +177,33 @@ public:
 
     //! Analytic solutions (which contain additional parameters)
     //!@{
-    PrimitiveSolution<Scalar> rho;  //!< Analytic solution for rho
-    PrimitiveSolution<Scalar> u;    //!< Analytic solution for u
-    PrimitiveSolution<Scalar> v;    //!< Analytic solution for v
-    PrimitiveSolution<Scalar> w;    //!< Analytic solution for w
-    PrimitiveSolution<Scalar> T;    //!< Analytic solution for T
+    PrimitiveSolution<Scalar> rho;   //!< Analytic solution for rho
+    PrimitiveSolution<Scalar> u;     //!< Analytic solution for u
+    PrimitiveSolution<Scalar> v;     //!< Analytic solution for v
+    PrimitiveSolution<Scalar> w;     //!< Analytic solution for w
+    PrimitiveSolution<Scalar> T;     //!< Analytic solution for T
+    //!@}
+
+    //! Domain extents
+    //!@{
+    Scalar Lx;                       //!< Domain extent in x direction
+    Scalar Ly;                       //!< Domain extent in y direction
+    Scalar Lz;                       //!< Domain extent in z direction
     //!@}
 
     //! Default constructor
     generic_manufactured_solution()
         : gamma(0), R(0), beta(0), mu_r(0), T_r(0), k_r(0), lambda_r(0),
-          rho("rho"), u("u"), v("v"), w("w"), T("T")
+          rho(Lx, Ly, Lz,"rho"),
+          u  (Lx, Ly, Lz, "u"),
+          v  (Lx, Ly, Lz, "v"),
+          w  (Lx, Ly, Lz, "w"),
+          T  (Lx, Ly, Lz, "T"),
+          Lx(1), Ly(1), Lz(1)
     {
     }
 
-    //! Invoke the binary function f on each parameter name and its value.
+    //! Invoke the binary function f on each parameter name and its constant value.
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) const {
         f(::std::string("gamma"),    gamma   );
@@ -195,9 +218,12 @@ public:
         v.foreach_parameter(f);
         w.foreach_parameter(f);
         T.foreach_parameter(f);
+        f(::std::string("Lx"), Lx);
+        f(::std::string("Ly"), Ly);
+        f(::std::string("Lz"), Lz);
     }
 
-    //! Invoke the binary function f on each parameter name and its value.
+    //! Invoke the binary function f on each parameter name and its mutable value.
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) {
         f(::std::string("gamma"),    gamma   );
@@ -212,6 +238,9 @@ public:
         v.foreach_parameter(f);
         w.foreach_parameter(f);
         T.foreach_parameter(f);
+        f(::std::string("Lx"), Lx);
+        f(::std::string("Ly"), Ly);
+        f(::std::string("Lz"), Lz);
     }
 
     // Analytically determined quantities
