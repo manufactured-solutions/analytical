@@ -1,0 +1,84 @@
+\section{List of constants}
+
+There are a variety of constants present in the thermochemical nonequilibrium flow of a inviscid fluid , \,  due to both fluid properties and the constants arising from the chosen manufactured solutions.
+
+\begin{description}
+\item[Fluid properties:] $R , \, M_\N , \,  h^0_{\N} , \, h^0_{\N_2} , \, \theta^{\vib}_{\N_2} , \, \theta^{\elec}_{\N} , \,  \theta^{\elec}_{\N_2} , \,   g_\N , \,  g_{\N_2} , \,  n\_el_{\N} , \, n\_el_{\N_2} , \,  C_{f_1 \N} , \,  \eta_{f_1 \N}  , \, E_{a\N} , \,  C_{f_1 \N_2} , \,  \eta_{f_1 \N_2} $,  $E_{a\N_2}$ and $ q$,  
+where $ \theta^{\elec}_{\N_2} , \,  \theta^{\elec}_{\N} , \,  g_\N , \,  g_{\N_2}$ are lists of values and their size is either $n\_el_{\N}$ or $n\_el_{\N_2}$,  depending on the species N or N$_2$.
+
+\vspace{10pt}
+In the C codes, these values are represented, respectively, by:
+\vspace{-5pt}
+\begin{verbatim}
+R, M_N, h0_N, h0_N2, theta_v_N2, theta_e_N, theta_e_N2, g_N, g_N2, energy_level_N, 
+energy_level_N2, Cf1_N, etaf1_N, Ea_N, Cf1_N2, etaf1_N2, Ea_N2, q.
+
+\end{verbatim}
+
+
+\item[Manufactured solutions:] $\rho_{\N 0} , \,  \rho_{\N x} , \,  a_{  \rho \N x } , \,  \rho_{\N_2 0} , \, \rho_{\N_2 x} , \,  a_{ \rho \N_2 x } , \,  u_{0} , \, u_{x}  , \, a_{u x}  , \, 
+ T_{0} , \, T_{x} , \,  a_{T x} , \,  T_{V0} , \, T_{Vx}  , \,  a_{T_V x} , \, L $.
+
+\vspace{10pt}
+In the C codes, these values are represented, respectively, by:
+\vspace{-5pt}
+\begin{verbatim} 
+rho_N_0, rho_N_x, a_rho_N_x, rho_N2_0, rho_N2_x, a_rho_N2_x, u_0, u_x, a_ux, T_0, T_x,
+a_Tx, Tv_0, Tv_x, a_Tvx, L.
+\end{verbatim}
+\end{description}
+
+-------------------- Table example ------------------------------
+\begin{table}[ht]
+\centering
+\begin{tabular}{c c c c}
+\multicolumn{4}{c}{Electronic data of N and N$_2$} \\
+\hline\hline
+Species $s$  &  $nel_s$ & $\theta_{s}^{\vib}$ & $g_s$ \\ [0.5ex]
+\hline
+N & 3 &  0.00000   &    4  \\
+& &	  2.76647 $\times 10^4$     & 10  \\
+& &	  4.14931 $\times 10^4$     & 6  \\
+\hline
+% inserting body of the table
+N$_2$ & 15  &  0.00000 $\times 10^0$  &    1  \\
+& &       7.22316 $\times 10^4$  &    3  \\
+& &       8.57786 $\times 10^4$  &    6  \\
+& &       8.60503 $\times 10^4$  &    6  \\
+& &       9.53512 $\times 10^4$  &    3  \\
+& &       9.80564 $\times 10^4$  &    1  \\
+& &       9.96827 $\times 10^4$  &    2  \\
+& &       1.04898 $\times 10^5$  &    2  \\
+& &       1.11649 $\times 10^5$  &    5  \\
+& &       1.22584 $\times 10^5$  &    1  \\
+& &       1.24886 $\times 10^5$  &    6  \\
+& &       1.28248 $\times 10^5$  &    6  \\
+& &       1.33806 $\times 10^5$  &   10  \\
+& &       1.40430 $\times 10^5$  &    6  \\
+& &       1.50496 $\times 10^5$  &    6  \\ [.5ex]
+% [1ex] adds vertical space
+\hline
+%inserts single line
+\end{tabular}
+\label{table:nonlin}
+\caption{Characteristic electronic temperature $\theta^{\vib}$ (K), degeneracy of the electronic mode and total number of electronic levels of Nitrogen atom and molecule.}
+\end{table} 
+
+
+
+\end{document}
+------------
+
+"  \\
+
+"  \\
+& &+	  0.00000 $\times 10^0$  &    1  \\
+& &+	  7.00684e+01   3  \\
+& &+	  1.88192e+02   5  \\
+& &+	  2.20366 $\times 10^4$  &    5  \\
+& &+	  4.70318 $\times 10^4$  &    1  \\
+& &+	  6.73125 $\times 10^4$  &    5  \\
+& &+	  1.32719 $\times 10^5$  &   15  \\
+"  \\
+
+
