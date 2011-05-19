@@ -18,7 +18,6 @@ double SourceQ_eV (
   double e_elec_N2_den;
   double e_vib_N2;
   double e_vib_eq_N2;
-  double RHO;
   double RHO_N;
   double RHO_N2;
   double U;
@@ -42,7 +41,6 @@ double SourceQ_eV (
   double w_dot_V;
   RHO_N = rho_N_0 + rho_N_x * sin(a_rho_N_x * PI * x / L);
   RHO_N2 = rho_N2_0 + rho_N2_x * cos(a_rho_N2_x * PI * x / L);
-  RHO = RHO_N + RHO_N2;
   U = u_0 + u_x * sin(a_ux * PI * x / L);
   T = T_0 + T_x * cos(a_Tx * PI * x / L);
   TV = Tv_0 + Tv_x * cos(a_Tvx * PI * x / L);

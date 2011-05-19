@@ -58,29 +58,8 @@ Using the two-temperature model, the conservation of mass, momentum, and energy 
 &\nabla\cdot (\rho e_V \bv{u})= \dot{\omega}_V ,
 %\end{array}
 \end{align}
-
-
-
 %
-% \begin{equation}
-% \label{eq:pde_comp_mass_N}
-% \nabla \cdot \left(\rho_{\text{N}} \bv{u}\right) = \dot{\omega}_{\text{N}},
-% \end{equation}
-% \begin{equation}
-% \label{eq:pde_comp_mass_N2}
-% \nabla \cdot \left(\rho_{\text{N}_2}\bv{u}\right) = \dot{\omega}_{\text{N}_2},
-% \end{equation}
-% \begin{equation}
-%  \label{eq:pde_comp_mom}
-% \nabla\cdot\left(\rho\bv{u}\bv{u}\right) = -\nabla p,
-% \end{equation}
-% \begin{equation}
-%  \label{eq:pde_comp_energy}
-% %\nabla \cdot (\rho\bv{u}e_t)+  \nabla\cdot(p  \bv{u})=0
-% \nabla\cdot\left(\rho \bv{u} H\right) = 0.
-% \end{equation}
-%
-where $\rho_s$ is the density of species $s$ (N or N$_2$), $\rho=\sum_s \rho_s$ is the mixture density and  $ \bv{u} $ is the mixture velocity and $e_V$ is  the vibrational/electronic energy. 
+where $\rho_s$ is the density of species $s$ (N or N$_2$), $\rho=\sum_s \rho_s$ is the mixture density,  $ \bv{u} $ is the mixture velocity and $e_V$ is  the vibrational/electronic energy. 
 %
 The total enthalpy, $H$, may be expressed in terms of the total energy, density, and pressure:
 $$H = E + \dfrac{p}{\rho},$$
@@ -143,7 +122,7 @@ The energy contained in the excited electronic states for a given species, $e^{\
 \end{equation}
 where $g_{s,i}$ is the degeneracy of the electronic level $i$ of species $s$, and  $\theta^{\elec}_{s,i}$ is its characteristic temperature. In practice, a simple cut off criteria is applied to select the number of electronic energy levels in the calculation of the series. The number of electronic energy levels for N is 3 and number of electronic energy levels for N$_2$ is 15 \cite{dodod}.
 
-Recalling that  in the case of thermal equilibrium $T_e=T_v= T_V$, Equations (\ref{eq:species_vibrational_energy}) and (\ref{eq:elec_excitation}) are simplified to:
+Recalling that  in the two-temperature mode adopted in this work $T_e=T_v= T_V$, Equations (\ref{eq:species_vibrational_energy}) and (\ref{eq:elec_excitation}) may be simplified to:
 \begin{equation*}
   e^{\text{vib}}_s = 
   \begin{cases}    
@@ -153,7 +132,7 @@ Recalling that  in the case of thermal equilibrium $T_e=T_v= T_V$, Equations (\r
 \quad
 e^{\elec}_s = R_s \dfrac{\sum_{i=1}^{nel_s} \theta^{\elec}_{s,i} g_{s,i} \exp\left(-\theta^{\elec}_{s,i}/T_V\right)}{ \sum_{i=1}^{nel_s} g_{s,i} \exp\left(-\theta^{\elec}_{s,i}/T_V\right)}.
 \end{equation*}
-where $nel_s$ is the number of electronic energy levels of species $s$.
+where $nel_s$ is the number of electronic energy levels of species $s$. See Appendix \ref{Appendix:01} for N and N$_2$ data.
 
 Therefore, 
 \begin{equation}
@@ -166,6 +145,7 @@ Regardless of the thermal state of the mixture, once the translational/rotationa
  p = \sum_{s=1}^{ns} p_s = \sum_{s=1}^{ns} \rho_s R_s T .
  \label{eq:p_eq_state}
 \end{equation}
+
 
 
 \subsection{Chemical Kinetics}
@@ -226,7 +206,7 @@ The corresponding backward rate coefficient   $k_{br}$  can be found using the p
 \begin{equation}
   K_{eq} = \frac{k_{fr}\left(\bar{T}\right)}{k_{br}\left(\bar{T}\right)}
 \end{equation}
-where $K_{eq}$ is the equilibrium constant and may be obtained either by curve fits or through Gibbs' free energy techniques\footnote{Examples of curve fits for calculating the equilibrium constant may be found in \citet{Park1990} whereas Gibbs' free energy techniques are employed in \citet{Nasa_chemistry}. }. 
+where $K_{eq}$ is the equilibrium constant and may be obtained either by curve fits or through Gibbs' free energy techniques\footnote{Examples of curve fits for calculating the equilibrium constant may be found in \citet{Park1990}, whereas Gibbs' free energy techniques are employed in \citet{Nasa_chemistry}. }. 
 In this work, $K_{eq}=K(T)$.
 
 
@@ -297,7 +277,7 @@ Combining~\eqref{eq:landau_teller_energy_exchange} and~\eqref{eq:vibrational_ene
 \citet{Roy2002} propose the general form of the primitive solution variables to be a function of sines and cosines:
 \begin{equation}
  \label{eq:manufactured01}
- \phi (x,y) = \phi_0+ \phi_x f_s\left(\frac{a_{\phi x} \pi x}{L}\right) ,
+ \phi (x) = \phi_0+ \phi_x f_s\left(\frac{a_{\phi x} \pi x}{L}\right) ,
 \end{equation}
 where $\phi=\rho_{\text{N}},\rho_{\text{N}_2}, u, T$ or $T_V$, and $f_s(\cdot)$ functions denote either sine or cosine function. Note that in this case, $\phi_x$ is constant and the subscript does not denote differentiation. Different choices of the constants used in the manufactured solutions for the 2D supersonic and subsonic cases of Euler and Navier-Stokes may be found in \citet{Roy2002}.
 
@@ -308,7 +288,7 @@ Therefore, the manufactured analytical solution for each one of the variables in
 \rho_{\text{N}}(x) &= \rho_{\text{N}0} + \rho_{\text{N}x} \sin\left(\frac{a_{  \rho \text{N} x }\pi x}{L}\right),\\
 \rho_{\text{N}_2}(x) &= \rho_{\text{N}_2 0}+ \rho_{\text{N}_2 x} \cos\left(\frac{a_{ \rho \text{N}_2 x } \pi x}{L}\right),\\
 u(x) &= u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right),\\
-T(x) &= T_{0}+T_{x} \cos\left(\frac{a_{T x} \pi x}{L}\right).\\
+T(x) &= T_{0}+T_{x} \cos\left(\frac{a_{T x} \pi x}{L}\right),\\
 T_V(x) &= T_{V0}+T_{Vx} \cos\left(\frac{a_{T_V x} \pi x}{L}\right).\\
 \end{split}
 \end{equation}
@@ -337,7 +317,7 @@ The MMS applied to 1D steady Euler equations for a chemically reacting mixture o
 &\Diff{\rho_{\text{N}_2} u}{x} -\dot{\omega}_{\text{N}_2}= Q_{\rho_{\text{N}_2}},\\
 &\Diff{\rho u^2 }{x}+ \Diff{p}{x} = Q_u,\\
 &\Diff{\rho uE}{x}+ \Diff{pu}{x} = Q_{E},\\
-&\Diff{\rho e_V }{t} + \Diff{\rho e_V u }{x}-\dot{\omega}_V =Q_{e_V},
+& \Diff{\rho e_V u }{x}-\dot{\omega}_V =Q_{e_V},
 \end{split}
 \end{equation}
 %
@@ -359,9 +339,10 @@ Source terms $ Q_{\rho_{\text{N}}}$, $ Q_{\rho_{\text{N}_2}}$, $Q_u$,  $Q_{E}$ a
 which simply are the manufactured solutions, and the derivatives:
 \begin{equation}
 \begin{split}\label{eq:aux_01}
-\diff{e_{\N}^{\elec}}{x} &= \dfrac{(e_{\N}^{\elec})^2 M_\N a_{T_V x} \pi T_{Vx} }{R \TV^2 L}\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right) - \dfrac{R  a_{T_V x} \pi T_{Vx}  }{(M_\N \,  \TV^2 L)}\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)\mathtt{AUX1},	\\
 %
-\diff{e_{\N_2}^{\elec}}{x} &= \dfrac{2 (e_{\N_2}^{\elec})^2 M_\N a_{T_V x} \pi T_{Vx} }{R \TV^2 L}\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)- \dfrac{R  a_{T_V x} \pi T_{Vx}  }{2(M_\N \,  \TV^2 L)}\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)\mathtt{AUX2},	\\
+\diff{e_{\N}^{\elec}}{x} &= \dfrac{(e_{\N}^{\elec})^2  a_{T_V x} \pi T_{Vx} \,M_\N}{ LR \TV^2}\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right) - \dfrac{  a_{T_V x} \pi T_{Vx} R }{M_\N \, L \TV^2 }\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)\mathtt{AUX1},	\\
+%
+\diff{e_{\N_2}^{\elec}}{x} &= \dfrac{2 (e_{\N_2}^{\elec})^2 a_{T_V x} \pi T_{Vx} \,M_\N}{ LR \TV^2}\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)- \dfrac{  a_{T_V x} \pi T_{Vx} R }{2M_\N \, L \TV^2 }\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)\mathtt{AUX2},	\\
 %
 \texttt{AUX1} &= \dfrac{\sum_{i=1}^{nel_{\N}}( \theta^{\elec}_{\N,i})^2 g_{\N,i} \exp\left(- \theta^{\elec}_{\N,i}/ \TV \right)} { \sum_{i=1}^{nel_{\N}} g_{\N,i} \exp\left(-\theta^{\elec}_{\N,i}/\TV\right)},	\\
 %
@@ -393,7 +374,7 @@ Q_{\rho_\N} = \dfrac{a_{  \rho \N x } \pi \rho_{\N x} \U }{L}\cos\left(\dfrac{a_
 \end{split}
 \end{equation}
 %
-with $\Rho$ and $\U$ defined in Equation (\ref{eq:aux_1d}). The source term $\dot{\omega}_\N$ is given by:
+with $\Rho_\N$ and $\U$ defined in Equation (\ref{eq:aux_1d}). The source term $\dot{\omega}_\N$ is given by:
 $$
 \dot{\omega}_\N = -2 M_\N \mathcal{R}_1	
 $$
@@ -428,7 +409,7 @@ Analytically differentiating Equation (\ref{eq:manufactured02}) for $\rho_{\text
 Q_{\rho_{\N_2}} = -\dfrac{a_{  \rho \N_2 x } \pi \rho_{\N_2 x} \U }{L}\sin\left(\dfrac{a_{  \rho \N_2 x } \pi x}{L}\right) +\dfrac{a_{ux} \pi u_x \Rho_{\N_2}}{L} \cos\left(\dfrac{a_{ux} \pi x}{L}\right) -\dot{\omega}_{\N_2}
 \end{split}
 \end{equation}
-where $\Rho$ and $\U$ defined in Equation (\ref{eq:aux_1d}) and:
+where $\Rho_{\N_2}$ and $\U$ defined in Equation (\ref{eq:aux_1d}) and:
 $$
 \dot{\omega}_{\N_2} =  M_{\N_2} \mathcal{R}_1	= 2 M_\N \mathcal{R}_1	
 $$
@@ -484,7 +465,7 @@ where $\Rho,\,\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ are given  in 
 \begin{split}\label{eq:aux_02}
 e_{\N}^{\elec} &=  \dfrac{R}{M_\N} \dfrac{\sum_{i=1}^{nel_{\N}}  \theta^{\elec}_{\N,i} \, g_{\N,i} \exp\left(- \theta^{\elec}_{\N,i}/ \TV \right)} { \sum_{i=1}^{nel_{\N}} g_{\N,i} \exp\left(-\theta^{\elec}_{\N,i}/\TV\right)},\vspace{5pt}	\\
 %
-e_{\N_2}^{\elec} &=\dfrac{R}{2 M_\N} \dfrac{\sum_{i=1}^{nel_{\N_2}}  \theta^{\elec}_{\N_2,i} \, g_{\N_2,i} \exp\left(- \theta^{\elec}_{\N_2,i} / \TV \right)} {\sum_{i=1}^{nel_{\N_2}} g_{\N_2,i} \exp\left(-\theta^{\elec}_{\N_2,i}/\TV\right)} \vspace{5pt}	\\
+e_{\N_2}^{\elec} &=\dfrac{R}{2 M_\N} \dfrac{\sum_{i=1}^{nel_{\N_2}}  \theta^{\elec}_{\N_2,i} \, g_{\N_2,i} \exp\left(- \theta^{\elec}_{\N_2,i} / \TV \right)} {\sum_{i=1}^{nel_{\N_2}} g_{\N_2,i} \exp\left(-\theta^{\elec}_{\N_2,i}/\TV\right)} \vspace{5pt},	\\
 %
 e_{\N_2}^{\vib} &= \dfrac{R}{2 M_\N} \frac{\theta^{\vib}_{\N_2}}{\exp\left(\theta^{\vib}_{\N_2}/ \TV \right) - 1} .
 \end{split}
@@ -496,9 +477,10 @@ e_{\N_2}^{\vib} &= \dfrac{R}{2 M_\N} \frac{\theta^{\vib}_{\N_2}}{\exp\left(\thet
 The vibrational energy equation is written as an operator:
 \begin{equation*}
  \label{eq:euler1d_15}
-\Lo =\diff{e_V \rho u }{x} ,
+\Lo =\diff{e_V \rho u }{x}-\dot{\omega}_V ,
 \end{equation*}
-where $e_V= e^{\text{vib}} + e^{\elec} $. For the N--N$_2$ mixture, $e_V$ is given by Equation (\ref{eq:rev-Tv-relationship}):
+
+For the N--N$_2$ mixture, $e_V$ is given by Equation (\ref{eq:rev-Tv-relationship}):
 \begin{equation*}
 \begin{split}
 e_V= \dfrac{\rho_{\N_2}}{\rho} e_{\N_2}^{\vib} + \dfrac{\rho_{\N}}{\rho} e_{\N}^{\elec} + \dfrac{\rho_{\N_2}}{\rho} e_{\N_2}^{\elec}.
@@ -509,7 +491,7 @@ Therefore, source term $Q_{e_V}$ is obtained by operating $\Lo$ on Equations (\r
 %
 
 \begin{equation}
-\begin{split}
+\begin{split}\label{eq:source_eV}
 Q_{e_V} &= \dfrac{e_{\N}^{\elec} a_{  \rho \N x } \pi \rho_{\N x} \U }{L} \cos\left(\dfrac{a_{  \rho \N x } \pi x}{L}\right) +\\ 
 &- \dfrac{(e_{\N_2}^{\elec}+e_{\N_2}^{\vib} \, ) a_{  \rho \N_2 x } \pi \rho_{\N_2 x} \U }{L} \sin\left(\dfrac{a_{  \rho \N_2 x } \pi x}{L}\right)  +\\ 
 &+ \dfrac{e_{\N}^{\elec} a_{ux} \pi u_x \Rho_{\N} }{L} \cos\left(\dfrac{a_{ux} \pi x}{L}\right)+\\ 
@@ -521,7 +503,7 @@ Q_{e_V} &= \dfrac{e_{\N}^{\elec} a_{  \rho \N x } \pi \rho_{\N x} \U }{L} \cos\l
 \end{split}
 \end{equation}
 %
-where   $\Rho,\,\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ are given  in Equation (\ref{eq:aux_1d}),   $e_{\N}^{\elec}, e_{\N_2}^{\elec}$ and $e_{\N_2}^{\vib}  $ are given in Equation (\ref{eq:aux_02}). Source term e $\dot{\omega}_V$ is given according to Section \ref{sec:omega_v} as:
+where   $\Rho_{\text{N}},\,\Rho_{\text{N}_2},\, \T$ and $\U$ are given  in Equation (\ref{eq:aux_1d}),   $e_{\N}^{\elec}, e_{\N_2}^{\elec}$ and $e_{\N_2}^{\vib}  $ are given in Equation (\ref{eq:aux_02}). Source term e $\dot{\omega}_V$ is given according to Section \ref{sec:omega_v} as:
 $$\dot{\omega}_V = \dot{\omega}_\N e_{\N}^{\elec} + \dot{\omega}_{\N_2} (e_{\N_2}^{\vib}+e_{\N_2}^{\elec})+\Rho_{\N_2} (e_{\N_2,eq}^{\vib}-e_{\N_2}^{\vib}) \left[\dfrac{2 \Rho_{\N}}{(2 \Rho_{\N}+\Rho_{\N_2}) \tau^{\vib}_{\N_2\N}}+\dfrac{\Rho_{\N_2}}{(2 \Rho_{\N}+\Rho_{\N_2}) \tau^{\vib}_{\N_2\N_2}}\right],$$
 with
 \begin{equation}
@@ -537,15 +519,41 @@ $$P = \dfrac{\Rho_{\N}  \T R}{M_\N}+ \dfrac{\Rho_{\N_2}  \T R}{2 M_\N}.$$
 
 
 
-\section{Comments}
+\section{Hierarchic MMS}
 
+The complexity, and consequently length, of the source terms increase with both dimension and physics handled by the governing equations. In some cases, such as the vibration energy equation, the final expression for $Q_{e_V}$ may pass 898,000 characters, including parenthesis and mathematical operators, prior to factorization.
+
+Applying commands in order to simplify such extensive expression is challenging even with a very good machine; thus, a suitable alternative to this issue is to simplify the equation by dividing it into a combination of sub-operators handling different physical phenomena. Then, each one of the operators may be applied to the manufactured solutions individually and the resulting source terms are combined back to represent the source term for the original equation.
+
+
+For instance, instead of writing the 1D steady vibrational energy equation using one single operator~$\Lo$:
+\begin{equation}
+ \label{eq:ns2d_04}
+\begin{split}
+\Lo= \diff{e_V \rho u }{x} -\dot{\omega}_V ,
+%\Diff{\rho e_t}{t}& + \nabla \cdot (\rho \mathbf{u} H)+\nabla\cdot \mathbf{q} - \nabla \cdot (\bv{\tau u})
+\end{split}
+\end{equation}
+to then be used in the MMS, let equation (\ref{eq:ns2d_04}) be written in two distinct operators:
+\begin{equation*}
+ \begin{split}
+  \Lo_1&=\diff{e_V \rho u }{x},\\
+  \Lo_2&= -\dot{\omega}_V.\\
+   \end{split}
+\end{equation*}
+
+After the application of $\Lo_1$ and  $\Lo_2$,  the corresponding sub-source terms are also simplified, factorized and sorted. Then, the final factorized version is checked against the original one, to assure that not human error has been introduced.  This strategy  allowed the original  898,000 character-long  expression for $Q_{e_V}$ to be reduced to less than 6,400. Furthermore, this strategy combined with the use of the auxiliary variables listed in Equations (\ref{eq:aux_1d}) and (\ref{eq:aux_01}) allows the original source term to be reduced to only 2,600 characters (illustrated in Equation \ref{eq:source_eV}). The reduction is even more impressive in the transient case, where the over 7 million-character source term for the vibrational energy equation is reduced to only 11,500 and 3,200 characters, using the same strategy.
+
+
+
+\subsection{Boundary Conditions and C Codes}
 
 Source terms $Q_{\rho_\text{N} }$, $Q_{\rho \text{N}_{2}}$, $Q_u$, $Q_E$ and $Q_{e_V}$ have been generated by replacing the analytical Expressions (\ref{eq:manufactured02}) and~(\ref{eq:manufactured03}) into respective Equations (\ref{eq:euler:rhoN})--(\ref{eq:euler:eV}), followed by the usage of Maple commands for collecting, sorting and factorizing the terms. Files containing $C$ codes for the source terms have also been generated. They are: \texttt{ Euler\_1d\_steady\_chemistry\_2T\_rho\_N\_code.C, Euler\_1d\_steady\_chemistry\_2T\_rho\_N2\_code.C,\\ Euler\_1d\_steady\_chemistry\_2T\_u\_code.C, Euler\_1d\_steady\_chemistry\_2T\_E\_code.C} and \\
 \texttt{Euler\_1d\_steady\_chemistry\_2T\_eV\_code.C}.
 
 %\newpage
 An example of the automatically generated C file from the source term for the mass conservation equation of N$_2$ is:
-\begin{footnotesize}
+\begin{scriptsize}
  \begin{verbatim}
 #include <math.h>
 
@@ -573,23 +581,21 @@ double SourceQ_rho_N2 (double x)
   kf1_N2 = Cf1_N2 * pow(T_bar, etaf1_N2) * exp(-Ea_N2 / R / T_bar);
   kf1_N = Cf1_N * pow(T_bar, etaf1_N) * exp(-Ea_N / R / T_bar);
   R1 = kf1_N * pow(RHO_N, 0.3e1) / K * pow(M_N, -0.3e1) - kf1_N * RHO_N2 * RHO_N * pow(M_N, -0.2e1) / 0.2e1 
-     + kf1_N2 * RHO_N * RHO_N * RHO_N2 / K * pow(M_N, -0.3e1) / 0.2e1 
-     - kf1_N2 * RHO_N2 * RHO_N2 * pow(M_N, -0.2e1) / 0.4e1;
+     + kf1_N2 * RHO_N * RHO_N * RHO_N2 / K * pow(M_N, -0.3e1) / 0.2e1 - kf1_N2 * RHO_N2 * RHO_N2 * pow(M_N, -0.2e1) / 0.4e1;
   w_dot_N2 = 0.2e1 * M_N * R1;
   Q_rho_N2 = -a_rho_N2_x * PI * rho_N2_x * U * sin(a_rho_N2_x * PI * x / L) / L 
      + a_ux * PI * u_x * RHO_N2 * cos(a_ux * PI * x / L) / L - w_dot_N2;
   return(Q_rho_N2);
 }
  \end{verbatim}
-\end{footnotesize}
+\end{scriptsize}
 %
 and the source term for the vibrational energy $e_V$ of the mixture is:
-\begin{footnotesize} 
+\begin{scriptsize} 
 \begin{verbatim}
 #include <math.h>
 
-double SourceQ_eV (double x, int energy_level_N, int energy_level_N2, double *g_N, double *g_N2, 
-  double *theta_e_N, double *theta_e_N2)
+double SourceQ_eV (double x, int energy_level_N, int energy_level_N2, double *g_N, double *g_N2, double *theta_e_N, double *theta_e_N2)
 {
   double Q_eV;
   double e_elec_N;
@@ -600,7 +606,6 @@ double SourceQ_eV (double x, int energy_level_N, int energy_level_N2, double *g_
   double e_elec_N2_den;
   double e_vib_N2;
   double e_vib_eq_N2;
-  double RHO;
   double RHO_N;
   double RHO_N2;
   double U;
@@ -624,7 +629,6 @@ double SourceQ_eV (double x, int energy_level_N, int energy_level_N2, double *g_
   double w_dot_V;
   RHO_N = rho_N_0 + rho_N_x * sin(a_rho_N_x * PI * x / L);
   RHO_N2 = rho_N2_0 + rho_N2_x * cos(a_rho_N2_x * PI * x / L);
-  RHO = RHO_N + RHO_N2;
   U = u_0 + u_x * sin(a_ux * PI * x / L);
   T = T_0 + T_x * cos(a_Tx * PI * x / L);
   TV = Tv_0 + Tv_x * cos(a_Tvx * PI * x / L);
@@ -653,41 +657,33 @@ double SourceQ_eV (double x, int energy_level_N, int energy_level_N2, double *g_
   e_elec_N2 = R * e_elec_N2_num / M_N / e_elec_N2_den / 0.2e1;
   e_vib_N2 = R * theta_v_N2 / M_N / (exp(theta_v_N2 / TV) - 0.1e1) / 0.2e1;
   e_vib_eq_N2 = R * theta_v_N2 / M_N / (exp(theta_v_N2 / T) - 0.1e1) / 0.2e1;
-  De_elecN_Dx = e_elec_N * e_elec_N * M_N * a_Tvx * PI * Tv_x * sin(a_Tvx * PI * x / L) / R 
-    * pow(TV, -0.2e1) / L - R * AUX1 * a_Tvx * PI * Tv_x * sin(a_Tvx * PI * x / L) / M_N / e_elec_N_den 
-    * pow(TV, -0.2e1) / L;
-  De_elecN2_Dx = 0.2e1 * e_elec_N2 * e_elec_N2 * M_N * a_Tvx * PI * Tv_x * sin(a_Tvx * PI * x / L) / R 
-    * pow(TV, -0.2e1) / L - R * AUX2 * a_Tvx * PI * Tv_x * sin(a_Tvx * PI * x / L) / M_N / e_elec_N2_den 
-    * pow(TV, -0.2e1) / L / 0.2e1;
+  De_elecN_Dx = e_elec_N * e_elec_N * M_N * a_Tvx * PI * Tv_x * sin(a_Tvx * PI * x / L) / R * pow(TV, -0.2e1) / L 
+    - R * AUX1 * a_Tvx * PI * Tv_x * sin(a_Tvx * PI * x / L) / M_N / e_elec_N_den * pow(TV, -0.2e1) / L;
+  De_elecN2_Dx = 0.2e1 * e_elec_N2 * e_elec_N2 * M_N * a_Tvx * PI * Tv_x * sin(a_Tvx * PI * x / L) / R * pow(TV, -0.2e1) / L 
+    - R * AUX2 * a_Tvx * PI * Tv_x * sin(a_Tvx * PI * x / L) / M_N / e_elec_N2_den * pow(TV, -0.2e1) / L / 0.2e1;
   tau_vib_N2_N = exp(0.29e2 / 0.75000e5 * sqrt(0.6e1) * sqrt(M_N) * pow(theta_v_N2, 0.4e1 / 0.3e1) 
-    * (pow(T, -0.1e1 / 0.3e1) - pow(0.54e2, 0.1e1 / 0.4e1) * pow(M_N, 0.1e1 / 0.4e1) / 0.200e3) 
-    - 0.921e3 / 0.50e2) / P;
+    * (pow(T, -0.1e1 / 0.3e1) - pow(0.54e2, 0.1e1 / 0.4e1) * pow(M_N, 0.1e1 / 0.4e1) / 0.200e3) - 0.921e3 / 0.50e2) / P;
   tau_vib_N2_N2 = exp(0.29e2 / 0.25000e5 * sqrt(M_N) * pow(theta_v_N2, 0.4e1 / 0.3e1) 
-    * (pow(T, -0.1e1 / 0.3e1) - 0.3e1 / 0.200e3 * pow(M_N, 0.1e1 / 0.4e1)) 
-    - 0.921e3 / 0.50e2) / P;
+    * (pow(T, -0.1e1 / 0.3e1) - 0.3e1 / 0.200e3 * pow(M_N, 0.1e1 / 0.4e1)) - 0.921e3 / 0.50e2) / P;
   kf1_N2 = Cf1_N2 * pow(T_bar, etaf1_N2) * exp(-Ea_N2 / R / T_bar);
   kf1_N = Cf1_N * pow(T_bar, etaf1_N) * exp(-Ea_N / R / T_bar);
-  R1 = -RHO_N * RHO_N2 * kf1_N * pow(M_N, -0.2e1) / 0.2e1 
-    - RHO_N2 * RHO_N2 * kf1_N2 * pow(M_N, -0.2e1) / 0.4e1 
-    + RHO_N * RHO_N * RHO_N2 * kf1_N2 / K * pow(M_N, -0.3e1) / 0.2e1 
-    + pow(RHO_N, 0.3e1) * kf1_N / K * pow(M_N, -0.3e1);
+  R1 = -RHO_N * RHO_N2 * kf1_N * pow(M_N, -0.2e1) / 0.2e1 - RHO_N2 * RHO_N2 * kf1_N2 * pow(M_N, -0.2e1) / 0.4e1 
+    + RHO_N * RHO_N * RHO_N2 * kf1_N2 / K * pow(M_N, -0.3e1) / 0.2e1 + pow(RHO_N, 0.3e1) * kf1_N / K * pow(M_N, -0.3e1);
   w_dot_N = -0.2e1 * M_N * R1;
   w_dot_N2 = -w_dot_N;
-  w_dot_V = e_elec_N * w_dot_N + (e_vib_N2 + e_elec_N2) * w_dot_N2 
-    + (e_vib_eq_N2 - e_vib_N2) * RHO_N2 * (0.2e1 * RHO_N / (0.2e1 * RHO_N + RHO_N2) / tau_vib_N2_N 
-    + RHO_N2 / (0.2e1 * RHO_N + RHO_N2) / tau_vib_N2_N2);
+  w_dot_V = e_elec_N * w_dot_N + (e_vib_N2 + e_elec_N2) * w_dot_N2 + (e_vib_eq_N2 - e_vib_N2) * RHO_N2 
+    * (0.2e1 * RHO_N / (0.2e1 * RHO_N + RHO_N2) / tau_vib_N2_N + RHO_N2 / (0.2e1 * RHO_N + RHO_N2) / tau_vib_N2_N2);
   Q_eV = e_elec_N * a_rho_N_x * PI * rho_N_x * U * cos(a_rho_N_x * PI * x / L) / L 
     - (e_vib_N2 + e_elec_N2) * a_rho_N2_x * PI * rho_N2_x * U * sin(a_rho_N2_x * PI * x / L) / L 
     + e_elec_N * a_ux * PI * u_x * RHO_N * cos(a_ux * PI * x / L) / L 
     + (e_vib_N2 + e_elec_N2) * a_ux * PI * u_x * RHO_N2 * cos(a_ux * PI * x / L) / L 
     - e_vib_N2 * a_Tvx * PI * Tv_x * theta_v_N2 * RHO_N2 * U * sin(a_Tvx * PI * x / L) / L * pow(TV, -0.2e1) 
-    - 0.2e1 * e_vib_N2 * e_vib_N2 * M_N * a_Tvx * PI * Tv_x * RHO_N2 * U * sin(a_Tvx * PI * x / L) / R 
-    * pow(TV, -0.2e1) / L 
+    - 0.2e1 * e_vib_N2 * e_vib_N2 * M_N * a_Tvx * PI * Tv_x * RHO_N2 * U * sin(a_Tvx * PI * x / L) / R * pow(TV, -0.2e1) / L 
     + De_elecN_Dx * RHO_N * U + De_elecN2_Dx * RHO_N2 * U - w_dot_V;
   return(Q_eV);
 }
 \end{verbatim}
- \end{footnotesize}
+ \end{scriptsize}
 
 Finally, the gradients of the analytical solutions (\ref{eq:manufactured02}) and (\ref{eq:manufactured03}) have also been computed and their respective C codes are presented in  \texttt{Euler\_1d\_chemistry\_manuf\_solutions\_grad\_and\_code.C}. Therefore,
 \begin{equation}

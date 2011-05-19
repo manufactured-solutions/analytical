@@ -232,7 +232,7 @@
 </Group></Presentation-Block><Presentation-Block>
 <Group labelreference="L548" drawlabel="true">
 <Input>
-<Text-field prompt="&gt; " style="Maple Input" layout="Normal"># Writing source term  Q_e in a C file -------------------------------------------</Text-field>
+<Text-field prompt="&gt; " style="Maple Input" layout="Normal"># Writing source term  Q_E in a C file -------------------------------------------</Text-field>
 </Input>
 </Group>
 <Group view="code" labelreference="L554" drawlabel="true">

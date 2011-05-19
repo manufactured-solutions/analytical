@@ -92,7 +92,7 @@
 </Task><Presentation-Block>
 <Group view="code" labelreference="L1165" drawlabel="true">
 <Input>
-<Text-field prompt="&gt; " style="Maple Input" layout="Normal"># This program calculates the source term Q for the 1D Euler equations in themal nonequilibrium (2-temperature model) with chemical reactions N_2 &lt;-&gt; 2N. Non-ionized flows.</Text-field>
+<Text-field prompt="&gt; " style="Maple Input" layout="Normal"># This program calculates the source term Q for the 1D Euler equations in themal nonequilibrium (2-temperature model) with chemical reactions N_2 &lt;-&gt; 2N. </Text-field>
 </Input>
 </Group>
 <Group view="code" labelreference="L1160" drawlabel="true">
@@ -275,7 +275,7 @@
 </Group>
 <Group view="code" labelreference="L1231" drawlabel="true">
 <Input>
-<Text-field prompt="&gt; " style="Maple Input" layout="Normal"><Equation executable="true" style="2D Input" input-equation="" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYlLUkjbW9HRiQ2LVEhRicvJSxtYXRodmFyaWFudEdRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y0LyUpc3RyZXRjaHlHRjQvJSpzeW1tZXRyaWNHRjQvJShsYXJnZW9wR0Y0LyUubW92YWJsZWxpbWl0c0dGNC8lJ2FjY2VudEdGNC8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkMvJStleGVjdXRhYmxlR0Y0Ri8=">LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYjLUkjbW9HRiQ2LVEhRicvJSxtYXRodmFyaWFudEdRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y0LyUpc3RyZXRjaHlHRjQvJSpzeW1tZXRyaWNHRjQvJShsYXJnZW9wR0Y0LyUubW92YWJsZWxpbWl0c0dGNC8lJ2FjY2VudEdGNC8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkM=</Equation></Text-field>
+<Text-field prompt="&gt; " style="Maple Input" layout="Normal"><Equation executable="true" style="2D Input" input-equation="" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYlLUkjbW9HRiQ2LVEhRicvJSxtYXRodmFyaWFudEdRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y0LyUpc3RyZXRjaHlHRjQvJSpzeW1tZXRyaWNHRjQvJShsYXJnZW9wR0Y0LyUubW92YWJsZWxpbWl0c0dGNC8lJ2FjY2VudEdGNC8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkMvJStleGVjdXRhYmxlR0Y0Ri8=">LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYlLUkjbW9HRiQ2LVEhRicvJSxtYXRodmFyaWFudEdRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y0LyUpc3RyZXRjaHlHRjQvJSpzeW1tZXRyaWNHRjQvJShsYXJnZW9wR0Y0LyUubW92YWJsZWxpbWl0c0dGNC8lJ2FjY2VudEdGNC8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkMvJStleGVjdXRhYmxlR0Y0Ri8=</Equation></Text-field>
 </Input>
 </Group>
 <Group view="code" labelreference="L649" drawlabel="true">
@@ -488,7 +488,7 @@
 </Group></Presentation-Block><Presentation-Block>
 <Group labelreference="L628" drawlabel="true">
 <Input>
-<Text-field prompt="&gt; " style="Maple Input" layout="Normal"># CONVECTION: Applying operator L2 on u, rho_N, rho_N2 and p, in order to obtain source term Q:</Text-field>
+<Text-field prompt="&gt; " style="Maple Input" layout="Normal"># CONVECTION: Applying operator L2 on u, T, rho, rho_N and rho_N2, in order to obtain source term Q2:</Text-field>
 </Input>
 </Group>
 <Group labelreference="L632" drawlabel="true">
@@ -536,7 +536,7 @@
 </Group></Presentation-Block><Presentation-Block>
 <Group labelreference="L645" drawlabel="true">
 <Input>
-<Text-field prompt="&gt; " style="Maple Input" layout="Normal"># SOURCE TERM: Applying operator L3 on u, rho_N, rho_N2 and p, in order to obtain source term Q:</Text-field>
+<Text-field prompt="&gt; " style="Maple Input" layout="Normal"># SOURCE TERM: Applying operator L3 on u, T, rho, rho_N and rho_N2, in order to obtain source term Q3:</Text-field>
 </Input>
 </Group>
 <Group labelreference="L642" drawlabel="true">
