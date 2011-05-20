@@ -1,22 +1,21 @@
 #!/usr/bin/env python
 # Provide a way to visualize various coefficient choices on the manufactured
-# solution and associated forcing.
+# solution and associated forcing.  Note this is **not** strongly tied to
+# soln.py or forcing.py and **will** need to change when those files change.
 
-# Bring in symbolic solutions in phi, phi_t, phi_x, etc.
-# Done prior to imports so some values will be overridden
-execfile("soln.py")
-
-from math import *
+from math import pi, cos, sin
 from enthought.traits.api import *
-from enthought.traits.ui.api import View, Item, Group, Include, Tabbed
+from enthought.traits.ui.api import Group, Include, Item, Tabbed, View
+import numpy
 
 # Traits shorthands for various coefficient types
 Amplitude = Float(0.0)
 Frequency = Range(0.0, None)
 Phase     = Range(0.0, 2*pi, exclude_high=True)
 Length    = Range(0.0, None)
+Array3    = Array(numpy.float, shape=(None,None,None))
 
-class Scenario(HasStrictTraits):
+class Scenario(HasTraits):
     gamma    = Float(desc="Ratio of specific heats")
     R        = Float(desc="Gas constant (J/kg/K)")
     beta     = Float(desc="Viscosity power law exponent")
@@ -35,7 +34,7 @@ class Scenario(HasStrictTraits):
         self.mu_r     = 185.2e-7
         self.T_r      = 300
         self.k_r      = self.gamma*self.R*self.mu_r/(self.gamma - 1)/0.70
-        self.lambda_r = self.mu_r / 3
+        self.lambda_r = - 2./3. *self.mu_r
         self.Lx       = 4*pi
         self.Ly       = 2
         self.Lz       = 4*pi/3
@@ -104,52 +103,75 @@ class PrimitiveSolution(HasTraits):
             self.add_trait(pre + post, trait(label=pre + name + post))
             self.__dict__[pre + post] = self.trait(pre + post).default
 
-        self._update_length('Lx', scenario.Lx)
-        self._update_length('Ly', scenario.Ly)
-        self._update_length('Lz', scenario.Lz)
-        scenario.on_trait_change(self._update_length, 'Lx, Ly, Lz')
+        # Maintain live 2*pi/L variables for scenario.[Lx, Ly, Lz]
+        self.update_length('Lx', scenario.Lx)
+        self.update_length('Ly', scenario.Ly)
+        self.update_length('Lz', scenario.Lz)
+        scenario.on_trait_change(self.update_length, 'Lx, Ly, Lz')
 
-    def _update_length(self, name, new):
-        self.__dict__[name] = new
+        # Construct ufuncs based on scalar-only evaluation routines
+        self.__ufunc = numpy.frompyfunc(self.__eval, 4, 1)
+        self._t      = numpy.frompyfunc(self.__t   , 4, 1)
+        self._x      = numpy.frompyfunc(self.__x   , 4, 1)
+        self._xx     = numpy.frompyfunc(self.__xx  , 4, 1)
+        self._xy     = numpy.frompyfunc(self.__xy  , 4, 1)
+        self._xz     = numpy.frompyfunc(self.__xz  , 4, 1)
+        self._y      = numpy.frompyfunc(self.__y   , 4, 1)
+        self._yy     = numpy.frompyfunc(self.__yy  , 4, 1)
+        self._yz     = numpy.frompyfunc(self.__yz  , 4, 1)
+        self._z      = numpy.frompyfunc(self.__z   , 4, 1)
+        self._zz     = numpy.frompyfunc(self.__zz  , 4, 1)
+
+    def update_length(self, name, new):
         self.__dict__['twopi_inv' + name] = 2 * pi / new
 
-    def _invoke_sympy_result(self, sympy_result, x, y, z, t):
-        params = {'x': x, 'y': y, 'z': z, 't': t}
-        params.update(self.__dict__)
-        return sympy_result.subs(params).evalf(16,chop=True)
+    def __call__(self, x, y, z, t, out=None):
+        """Return soln(x,y,z,t) given current parameters"""
+        return self.__ufunc(x, y, z, t, out)
 
-    def __call__(self, x, y, z, t):
-        return self._invoke_sympy_result(phi, x, y, z, t)
+    def __eval(self, x, y, z, t):
+        """Return soln(x,y,z,t) given current parameters"""
+        return self.a_0*cos(self.g_0 + self.f_0*t) + self.a_x*cos(self.c_x + self.b_x*self.twopi_invLx*x)*cos(self.g_x + self.f_x*t) + self.a_y*cos(self.g_y + self.f_y*t)*cos(self.c_y + self.b_y*self.twopi_invLy*y) + self.a_z*cos(self.g_z + self.f_z*t)*cos(self.c_z + self.b_z*self.twopi_invLz*z) + self.a_xy*cos(self.g_xy + self.f_xy*t)*cos(self.c_xy + self.b_xy*self.twopi_invLx*x)*cos(self.e_xy + self.d_xy*self.twopi_invLy*y) + self.a_xz*cos(self.g_xz + self.f_xz*t)*cos(self.c_xz + self.b_xz*self.twopi_invLx*x)*cos(self.e_xz + self.d_xz*self.twopi_invLz*z) + self.a_yz*cos(self.c_yz + self.b_yz*self.twopi_invLy*y)*cos(self.e_yz + self.d_yz*self.twopi_invLz*z)*cos(self.g_yz + self.f_yz*t)
 
-    def _t(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_t, x, y, z, t)
+    def __t(self, x, y, z, t):
+        """Return \partial_t soln(x,y,z,t) given current parameters"""
+        return -self.a_0*self.f_0*sin(self.g_0 + self.f_0*t) - self.a_x*self.f_x*cos(self.c_x + self.b_x*self.twopi_invLx*x)*sin(self.g_x + self.f_x*t) - self.a_y*self.f_y*cos(self.c_y + self.b_y*self.twopi_invLy*y)*sin(self.g_y + self.f_y*t) - self.a_z*self.f_z*cos(self.c_z + self.b_z*self.twopi_invLz*z)*sin(self.g_z + self.f_z*t) - self.a_xy*self.f_xy*cos(self.c_xy + self.b_xy*self.twopi_invLx*x)*cos(self.e_xy + self.d_xy*self.twopi_invLy*y)*sin(self.g_xy + self.f_xy*t) - self.a_xz*self.f_xz*cos(self.c_xz + self.b_xz*self.twopi_invLx*x)*cos(self.e_xz + self.d_xz*self.twopi_invLz*z)*sin(self.g_xz + self.f_xz*t) - self.a_yz*self.f_yz*cos(self.c_yz + self.b_yz*self.twopi_invLy*y)*cos(self.e_yz + self.d_yz*self.twopi_invLz*z)*sin(self.g_yz + self.f_yz*t)
 
-    def _x(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_x, x, y, z, t)
+    def __x(self, x, y, z, t):
+        """Return \partial_x soln(x,y,z,t) given current parameters"""
+        return -self.a_x*self.b_x*self.twopi_invLx*cos(self.g_x + self.f_x*t)*sin(self.c_x + self.b_x*self.twopi_invLx*x) - self.a_xy*self.b_xy*self.twopi_invLx*cos(self.g_xy + self.f_xy*t)*cos(self.e_xy + self.d_xy*self.twopi_invLy*y)*sin(self.c_xy + self.b_xy*self.twopi_invLx*x) - self.a_xz*self.b_xz*self.twopi_invLx*cos(self.g_xz + self.f_xz*t)*cos(self.e_xz + self.d_xz*self.twopi_invLz*z)*sin(self.c_xz + self.b_xz*self.twopi_invLx*x)
 
-    def _xx(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_xx, x, y, z, t)
+    def __xx(self, x, y, z, t):
+        """Return \partial_{xx} soln(x,y,z,t) given current parameters"""
+        return -self.a_x*self.b_x**2*self.twopi_invLx**2*cos(self.c_x + self.b_x*self.twopi_invLx*x)*cos(self.g_x + self.f_x*t) - self.a_xy*self.b_xy**2*self.twopi_invLx**2*cos(self.g_xy + self.f_xy*t)*cos(self.c_xy + self.b_xy*self.twopi_invLx*x)*cos(self.e_xy + self.d_xy*self.twopi_invLy*y) - self.a_xz*self.b_xz**2*self.twopi_invLx**2*cos(self.g_xz + self.f_xz*t)*cos(self.c_xz + self.b_xz*self.twopi_invLx*x)*cos(self.e_xz + self.d_xz*self.twopi_invLz*z)
 
-    def _xy(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_xy, x, y, z, t)
+    def __xy(self, x, y, z, t):
+        """Return \partial_{xy} soln(x,y,z,t) given current parameters"""
+        return self.a_xy*self.b_xy*self.d_xy*self.twopi_invLx*self.twopi_invLy*cos(self.g_xy + self.f_xy*t)*sin(self.c_xy + self.b_xy*self.twopi_invLx*x)*sin(self.e_xy + self.d_xy*self.twopi_invLy*y)
 
-    def _xz(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_xz, x, y, z, t)
+    def __xz(self, x, y, z, t):
+        """Return \partial_{xz} soln(x,y,z,t) given current parameters"""
+        return self.a_xz*self.b_xz*self.d_xz*self.twopi_invLx*self.twopi_invLz*cos(self.g_xz + self.f_xz*t)*sin(self.c_xz + self.b_xz*self.twopi_invLx*x)*sin(self.e_xz + self.d_xz*self.twopi_invLz*z)
 
-    def _y(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_y, x, y, z, t)
+    def __y(self, x, y, z, t):
+        """Return \partial_y soln(x,y,z,t) given current parameters"""
+        return -self.a_y*self.b_y*self.twopi_invLy*cos(self.g_y + self.f_y*t)*sin(self.c_y + self.b_y*self.twopi_invLy*y) - self.a_xy*self.d_xy*self.twopi_invLy*cos(self.g_xy + self.f_xy*t)*cos(self.c_xy + self.b_xy*self.twopi_invLx*x)*sin(self.e_xy + self.d_xy*self.twopi_invLy*y) - self.a_yz*self.b_yz*self.twopi_invLy*cos(self.e_yz + self.d_yz*self.twopi_invLz*z)*cos(self.g_yz + self.f_yz*t)*sin(self.c_yz + self.b_yz*self.twopi_invLy*y)
 
-    def _yy(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_yy, x, y, z, t)
+    def __yy(self, x, y, z, t):
+        """Return \partial_{yy} soln(x,y,z,t) given current parameters"""
+        return -self.a_y*self.b_y**2*self.twopi_invLy**2*cos(self.g_y + self.f_y*t)*cos(self.c_y + self.b_y*self.twopi_invLy*y) - self.a_xy*self.d_xy**2*self.twopi_invLy**2*cos(self.g_xy + self.f_xy*t)*cos(self.c_xy + self.b_xy*self.twopi_invLx*x)*cos(self.e_xy + self.d_xy*self.twopi_invLy*y) - self.a_yz*self.b_yz**2*self.twopi_invLy**2*cos(self.c_yz + self.b_yz*self.twopi_invLy*y)*cos(self.e_yz + self.d_yz*self.twopi_invLz*z)*cos(self.g_yz + self.f_yz*t)
 
-    def _yz(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_yz, x, y, z, t)
+    def __yz(self, x, y, z, t):
+        """Return \partial_{yz} soln(x,y,z,t) given current parameters"""
+        return self.a_yz*self.b_yz*self.d_yz*self.twopi_invLy*self.twopi_invLz*cos(self.g_yz + self.f_yz*t)*sin(self.c_yz + self.b_yz*self.twopi_invLy*y)*sin(self.e_yz + self.d_yz*self.twopi_invLz*z)
 
-    def _z(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_z, x, y, z, t)
+    def __z(self, x, y, z, t):
+        """Return \partial_z soln(x,y,z,t) given current parameters"""
+        return -self.a_z*self.b_z*self.twopi_invLz*cos(self.g_z + self.f_z*t)*sin(self.c_z + self.b_z*self.twopi_invLz*z) - self.a_xz*self.d_xz*self.twopi_invLz*cos(self.g_xz + self.f_xz*t)*cos(self.c_xz + self.b_xz*self.twopi_invLx*x)*sin(self.e_xz + self.d_xz*self.twopi_invLz*z) - self.a_yz*self.d_yz*self.twopi_invLz*cos(self.c_yz + self.b_yz*self.twopi_invLy*y)*cos(self.g_yz + self.f_yz*t)*sin(self.e_yz + self.d_yz*self.twopi_invLz*z)
 
-    def _zz(self, x, y, z, t):
-        return self._invoke_sympy_result(phi_zz, x, y, z, t)
+    def __zz(self, x, y, z, t):
+        """Return \partial_{zz} soln(x,y,z,t) given current parameters"""
+        -self.a_z*self.b_z**2*self.twopi_invLz**2*cos(self.g_z + self.f_z*t)*cos(self.c_z + self.b_z*self.twopi_invLz*z) - self.a_xz*self.d_xz**2*self.twopi_invLz**2*cos(self.g_xz + self.f_xz*t)*cos(self.c_xz + self.b_xz*self.twopi_invLx*x)*cos(self.e_xz + self.d_xz*self.twopi_invLz*z) - self.a_yz*self.d_yz**2*self.twopi_invLz**2*cos(self.c_yz + self.b_yz*self.twopi_invLy*y)*cos(self.e_yz + self.d_yz*self.twopi_invLz*z)*cos(self.g_yz + self.f_yz*t)
 
     traits_view = View(Group(Group(Group(Item(name = 'a_0'),
                                          Item(name = 'f_0'),
@@ -204,21 +226,60 @@ class PrimitiveSolution(HasTraits):
 
 
 class ManufacturedSolution(HasTraits):
-    scenario    = Instance(Scenario, allow_none=False)
-    rho         = Instance(PrimitiveSolution, allow_none=False)
-    u           = Instance(PrimitiveSolution, allow_none=False)
-    v           = Instance(PrimitiveSolution, allow_none=False)
-    w           = Instance(PrimitiveSolution, allow_none=False)
-    T           = Instance(PrimitiveSolution, allow_none=False)
+
+    # Solution Parameters
+    scenario    = Instance(Scenario)
+    soln_rho    = Instance(PrimitiveSolution)
+    soln_u      = Instance(PrimitiveSolution)
+    soln_v      = Instance(PrimitiveSolution)
+    soln_w      = Instance(PrimitiveSolution)
+    soln_T      = Instance(PrimitiveSolution)
+
+    # Manufactured solution computation details
+    t = Float
+
+    Nx, Ny, Nz = Int,    Int,    Int
+    x,  y,  z  = Array3, Array3, Array3
+
+    rho   , u   , v   , w   , T    = Array3, Array3, Array3, Array3, Array3
+    rho_t , u_t , v_t , w_t , T_t  = Array3, Array3, Array3, Array3, Array3
+    rho_x , u_x , v_x , w_x , T_x  = Array3, Array3, Array3, Array3, Array3
+    rho_xx, u_xx, v_xx, w_xx, T_xx = Array3, Array3, Array3, Array3, Array3
+    rho_xy, u_xy, v_xy, w_xy, T_xy = Array3, Array3, Array3, Array3, Array3
+    rho_xz, u_xz, v_xz, w_xz, T_xz = Array3, Array3, Array3, Array3, Array3
+    rho_y , u_y , v_y , w_y , T_y  = Array3, Array3, Array3, Array3, Array3
+    rho_yy, u_yy, v_yy, w_yy, T_yy = Array3, Array3, Array3, Array3, Array3
+    rho_yz, u_yz, v_yz, w_yz, T_yz = Array3, Array3, Array3, Array3, Array3
+    rho_z , u_z , v_z , w_z , T_z  = Array3, Array3, Array3, Array3, Array3
+    rho_zz, u_zz, v_zz, w_zz, T_zz = Array3, Array3, Array3, Array3, Array3
 
     def __init__(self):
+
+        self.on_trait_change(self.grid_change, 'Nx,Ny,Nz,scenario.[Lx,Ly,Lz]')
+
         self.scenario = Scenario()
-        self.rho      = PrimitiveSolution(self.scenario, 'rho')
-        self.u        = PrimitiveSolution(self.scenario, 'u'  )
-        self.v        = PrimitiveSolution(self.scenario, 'v'  )
-        self.w        = PrimitiveSolution(self.scenario, 'w'  )
-        self.T        = PrimitiveSolution(self.scenario, 'T'  )
+        self.soln_rho = PrimitiveSolution(self.scenario, 'rho')
+        self.soln_u   = PrimitiveSolution(self.scenario, 'u'  )
+        self.soln_v   = PrimitiveSolution(self.scenario, 'v'  )
+        self.soln_w   = PrimitiveSolution(self.scenario, 'w'  )
+        self.soln_T   = PrimitiveSolution(self.scenario, 'T'  )
+
+        self.Nx = 4
+        self.Ny = 4
+        self.Nz = 4
+
+    def grid_change(self):
+
+        # Update the mesh grid
+        self.x, self.y, self.z = numpy.mgrid[
+                    -self.scenario.Lx/2 : self.scenario.Lx/2 : self.Nx * 1j,
+                                      0 : self.scenario.Ly   : self.Ny * 1j,
+                    -self.scenario.Lz/2 : self.scenario.Lz/2 : self.Nz * 1j
+                ]
+
+    def rho_change(self):
+        self.rho = numpy.empty_like(self.x)
+        self.soln_rho(self.x, self.y, self.z, self.t, out=self.rho)
 
 # TEST
 ms = ManufacturedSolution()
-
