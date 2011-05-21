@@ -225,7 +225,7 @@ class PrimitiveSolution(HasTraits):
                              orientation = 'horizontal'))
 
 
-class ManufacturedSolution(HasTraits):
+class ManufacturedSolution(HasStrictTraits):
 
     # Solution Parameters
     scenario    = Instance(Scenario)
@@ -236,9 +236,9 @@ class ManufacturedSolution(HasTraits):
     soln_T      = Instance(PrimitiveSolution)
 
     # Manufactured solution computation details
-    t = Float
+    t = Float(0)
 
-    Nx, Ny, Nz = Int,    Int,    Int
+    Nx, Ny, Nz = Int(4), Int(4), Int(4)
     x,  y,  z  = Array3, Array3, Array3
 
     rho   , u   , v   , w   , T    = Array3, Array3, Array3, Array3, Array3
@@ -255,8 +255,6 @@ class ManufacturedSolution(HasTraits):
 
     def __init__(self):
 
-        self.on_trait_change(self.grid_change, 'Nx,Ny,Nz,scenario.[Lx,Ly,Lz]')
-
         self.scenario = Scenario()
         self.soln_rho = PrimitiveSolution(self.scenario, 'rho')
         self.soln_u   = PrimitiveSolution(self.scenario, 'u'  )
@@ -264,9 +262,14 @@ class ManufacturedSolution(HasTraits):
         self.soln_w   = PrimitiveSolution(self.scenario, 'w'  )
         self.soln_T   = PrimitiveSolution(self.scenario, 'T'  )
 
-        self.Nx = 4
-        self.Ny = 4
-        self.Nz = 4
+        self.on_trait_change(self.grid_change, 'Nx,Ny,Nz,scenario.[Lx,Ly,Lz]')
+        self.soln_rho.on_trait_change(self.rho_change)
+        self.soln_u.on_trait_change(self.u_change)
+        self.soln_v.on_trait_change(self.v_change)
+        self.soln_w.on_trait_change(self.w_change)
+        self.soln_T.on_trait_change(self.T_change)
+
+        self.grid_change()
 
     def grid_change(self):
 
@@ -277,9 +280,77 @@ class ManufacturedSolution(HasTraits):
                     -self.scenario.Lz/2 : self.scenario.Lz/2 : self.Nz * 1j
                 ]
 
+        # All of our solution fields are stale
+        self.rho_change()
+        self.u_change()
+        self.v_change()
+        self.w_change()
+        self.T_change()
+
     def rho_change(self):
-        self.rho = numpy.empty_like(self.x)
-        self.soln_rho(self.x, self.y, self.z, self.t, out=self.rho)
+        self.rho    = self.soln_rho    (self.x, self.y, self.z, self.t)
+        self.rho_t  = self.soln_rho._t (self.x, self.y, self.z, self.t)
+        self.rho_x  = self.soln_rho._x (self.x, self.y, self.z, self.t)
+        self.rho_xx = self.soln_rho._xx(self.x, self.y, self.z, self.t)
+        self.rho_xy = self.soln_rho._xy(self.x, self.y, self.z, self.t)
+        self.rho_xz = self.soln_rho._xz(self.x, self.y, self.z, self.t)
+        self.rho_y  = self.soln_rho._y (self.x, self.y, self.z, self.t)
+        self.rho_yy = self.soln_rho._yy(self.x, self.y, self.z, self.t)
+        self.rho_yz = self.soln_rho._yz(self.x, self.y, self.z, self.t)
+        self.rho_z  = self.soln_rho._z (self.x, self.y, self.z, self.t)
+        self.rho_zz = self.soln_rho._zz(self.x, self.y, self.z, self.t)
+
+    def u_change(self):
+        self.u    = self.soln_u    (self.x, self.y, self.z, self.t)
+        self.u_t  = self.soln_u._t (self.x, self.y, self.z, self.t)
+        self.u_x  = self.soln_u._x (self.x, self.y, self.z, self.t)
+        self.u_xx = self.soln_u._xx(self.x, self.y, self.z, self.t)
+        self.u_xy = self.soln_u._xy(self.x, self.y, self.z, self.t)
+        self.u_xz = self.soln_u._xz(self.x, self.y, self.z, self.t)
+        self.u_y  = self.soln_u._y (self.x, self.y, self.z, self.t)
+        self.u_yy = self.soln_u._yy(self.x, self.y, self.z, self.t)
+        self.u_yz = self.soln_u._yz(self.x, self.y, self.z, self.t)
+        self.u_z  = self.soln_u._z (self.x, self.y, self.z, self.t)
+        self.u_zz = self.soln_u._zz(self.x, self.y, self.z, self.t)
+
+    def v_change(self):
+        self.v    = self.soln_v    (self.x, self.y, self.z, self.t)
+        self.v_t  = self.soln_v._t (self.x, self.y, self.z, self.t)
+        self.v_x  = self.soln_v._x (self.x, self.y, self.z, self.t)
+        self.v_xx = self.soln_v._xx(self.x, self.y, self.z, self.t)
+        self.v_xy = self.soln_v._xy(self.x, self.y, self.z, self.t)
+        self.v_xz = self.soln_v._xz(self.x, self.y, self.z, self.t)
+        self.v_y  = self.soln_v._y (self.x, self.y, self.z, self.t)
+        self.v_yy = self.soln_v._yy(self.x, self.y, self.z, self.t)
+        self.v_yz = self.soln_v._yz(self.x, self.y, self.z, self.t)
+        self.v_z  = self.soln_v._z (self.x, self.y, self.z, self.t)
+        self.v_zz = self.soln_v._zz(self.x, self.y, self.z, self.t)
+
+    def w_change(self):
+        self.w    = self.soln_w    (self.x, self.y, self.z, self.t)
+        self.w_t  = self.soln_w._t (self.x, self.y, self.z, self.t)
+        self.w_x  = self.soln_w._x (self.x, self.y, self.z, self.t)
+        self.w_xx = self.soln_w._xx(self.x, self.y, self.z, self.t)
+        self.w_xy = self.soln_w._xy(self.x, self.y, self.z, self.t)
+        self.w_xz = self.soln_w._xz(self.x, self.y, self.z, self.t)
+        self.w_y  = self.soln_w._y (self.x, self.y, self.z, self.t)
+        self.w_yy = self.soln_w._yy(self.x, self.y, self.z, self.t)
+        self.w_yz = self.soln_w._yz(self.x, self.y, self.z, self.t)
+        self.w_z  = self.soln_w._z (self.x, self.y, self.z, self.t)
+        self.w_zz = self.soln_w._zz(self.x, self.y, self.z, self.t)
+
+    def T_change(self):
+        self.T    = self.soln_T    (self.x, self.y, self.z, self.t)
+        self.T_t  = self.soln_T._t (self.x, self.y, self.z, self.t)
+        self.T_x  = self.soln_T._x (self.x, self.y, self.z, self.t)
+        self.T_xx = self.soln_T._xx(self.x, self.y, self.z, self.t)
+        self.T_xy = self.soln_T._xy(self.x, self.y, self.z, self.t)
+        self.T_xz = self.soln_T._xz(self.x, self.y, self.z, self.t)
+        self.T_y  = self.soln_T._y (self.x, self.y, self.z, self.t)
+        self.T_yy = self.soln_T._yy(self.x, self.y, self.z, self.t)
+        self.T_yz = self.soln_T._yz(self.x, self.y, self.z, self.t)
+        self.T_z  = self.soln_T._z (self.x, self.y, self.z, self.t)
+        self.T_zz = self.soln_T._zz(self.x, self.y, self.z, self.t)
 
 # TEST
 ms = ManufacturedSolution()
