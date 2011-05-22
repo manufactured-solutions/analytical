@@ -80,19 +80,24 @@ public:
 
     //! The name used infix in foreach_parameter' names.  For example,
     //! name = 'phi' implies parameters names like 'a_phix'.
-    const ::std::string name;
+    ::std::string name;
+
+    const Scalar* Lx;           //!< Domain extent in x direction
+    const Scalar* Ly;           //!< Domain extent in y direction
+    const Scalar* Lz;           //!< Domain extent in z direction
 
     //! Construct an instance using \c name in the reported parameter names.
-    //! The domain sizes are referenced from some external Lx, Ly, and Lz.
-    //! All parameters set to zero at construction time.
-    explicit primitive_solution(const Scalar& Lx,
-                                const Scalar& Ly,
-                                const Scalar& Lz,
-                                const ::std::string &name = "")
+    //! The domain sizes are referenced from some external Lx, Ly, and Lz.  If
+    //! domain sizes are not provided, they \c must be set prior to invoking any
+    //! member methods.  All parameters set to zero at construction time.
+    explicit primitive_solution(const ::std::string &name = "",
+                                const Scalar& Lx = 0,
+                                const Scalar& Ly = 0,
+                                const Scalar& Lz = 0)
 #define APPLY(pre,suf) pre##suf(0),
         : FOR_ALL_SOLUTION_PARAMETERS(APPLY)  // has trailing comma
 #undef APPLY
-          name(name), Lx(Lx), Ly(Ly), Lz(Lz)
+          name(name), Lx(&Lx), Ly(&Ly), Lz(&Lz)
     {}
 
 #define APPLY_STRINGIFY(s) #s
@@ -167,9 +172,6 @@ public:
 
 private:
 
-    const Scalar& Lx;           //!< Domain extent in x direction
-    const Scalar& Ly;           //!< Domain extent in y direction
-    const Scalar& Lz;           //!< Domain extent in z direction
     static const Scalar twopi;  //!< \f$2\pi\f$ to \c Scalar precision
 
 }; // end class
@@ -220,11 +222,11 @@ public:
     //! Default constructor
     generic_manufactured_solution()
         : gamma(0), R(0), beta(0), mu_r(0), T_r(0), k_r(0), lambda_r(0),
-          rho(Lx, Ly, Lz,"rho"),
-          u  (Lx, Ly, Lz, "u"),
-          v  (Lx, Ly, Lz, "v"),
-          w  (Lx, Ly, Lz, "w"),
-          T  (Lx, Ly, Lz, "T"),
+          rho("rho", Lx, Ly, Lz),
+          u  ("u"  , Lx, Ly, Lz),
+          v  ("v"  , Lx, Ly, Lz),
+          w  ("w"  , Lx, Ly, Lz),
+          T  ("T"  , Lx, Ly, Lz),
           Lx(1), Ly(1), Lz(1)
     {
     }
