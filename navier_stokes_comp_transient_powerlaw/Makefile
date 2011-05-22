@@ -1,4 +1,6 @@
-all: writeup.pdf check
+MAKEFLAGS := -k
+
+all: writeup.pdf check module
 
 writeup.pdf: writeup.tex soln.py forcing.py nsctpl_fwd.hpp nsctpl.hpp
 	md5sum soln.py forcing.py nsctpl_fwd.hpp nsctpl.hpp > CHECKSUMS
@@ -11,10 +13,11 @@ test.hpp: test.py soln.py forcing.py
 check: check.cpp nsctpl_fwd.hpp nsctpl.hpp test.hpp
 	g++ -g -O0 -fno-unsafe-math-optimizations -Wall -pedantic check.cpp -o check
 
-module: nsctpl_fwd.hpp nsctpl.hpp nsctpl.i
+module: nsctpl_fwd.hpp nsctpl.hpp nsctpl.i check
 	swig -v -Wall -c++ -python nsctpl.i
-	python setup.py build_ext --inplace
+	python setup.py build_ext --inplace clean
 
 clean:
 	rm -fv *.o check test.hpp soln.c soln.h *.aux *.log *.out writeup.pdf
+	rm -fv nsctpl.py nsctpl_wrap.cxx
 
