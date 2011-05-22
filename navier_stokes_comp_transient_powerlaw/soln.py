@@ -3,42 +3,23 @@
 # Compute the analytical derivatives of \phi and output them as C code.  This
 # logic will be used to compute the manufactured solutions rho, u, v, w, and T.
 
-import string
 from sympy import *
 from sympy.utilities.codegen import codegen
 
-# Options used for all sympy.symbols calls
-kwargs = { "real": True, "each_char": False }
-
-# Coordinate definitions
-x, y, z, t = symbols('x y z t', **kwargs)
+# Coordinates
+var('x y z t', real=True)
 
 # Solution parameters used in the form of the analytical solution
-a_0, a_x, a_xy, a_xz, a_y, a_yz, a_z = symbols(string.join((
-            'a_0', 'a_x', 'a_xy', 'a_xz', 'a_y', 'a_yz', 'a_z'
-        )), **kwargs)
-b_x, b_xy, b_xz, b_y, b_yz, b_z = symbols(string.join((
-            'b_x', 'b_xy', 'b_xz', 'b_y', 'b_yz', 'b_z'
-        )), **kwargs)
-c_x, c_xy, c_xz, c_y, c_yz, c_z = symbols(string.join((
-            'c_x', 'c_xy', 'c_xz', 'c_y', 'c_yz', 'c_z'
-        )), **kwargs)
-d_xy, d_xz, d_yz = symbols(string.join((
-            'd_xy', 'd_xz', 'd_yz'
-        )), **kwargs)
-e_xy, e_xz, e_yz = symbols(string.join((
-            'e_xy', 'e_xz', 'e_yz'
-        )), **kwargs)
-f_0, f_x, f_xy, f_xz, f_y, f_yz, f_z = symbols(string.join((
-            'f_0', 'f_x', 'f_xy', 'f_xz', 'f_y', 'f_yz', 'f_z'
-        )), **kwargs)
-g_0, g_x, g_xy, g_xz, g_y, g_yz, g_z = symbols(string.join((
-            'g_0', 'g_x', 'g_xy', 'g_xz', 'g_y', 'g_yz', 'g_z'
-        )), **kwargs)
-# Explicitly keep (2 * pi / L) terms together as an indivisible token
-twopi_invLx, twopi_invLy, twopi_invLz = symbols(string.join((
-            'twopi_invLx', 'twopi_invLy', 'twopi_invLz'
-        )), **kwargs)
+var(""" a_0  a_x  a_xy  a_xz  a_y  a_yz  a_z
+             b_x  b_xy  b_xz  b_y  b_yz  b_z
+             c_x  c_xy  c_xz  c_y  c_yz  c_z
+                  d_xy  d_xz       d_yz
+                  e_xy  e_xz       e_yz
+        f_0  f_x  f_xy  f_xz  f_y  f_yz  f_z
+        g_0  g_x  g_xy  g_xz  g_y  g_yz  g_z """, real=True)
+
+# Explicitly keep (2 * pi / L) terms together as indivisible tokens
+var('twopi_invLx  twopi_invLy  twopi_invLz', real=True)
 
 # Form the analytical solution and its derivatives
 phi  = (
@@ -63,16 +44,16 @@ phi_zz = phi_z.diff(z)
 
 # Save these results to files 'soln.c' and 'soln.h' as C code
 codegen((
-            ("phi",    phi),
-            ("phi_t",  phi_t),
-            ("phi_x",  phi_x),
+            ("phi",    phi   ),
+            ("phi_t",  phi_t ),
+            ("phi_x",  phi_x ),
             ("phi_xx", phi_xx),
             ("phi_xy", phi_xy),
             ("phi_xz", phi_xz),
-            ("phi_y",  phi_y),
+            ("phi_y",  phi_y ),
             ("phi_yy", phi_yy),
             ("phi_yz", phi_yz),
-            ("phi_z",  phi_z),
+            ("phi_z",  phi_z ),
             ("phi_zz", phi_zz),
         ),
         "C",
