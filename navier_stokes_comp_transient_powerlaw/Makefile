@@ -13,8 +13,9 @@ test.hpp: test.py soln.py forcing.py
 check: check.cpp nsctpl_fwd.hpp nsctpl.hpp test.hpp
 	g++ -g -O0 -fno-unsafe-math-optimizations -Wall -pedantic check.cpp -o check
 
-module: nsctpl_fwd.hpp nsctpl.hpp nsctpl.i check
-	swig -v -Wall -c++ -python nsctpl.i
+module: _nsctpl.so
+_nsctpl.so: nsctpl_fwd.hpp nsctpl.hpp nsctpl.i check
+	swig -v -Werror -c++ -python nsctpl.i
 	python setup.py build_ext --inplace clean
 
 clean:
