@@ -22,9 +22,12 @@
 //-----------------------------------------------------------------------el-
 
 // Using this file will require #include-ing <cmath>, <limits>, <sstream>, and
-// <string>.  These headers are not #include-d here to allow #include-ing this
+// <string>.  Those headers are not #include-d here to allow #include-ing this
 // file inside any namespace, as is the consistent use of ::std instead of
 // merely std.
+
+#ifndef NSCTPL_FWD_HPP
+#define NSCTPL_FWD_HPP
 
 namespace nsctpl {
 
@@ -344,3 +347,5 @@ class manufactured_solution
     : public generic_manufactured_solution<primitive_solution,Scalar,1> {};
 
 } // end namespace nsctpl
+
+#endif /* NSCTPL_FWD_HPP */

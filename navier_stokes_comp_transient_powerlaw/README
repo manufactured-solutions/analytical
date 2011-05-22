@@ -24,13 +24,20 @@ Documentation:
 
 Implementation:
 
+    Makefile:        A GNU Makefile for building the documentation, tests,
+                     and Python module.
     nsctpl_fwd.hpp:  C++ header file with forward declarations for the
                      manufactured solution.  Code written to allow
                      #include-ing from some other file, possibly within an
-                     anonymous namespace.  No double-inclusion guards present.
+                     anonymous namespace.
     nsctpl.hpp:      C++ header file containing templated implementation
                      details for nsctpl.hpp based upon output of running
-                     soln.py.  Similar #include comments apply.
+                     soln.py.  Similar #include-related comments apply.
+    nsctpl.i:        SWIG (http://www.swig.org/) declarations for building
+                     a 'nsctpl' module exposing the C++ implementation as
+                     'nsctpl.ms'.
+    setup.py:        Python distutils script used to build 'nsctpl' module.
+                     See Makefile for more build-related details.
 
 Tests:
 

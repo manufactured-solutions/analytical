@@ -21,6 +21,11 @@
 //
 //-----------------------------------------------------------------------el-
 
+#include "nsctpl_fwd.hpp"
+
+#ifndef NSCTPL_HPP
+#define NSCTPL_HPP
+
 namespace nsctpl {
 
 // ---------------------------------------------------------------------------
@@ -808,3 +813,5 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhoe
 }
 
 } // end namespace nsctpl
+
+#endif /* NSCTPL_HPP */

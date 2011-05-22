@@ -7,7 +7,6 @@
 #include <string>
 #include <typeinfo>
 
-#include "nsctpl_fwd.hpp"
 #include "nsctpl.hpp"
 #include "test.hpp"
 
