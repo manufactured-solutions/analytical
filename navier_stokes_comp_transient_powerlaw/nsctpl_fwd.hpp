@@ -180,7 +180,7 @@ private:
  * templated to allow extended precision intermediate computations (followed by
  * truncation) when possible.
  */
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase = 0>
 class generic_manufactured_solution {

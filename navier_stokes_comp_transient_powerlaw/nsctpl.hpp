@@ -175,7 +175,7 @@ Scalar primitive_solution<Scalar>::_zz(T1 x, T2 y, T3 z, T4 t) const
 // analytical member implementations
 // ---------------------------------------------------------------------------
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -190,7 +190,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_r
     }
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -205,7 +205,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_u
     }
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -220,7 +220,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_v
     }
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -235,7 +235,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_w
     }
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -255,7 +255,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_T
 // implementations derived from analytical results
 // ---------------------------------------------------------------------------
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -270,7 +270,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::e(
     return e;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -283,7 +283,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::p(
     return p;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -295,7 +295,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::mu(
     return mu;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -305,7 +305,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::rhou(
     return rho(x, y, z, t) * u(x, y, z, t);
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -315,7 +315,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::rhov(
     return rho(x, y, z, t) * v(x, y, z, t);
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -325,7 +325,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::rhow(
     return rho(x, y, z, t) * w(x, y, z, t);
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -335,7 +335,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::rhoe(
     return rho(x, y, z, t) * e(x, y, z, t);
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -371,7 +371,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_e
     return de;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -400,7 +400,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_p
     return dp;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -425,7 +425,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_m
     return dmu;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -456,7 +456,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rho(
     return Q_rho;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -527,7 +527,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhou
     return Q_rhou;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -598,7 +598,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhov
     return Q_rhov;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
@@ -669,7 +669,7 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhow
     return Q_rhow;
 }
 
-template <template <typename T> class PrimitiveSolution,
+template <template <typename> class PrimitiveSolution,
           typename Scalar,
           int IndexBase>
 template <typename T1, typename T2, typename T3, typename T4>
