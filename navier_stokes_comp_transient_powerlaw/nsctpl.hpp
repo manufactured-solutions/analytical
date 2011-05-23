@@ -29,15 +29,15 @@
 namespace nsctpl {
 
 // ---------------------------------------------------------------------------
-// primitive_solution<Scalar> member implementations
+// primitive<Scalar> member implementations
 // ---------------------------------------------------------------------------
 
 template <typename Scalar>
-const Scalar primitive_solution<Scalar>::twopi = 8 * std::atan(Scalar(1));
+const Scalar primitive<Scalar>::twopi = 8 * std::atan(Scalar(1));
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::operator()(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::operator()(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -50,7 +50,7 @@ Scalar primitive_solution<Scalar>::operator()(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_t(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_t(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -63,7 +63,7 @@ Scalar primitive_solution<Scalar>::_t(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_x(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_x(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -76,7 +76,7 @@ Scalar primitive_solution<Scalar>::_x(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_xx(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_xx(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -89,7 +89,7 @@ Scalar primitive_solution<Scalar>::_xx(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_xy(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_xy(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -101,7 +101,7 @@ Scalar primitive_solution<Scalar>::_xy(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_xz(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_xz(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -113,7 +113,7 @@ Scalar primitive_solution<Scalar>::_xz(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_y(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_y(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -126,7 +126,7 @@ Scalar primitive_solution<Scalar>::_y(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_yy(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_yy(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -139,7 +139,7 @@ Scalar primitive_solution<Scalar>::_yy(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_yz(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_yz(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -151,7 +151,7 @@ Scalar primitive_solution<Scalar>::_yz(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_z(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_z(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -164,7 +164,7 @@ Scalar primitive_solution<Scalar>::_z(T1 x, T2 y, T3 z, T4 t) const
 
 template <typename Scalar>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar primitive_solution<Scalar>::_zz(T1 x, T2 y, T3 z, T4 t) const
+Scalar primitive<Scalar>::_zz(T1 x, T2 y, T3 z, T4 t) const
 {
     using ::std::cos;
     using ::std::sin;
@@ -176,15 +176,13 @@ Scalar primitive_solution<Scalar>::_zz(T1 x, T2 y, T3 z, T4 t) const
 }
 
 // ---------------------------------------------------------------------------
-// generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>
+// manufactured_solution<Scalar,IndexBase,Primitive>
 // analytical member implementations
 // ---------------------------------------------------------------------------
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_rho(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_rho(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -195,11 +193,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_r
     }
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_u(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_u(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -210,11 +206,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_u
     }
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_v(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_v(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -225,11 +219,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_v
     }
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_w(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_w(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -240,11 +232,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_w
     }
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_T(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_T(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -256,15 +246,13 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_T
 }
 
 // ---------------------------------------------------------------------------
-// generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase> member
+// manufactured_solution<Scalar,IndexBase,Primitive> member
 // implementations derived from analytical results
 // ---------------------------------------------------------------------------
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::e(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::e(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T = this->T(x, y, z, t);
@@ -275,11 +263,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::e(
     return e;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::p(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::p(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T   = this->T(x, y, z, t);
@@ -288,11 +274,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::p(
     return p;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::mu(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::mu(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T  = this->T(x, y, z, t);
@@ -300,51 +284,41 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::mu(
     return mu;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::rhou(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::rhou(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * u(x, y, z, t);
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::rhov(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::rhov(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * v(x, y, z, t);
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::rhow(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::rhow(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * w(x, y, z, t);
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::rhoe(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::rhoe(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * e(x, y, z, t);
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_e(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_e(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar u = this->u(x, y, z, t);
@@ -376,11 +350,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_e
     return de;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_p(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_p(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar rho = this->rho(x, y, z, t); // shadow
@@ -405,11 +377,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_p
     return dp;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_mu(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_mu(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar T = this->T(x, y, z, t);
@@ -430,11 +400,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::grad_m
     return dmu;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rho(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rho(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -461,11 +429,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rho(
     return Q_rho;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhou(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhou(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -532,11 +498,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhou
     return Q_rhou;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhov(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhov(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -603,11 +567,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhov
     return Q_rhov;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhow(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhow(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -674,11 +636,9 @@ Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhow
     return Q_rhow;
 }
 
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase>
+template <typename Scalar, int IndexBase, template <typename> class Primitive>
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar generic_manufactured_solution<PrimitiveSolution,Scalar,IndexBase>::Q_rhoe(
+Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhoe(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */

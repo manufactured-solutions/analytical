@@ -16,8 +16,8 @@ check: check.cpp nsctpl_fwd.hpp nsctpl.hpp test.hpp
 module: _nsctpl.so
 _nsctpl.so: nsctpl_fwd.hpp nsctpl.hpp nsctpl.i check
 	swig -v -Werror -c++ -python nsctpl.i
-	# https://sourceforge.net/tracker/?func=detail&atid=101645&aid=1861407&group_id=1645
-	sed -i 's/PrimitiveSolution</nsctpl::primitive_solution</g' nsctpl_wrap.cxx
+	# See https://sourceforge.net/tracker/?func=detail&atid=101645&aid=1861407&group_id=1645
+	sed -i 's/Primitive</nsctpl::primitive</g' nsctpl_wrap.cxx
 	python setup.py build_ext --inplace clean
 
 clean:

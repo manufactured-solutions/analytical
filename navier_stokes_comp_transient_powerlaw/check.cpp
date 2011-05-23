@@ -13,14 +13,14 @@
 #define STRINGIFY(foo) #foo
 
 // Explicitly instantiate the primitive solution to ensure compilation
-template class nsctpl::primitive_solution<float>;
-template class nsctpl::primitive_solution<double>;
-template class nsctpl::primitive_solution<long double>;
+template class nsctpl::primitive<float>;
+template class nsctpl::primitive<double>;
+template class nsctpl::primitive<long double>;
 
 // Explicitly instantiate the manufactured forcing to ensure compilation
-template class nsctpl::manufactured_solution<float>;
-template class nsctpl::manufactured_solution<double>;
-template class nsctpl::manufactured_solution<long double>;
+template class nsctpl::manufactured_solution<float,1>;
+template class nsctpl::manufactured_solution<double,1>;
+template class nsctpl::manufactured_solution<long double,1>;
 
 // Used to output each solution parameter on std::cout
 template<typename Scalar>
@@ -82,7 +82,7 @@ void run_tests()
 {
     std::cout.precision(std::numeric_limits<Scalar>::digits10);
 
-    nsctpl::manufactured_solution<Scalar> ms;
+    nsctpl::manufactured_solution<Scalar,1> ms;
     {
         prime_it<Scalar> p;
         ms.foreach_parameter(p);

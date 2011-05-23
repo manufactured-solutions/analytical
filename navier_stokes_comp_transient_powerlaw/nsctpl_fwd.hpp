@@ -55,7 +55,7 @@ namespace nsctpl {
  * names like 'a_phix'.
  */
 template <typename Scalar>
-class primitive_solution {
+class primitive {
 
 public:
 
@@ -90,10 +90,10 @@ public:
     //! The domain sizes are referenced from some external Lx, Ly, and Lz.  If
     //! domain sizes are not provided, they \c must be set prior to invoking any
     //! member methods.  All parameters set to zero at construction time.
-    explicit primitive_solution(const ::std::string &name = "",
-                                const Scalar& Lx = 0,
-                                const Scalar& Ly = 0,
-                                const Scalar& Lz = 0)
+    explicit primitive(const ::std::string &name = "",
+                       const Scalar& Lx = 0,
+                       const Scalar& Ly = 0,
+                       const Scalar& Lz = 0)
 #define APPLY(pre,suf) pre##suf(0),
         : FOR_ALL_SOLUTION_PARAMETERS(APPLY)  // has trailing comma
 #undef APPLY
@@ -178,49 +178,49 @@ private:
 
 
 /**
- * Template that, given a primitive solution for \c rho, \c u, \c v, \c w, and
+ * Template that, given a primitive function for \c rho, \c u, \c v, \c w, and
  * \c T along with a floating point type, evaluates a manufactured solution and
  * the required forcing for the transient, compressible Navier--Stokes
  * equations with a power law viscosity.  Location and time arguments are
  * templated to allow extended precision intermediate computations (followed by
  * truncation) when possible.
  */
-template <template <typename> class PrimitiveSolution,
-          typename Scalar,
-          int IndexBase = 0>
-class generic_manufactured_solution {
+template <typename Scalar,
+          int IndexBase = 0,
+          template <typename> class Primitive = primitive>
+class manufactured_solution {
 
 public:
 
     //! Scenario parameters
     //!@{
-    Scalar gamma;                    //!< Constant ratio of specific heats
-    Scalar R;                        //!< Gas constant
-    Scalar beta;                     //!< Viscosity power law exponent
-    Scalar mu_r;                     //!< Reference dynamic viscosity
-    Scalar T_r;                      //!< Reference temperature
-    Scalar k_r;                      //!< Reference thermal conductivity
-    Scalar lambda_r;                 //!< Reference bulk viscosity
+    Scalar gamma;            //!< Constant ratio of specific heats
+    Scalar R;                //!< Gas constant
+    Scalar beta;             //!< Viscosity power law exponent
+    Scalar mu_r;             //!< Reference dynamic viscosity
+    Scalar T_r;              //!< Reference temperature
+    Scalar k_r;              //!< Reference thermal conductivity
+    Scalar lambda_r;         //!< Reference bulk viscosity
     //!@}
 
     //! Analytic solutions (which contain additional parameters)
     //!@{
-    PrimitiveSolution<Scalar> rho;   //!< Analytic solution for rho
-    PrimitiveSolution<Scalar> u;     //!< Analytic solution for u
-    PrimitiveSolution<Scalar> v;     //!< Analytic solution for v
-    PrimitiveSolution<Scalar> w;     //!< Analytic solution for w
-    PrimitiveSolution<Scalar> T;     //!< Analytic solution for T
+    Primitive<Scalar> rho;   //!< Analytic solution for rho
+    Primitive<Scalar> u;     //!< Analytic solution for u
+    Primitive<Scalar> v;     //!< Analytic solution for v
+    Primitive<Scalar> w;     //!< Analytic solution for w
+    Primitive<Scalar> T;     //!< Analytic solution for T
     //!@}
 
     //! Domain extents
     //!@{
-    Scalar Lx;                       //!< Domain extent in x direction
-    Scalar Ly;                       //!< Domain extent in y direction
-    Scalar Lz;                       //!< Domain extent in z direction
+    Scalar Lx;               //!< Domain extent in x direction
+    Scalar Ly;               //!< Domain extent in y direction
+    Scalar Lz;               //!< Domain extent in z direction
     //!@}
 
     //! Default constructor
-    generic_manufactured_solution()
+    manufactured_solution()
         : gamma(0), R(0), beta(0), mu_r(0), T_r(0), k_r(0), lambda_r(0),
           rho("rho", Lx, Ly, Lz),
           u  ("u"  , Lx, Ly, Lz),
@@ -272,7 +272,7 @@ public:
     }
 
     // Analytically determined quantities
-    // Note that PrimitiveSolution members can be used directly.
+    // Note that Primitive members can be used directly.
     // For example, T(x,y,z,t) or T._xx(x,y,z,t)
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_rho (T1 x, T2 y, T3 z, T4 t, int index) const;
@@ -338,15 +338,6 @@ public:
     Scalar Q_rhoe(T1 x, T2 y, T3 z, T4 t) const;
 
 }; // end class
-
-/**
- * Template that, given a floating point type, evaluates a manufactured
- * solution and the required forcing for the transient, compressible
- * Navier--Stokes equations with a power law viscosity.  Indices start at one.
- */
-template <typename Scalar>
-class manufactured_solution
-    : public generic_manufactured_solution<primitive_solution,Scalar,1> {};
 
 } // end namespace nsctpl
 

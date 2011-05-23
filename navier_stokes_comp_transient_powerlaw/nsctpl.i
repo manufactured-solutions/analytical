@@ -17,7 +17,7 @@
 
 namespace nsctpl {
 
-%extend primitive_solution {
+%extend primitive {
 
     %template(__call__) operator()<double,double,double,double>;
     %template(_t      ) _t        <double,double,double,double>;
@@ -32,13 +32,10 @@ namespace nsctpl {
     %template(_zz     ) _zz       <double,double,double,double>;
 }
 
-%immutable generic_manufactured_solution::rho;
-%immutable generic_manufactured_solution::u;
-%immutable generic_manufactured_solution::v;
-%immutable generic_manufactured_solution::w;
-%immutable generic_manufactured_solution::T;
+%template(primitive_float)  primitive<float>;
+%template(primitive_double) primitive<double>;
 
-%extend generic_manufactured_solution {
+%extend manufactured_solution {
     %template(grad_rho) grad_rho<double,double,double,double>;
     %template(grad_u  ) grad_u  <double,double,double,double>;
     %template(grad_v  ) grad_v  <double,double,double,double>;
@@ -61,8 +58,7 @@ namespace nsctpl {
     %template(Q_rhoe  ) Q_rhoe  <double,double,double,double>;
 }
 
-%template(primitive)    primitive_solution<double>;
-%template(generic)      generic_manufactured_solution<primitive_solution,double,1>;
-%template(manufactured) manufactured_solution<double>;
+%template(manufactured_solution_float)  manufactured_solution<float>;
+%template(manufactured_solution_double) manufactured_solution<double>;
 
 }
