@@ -32,8 +32,10 @@ namespace nsctpl {
     %template(_zz     ) _zz       <double,double,double,double>;
 }
 
-%template(primitive_float)  primitive<float>;
 %template(primitive_double) primitive<double>;
+%pythoncode %{
+    primitive = primitive_double
+%}
 
 %extend manufactured_solution {
     %template(grad_rho) grad_rho<double,double,double,double>;
@@ -58,7 +60,9 @@ namespace nsctpl {
     %template(Q_rhoe  ) Q_rhoe  <double,double,double,double>;
 }
 
-%template(manufactured_solution_float)  manufactured_solution<float>;
 %template(manufactured_solution_double) manufactured_solution<double>;
+%pythoncode %{
+    manufactured_solution = manufactured_solution_double
+%}
 
 }
