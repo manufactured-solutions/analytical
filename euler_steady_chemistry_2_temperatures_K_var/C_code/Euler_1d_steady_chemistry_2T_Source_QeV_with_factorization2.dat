@@ -1,0 +1,35 @@
+Qev := proc () local Q_eV, e_elec_N, e_elec_N_num, e_elec_N_den, e_elec_N2, 
+e_elec_N2_num, e_elec_N2_den, e_vib_N2, e_vib_eq_N2, RHO, RHO_N, RHO_N2, U, T,
+TV, P, tau_vib_N2_N, tau_vib_N2_N2, De_elecN2_Dx, De_elecN_Dx, AUX1, AUX2, 
+w_dot_N, w_dot_N2, kf1_N, kf1_N2, R1, K, T_bar, i, w_dot_V; RHO_N := rho_N_0+
+rho_N_x*sin(a_rho_N_x*Pi*x/L); RHO_N2 := rho_N2_0+rho_N2_x*cos(a_rho_N2_x*Pi*x
+/L); RHO := RHO_N+RHO_N2; U := u_0+u_x*sin(a_ux*Pi*x/L); T := T_0+T_x*cos(a_Tx
+*Pi*x/L); TV := Tv_0+Tv_x*cos(a_Tvx*Pi*x/L); P := RHO_N*R*T/M_N+1/2*RHO_N2*R*T
+/M_N; T_bar := T^q*TV^(1-q); K := calculate_equilibrium_constant_K(T); AUX1 :=
+sum(theta_e_N[i]^2*g_N[i]*exp(-theta_e_N[i]/TV),i = 0 .. energy_level_N); AUX2
+:= sum(theta_e_N2[i]^2*g_N2[i]*exp(-theta_e_N2[i]/TV),i = 0 .. energy_level_N2
+); e_elec_N_den := sum(g_N[i]*exp(-theta_e_N[i]/TV),i = 0 .. energy_level_N);
+e_elec_N_num := sum(theta_e_N[i]*g_N[i]*exp(-theta_e_N[i]/TV),i = 0 .. 
+energy_level_N); e_elec_N2_den := sum(g_N2[i]*exp(-theta_e_N2[i]/TV),i = 0 ..
+energy_level_N2); e_elec_N2_num := sum(theta_e_N2[i]*g_N2[i]*exp(-theta_e_N2[i
+]/TV),i = 0 .. energy_level_N2); e_elec_N := R*e_elec_N_num/M_N/e_elec_N_den;
+e_elec_N2 := 1/2*R*e_elec_N2_num/M_N/e_elec_N2_den; e_vib_N2 := 1/2*R*
+theta_v_N2/M_N/(exp(theta_v_N2/TV)-1); e_vib_eq_N2 := 1/2*R*theta_v_N2/M_N/(
+exp(theta_v_N2/T)-1); De_elecN_Dx := e_elec_N^2*M_N*a_Tvx*Pi*Tv_x*sin(a_Tvx*Pi
+*x/L)/R/TV^2/L-R*AUX1*a_Tvx*Pi*Tv_x*sin(a_Tvx*Pi*x/L)/M_N/e_elec_N_den/TV^2/L;
+De_elecN2_Dx := 2*e_elec_N2^2*M_N*a_Tvx*Pi*Tv_x*sin(a_Tvx*Pi*x/L)/R/TV^2/L-1/2
+*R*AUX2*a_Tvx*Pi*Tv_x*sin(a_Tvx*Pi*x/L)/M_N/e_elec_N2_den/TV^2/L; tau_vib_N2_N
+:= exp(29/75000*sqrt(6)*sqrt(M_N)*theta_v_N2^(4/3)*(1/T^(1/3)-1/200*54^(1/4)*
+M_N^(1/4))-921/50)/P; tau_vib_N2_N2 := exp(29/25000*sqrt(M_N)*theta_v_N2^(4/3)
+*(1/T^(1/3)-3/200*M_N^(1/4))-921/50)/P; kf1_N2 := Cf1_N2*T_bar^etaf1_N2*exp(-
+Ea_N2/R/T_bar); kf1_N := Cf1_N*T_bar^etaf1_N*exp(-Ea_N/R/T_bar); R1 := -1/2*
+RHO_N*RHO_N2*kf1_N/M_N^2-1/4*RHO_N2^2*kf1_N2/M_N^2+1/2*RHO_N^2*RHO_N2*kf1_N2/K
+/M_N^3+RHO_N^3*kf1_N/K/M_N^3; w_dot_N := -2*M_N*R1; w_dot_N2 := -w_dot_N; 
+w_dot_V := e_elec_N*w_dot_N+(e_vib_N2+e_elec_N2)*w_dot_N2+(e_vib_eq_N2-
+e_vib_N2)*RHO_N2*(2*RHO_N/(2*RHO_N+RHO_N2)/tau_vib_N2_N+RHO_N2/(2*RHO_N+RHO_N2
+)/tau_vib_N2_N2); Q_eV := e_elec_N*a_rho_N_x*Pi*rho_N_x*U*cos(a_rho_N_x*Pi*x/L
+)/L-(e_vib_N2+e_elec_N2)*a_rho_N2_x*Pi*rho_N2_x*U*sin(a_rho_N2_x*Pi*x/L)/L+
+e_elec_N*a_ux*Pi*u_x*RHO_N*cos(a_ux*Pi*x/L)/L+(e_vib_N2+e_elec_N2)*a_ux*Pi*u_x
+*RHO_N2*cos(a_ux*Pi*x/L)/L-e_vib_N2*a_Tvx*Pi*Tv_x*theta_v_N2*RHO_N2*U*sin(
+a_Tvx*Pi*x/L)/L/TV^2-2*e_vib_N2^2*M_N*a_Tvx*Pi*Tv_x*RHO_N2*U*sin(a_Tvx*Pi*x/L)
+/R/TV^2/L+De_elecN_Dx*RHO_N*U+De_elecN2_Dx*RHO_N2*U-w_dot_V end proc;
