@@ -176,13 +176,29 @@ Scalar primitive<Scalar>::_zz(T1 x, T2 y, T3 z, T4 t) const
 }
 
 // ---------------------------------------------------------------------------
-// manufactured_solution<Scalar,IndexBase,Primitive>
-// analytical member implementations
+// manufactured_solution<Scalar,IndexBase,Primitive> analytical member
+// implementations See comments in nsctpl_fwd.hpp regarding SWIG-related
+// #ifdefs
 // ---------------------------------------------------------------------------
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+#ifndef SWIG
+#define NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION     \
+        template <typename Scalar,                     \
+                  int IndexBase,                       \
+                  template <typename> class Primitive>
+#define NSCTPL_MANUFACTURED_SOLUTION_TPNAMES           \
+        Scalar,IndexBase,Primitive
+#else
+#define NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION     \
+        template <typename Scalar,                     \
+                  int IndexBase>
+#define NSCTPL_MANUFACTURED_SOLUTION_TPNAMES           \
+        Scalar,IndexBase
+#endif
+
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_rho(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_rho(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -193,9 +209,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_rho(
     }
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_u(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_u(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -206,9 +222,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_u(
     }
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_v(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_v(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -219,9 +235,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_v(
     }
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_w(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_w(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -232,9 +248,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_w(
     }
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_T(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_T(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -250,9 +266,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_T(
 // implementations derived from analytical results
 // ---------------------------------------------------------------------------
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::e(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::e(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T = this->T(x, y, z, t);
@@ -263,9 +279,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::e(
     return e;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::p(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::p(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T   = this->T(x, y, z, t);
@@ -274,9 +290,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::p(
     return p;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::mu(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::mu(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T  = this->T(x, y, z, t);
@@ -284,41 +300,41 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::mu(
     return mu;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::rhou(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::rhou(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * u(x, y, z, t);
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::rhov(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::rhov(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * v(x, y, z, t);
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::rhow(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::rhow(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * w(x, y, z, t);
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::rhoe(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::rhoe(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * e(x, y, z, t);
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_e(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_e(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar u = this->u(x, y, z, t);
@@ -350,9 +366,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_e(
     return de;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_p(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_p(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar rho = this->rho(x, y, z, t); // shadow
@@ -377,9 +393,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_p(
     return dp;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_mu(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_mu(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar T = this->T(x, y, z, t);
@@ -400,9 +416,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::grad_mu(
     return dmu;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rho(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -429,9 +445,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rho(
     return Q_rho;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhou(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhou(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -498,9 +514,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhou(
     return Q_rhou;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhov(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhov(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -567,9 +583,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhov(
     return Q_rhov;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhow(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhow(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -636,9 +652,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhow(
     return Q_rhow;
 }
 
-template <typename Scalar, int IndexBase, template <typename> class Primitive>
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhoe(
+Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhoe(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -771,6 +787,9 @@ Scalar manufactured_solution<Scalar,IndexBase,Primitive>::Q_rhoe(
 
     return Q_rhoe;
 }
+
+#undef NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+#undef NSCTPL_MANUFACTURED_SOLUTION_TPNAMES
 
 } // end namespace nsctpl
 

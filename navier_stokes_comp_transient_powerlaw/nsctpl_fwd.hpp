@@ -61,7 +61,7 @@ public:
 
      // X macro per http://drdobbs.com/blogs/cpp/228700289 which will
      // apply a macro on all solution parameter prefix/suffix pairs.
-#define FOR_ALL_SOLUTION_PARAMETERS(apply)                                     \
+#define NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(apply)                             \
     apply(a_,0)                                                                \
     apply(a_,x) apply(a_,xy) apply(a_,xz) apply(a_,y) apply(a_,yz) apply(a_,z) \
     apply(b_,x) apply(b_,xy) apply(b_,xz) apply(b_,y) apply(b_,yz) apply(b_,z) \
@@ -74,9 +74,9 @@ public:
     apply(g_,x) apply(g_,xy) apply(g_,xz) apply(g_,y) apply(g_,yz) apply(g_,z)
 
     // Declare all solution parameters as members, e.g. 'a_xy'
-#define APPLY(pre,suf) Scalar pre##suf;
-    FOR_ALL_SOLUTION_PARAMETERS(APPLY)
-#undef APPLY
+#define NSCTPL_APPLY(pre,suf) Scalar pre##suf;
+    NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)
+#undef NSCTPL_APPLY
 
     //! The name used infix in foreach_parameter' names.  For example,
     //! name = 'phi' implies parameters names like 'a_phix'.
@@ -87,44 +87,43 @@ public:
     const Scalar* Lz;           //!< Domain extent in z direction
 
     //! Construct an instance using \c name in the reported parameter names.
-    //! The domain sizes are referenced from some external Lx, Ly, and Lz.  If
-    //! domain sizes are not provided, they \c must be set prior to invoking any
-    //! member methods.  All parameters set to zero at construction time.
+    //! The domain sizes are referenced from some external Lx, Ly, and Lz. If
+    //! domain sizes are not provided, they \c must be set prior to invoking
+    //! any member methods. All parameters set to zero at construction time.
     explicit primitive(const ::std::string &name = "",
                        const Scalar& Lx = 0,
                        const Scalar& Ly = 0,
                        const Scalar& Lz = 0)
-#define APPLY(pre,suf) pre##suf(0),
-        : FOR_ALL_SOLUTION_PARAMETERS(APPLY)  // has trailing comma
-#undef APPLY
+#define NSCTPL_APPLY(pre,suf) pre##suf(0),
+        : NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)  // has final comma
+#undef NSCTPL_APPLY
           name(name), Lx(&Lx), Ly(&Ly), Lz(&Lz)
     {}
 
-#define APPLY_STRINGIFY(s) #s
-#define APPLY(pre,suf)                                                    \
-        os.clear(); os.str("");                                           \
-        os << APPLY_STRINGIFY(pre) << this->name << APPLY_STRINGIFY(suf); \
+#define NSCTPL_APPLY_STRINGIFY(s) #s
+#define NSCTPL_APPLY(pre,suf)              \
+        os.clear(); os.str("");            \
+        os << NSCTPL_APPLY_STRINGIFY(pre)  \
+           << this->name                   \
+           << NSCTPL_APPLY_STRINGIFY(suf); \
         f(os.str(), this->pre##suf);
 
     //! Invoke the binary function f on each parameter name and its value.
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) const {
         ::std::ostringstream os;
-        FOR_ALL_SOLUTION_PARAMETERS(APPLY)
+        NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)
     }
 
     //! Invoke the binary function f on each parameter name and its value.
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) {
         ::std::ostringstream os;
-        FOR_ALL_SOLUTION_PARAMETERS(APPLY)
+        NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)
     }
 
-#undef APPLY
-#undef APPLY_STRINGIFY
-
-// Avoid polluting the global namespace with an implementation detail
-#undef FOR_ALL_SOLUTION_PARAMETERS
+#undef NSCTPL_APPLY
+#undef NSCTPL_APPLY_STRINGIFY
 
     //! Evaluate the solution
     template <typename T1, typename T2, typename T3, typename T4>
@@ -176,6 +175,11 @@ private:
 
 }; // end class
 
+// It is handy to template manufactured_solution (just below) on the
+// primitive functional forms chosen for rho, u, v, w, and T.  However
+// SWIG, even version 2.0.3, has trouble with template template parameters:
+// https://sourceforge.net/tracker/?func=detail&atid=101645&aid=1861407&group_id=1645
+// Therefore only employ the template template parameter when SWIG is not used.
 
 /**
  * Template that, given a primitive function for \c rho, \c u, \c v, \c w, and
@@ -185,9 +189,14 @@ private:
  * templated to allow extended precision intermediate computations (followed by
  * truncation) when possible.
  */
+#ifndef SWIG
 template <typename Scalar,
           int IndexBase = 0,
           template <typename> class Primitive = primitive>
+#else
+template <typename Scalar, int IndexBase = 0>
+#define Primitive primitive
+#endif
 class manufactured_solution {
 
 public:
@@ -338,6 +347,10 @@ public:
     Scalar Q_rhoe(T1 x, T2 y, T3 z, T4 t) const;
 
 }; // end class
+
+#ifdef SWIG
+#undef Primitive primitive
+#endif
 
 } // end namespace nsctpl
 

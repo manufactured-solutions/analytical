@@ -1,8 +1,8 @@
 How to use this solution:
 
-    0) Assuming you have make, md5sum, g++, pdflatex, Python, and SymPy
-       installed, you can build the PDF documentation and a test program
-       called 'check' by running 'make'.
+    0) Assuming you have make, md5sum, g++, pdflatex, Python, SymPy,
+       and SWIG installed, you can build the PDF documentation, a test
+       program called 'check', and a Python module by running 'make'.
     1) Review the generated 'writeup.pdf' to familiarize yourself with the
        solution.
     2) Run 'check' and review the relative errors shown to convince yourself
@@ -34,8 +34,8 @@ Implementation:
                      details for nsctpl.hpp based upon output of running
                      soln.py.  Similar #include-related comments apply.
     nsctpl.i:        SWIG (http://www.swig.org/) declarations for building
-                     a 'nsctpl' module exposing the C++ implementation as
-                     'nsctpl.ms'.
+                     a Python module name 'nsctpl' exposing the C++
+                     implementation.
     setup.py:        Python distutils script used to build 'nsctpl' module.
                      See Makefile for more build-related details.
 
