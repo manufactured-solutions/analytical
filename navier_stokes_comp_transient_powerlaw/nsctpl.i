@@ -1,9 +1,14 @@
- /* SWIG declarations for building nsctpl module     */
- /* See SWIG documentation at http://www.swig.org/   */
- /* Especially the SWIG and C++ details on templates */
+// SWIG declarations for building nsctpl module
+// See SWIG documentation at http://www.swig.org/
+// Especially the SWIG and C++ details on templates
 
 %module nsctpl
 
+// Need double* methods to interact with nsctpl::primitive Scalar* members
+%include "cpointer.i"
+%pointer_functions(double, doublep);
+
+// Verbatim #includes passed into module compilation taken from nsctpl_fwd.hpp
 %{
 #define SWIG_FILE_WITH_INIT
 #include <cmath>
@@ -13,10 +18,12 @@
 #include "nsctpl.hpp"
 %}
 
+// Have SWIG parse nsctpl namespace forward declarations
 %include "nsctpl_fwd.hpp"
 
 namespace nsctpl {
 
+// Instantiate templated nsctpl::primitive members for doubles
 %extend primitive {
 
     %template(__call__) operator()<double,double,double,double>;
@@ -32,12 +39,15 @@ namespace nsctpl {
     %template(_zz     ) _zz       <double,double,double,double>;
 }
 
+// Expose template instantiation of nsctpl::primitive for doubles
 %template(primitive_double) primitive<double>;
 %pythoncode %{
     primitive = primitive_double
 %}
 
+// Instantiate templated nsctpl::manufactured_solution members for doubles
 %extend manufactured_solution {
+
     %template(grad_rho) grad_rho<double,double,double,double>;
     %template(grad_u  ) grad_u  <double,double,double,double>;
     %template(grad_v  ) grad_v  <double,double,double,double>;
@@ -60,6 +70,7 @@ namespace nsctpl {
     %template(Q_rhoe  ) Q_rhoe  <double,double,double,double>;
 }
 
+// Expose template instantiation of nsctpl::manufactured_solution for doubles
 %template(manufactured_solution_double) manufactured_solution<double>;
 %pythoncode %{
     manufactured_solution = manufactured_solution_double

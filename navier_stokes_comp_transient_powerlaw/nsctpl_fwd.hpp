@@ -87,17 +87,26 @@ public:
     const Scalar* Lz;           //!< Domain extent in z direction
 
     //! Construct an instance using \c name in the reported parameter names.
-    //! The domain sizes are referenced from some external Lx, Ly, and Lz. If
-    //! domain sizes are not provided, they \c must be set prior to invoking
-    //! any member methods. All parameters set to zero at construction time.
-    explicit primitive(const ::std::string &name = "",
-                       const Scalar& Lx = 0,
-                       const Scalar& Ly = 0,
-                       const Scalar& Lz = 0)
+    //! The domain sizes are referenced from some external Lx, Ly, and Lz.
+    //! All parameters set to zero at construction time.
+    explicit primitive(const ::std::string &name,
+                       const Scalar& Lx,
+                       const Scalar& Ly,
+                       const Scalar& Lz)
 #define NSCTPL_APPLY(pre,suf) pre##suf(0),
         : NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)  // has final comma
 #undef NSCTPL_APPLY
           name(name), Lx(&Lx), Ly(&Ly), Lz(&Lz)
+    {}
+
+    //! Construct an instance using \c name in the reported parameter names.
+    //! Domain sizes Lx, Ly, and Lz \b must be set prior to invoking any
+    //! member methods.  All parameters set to zero at construction time.
+    explicit primitive(const ::std::string &name = "")
+#define NSCTPL_APPLY(pre,suf) pre##suf(0),
+        : NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)  // has final comma
+#undef NSCTPL_APPLY
+          name(name), Lx(NULL), Ly(NULL), Lz(NULL)
     {}
 
 #define NSCTPL_APPLY_STRINGIFY(s) #s
