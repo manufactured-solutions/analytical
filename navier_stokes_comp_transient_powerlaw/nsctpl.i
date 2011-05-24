@@ -8,7 +8,7 @@
 %include "cpointer.i"
 %pointer_functions(double, doublep);
 
-// Verbatim #includes passed into module compilation taken from nsctpl_fwd.hpp
+// Verbatim #includes passed into C++ compilation taken from nsctpl_fwd.hpp
 %{
 #define SWIG_FILE_WITH_INIT
 #include <cmath>
@@ -18,6 +18,31 @@
 #include "nsctpl.hpp"
 %}
 
+// Verbatim class definition for within the Python module declaration
+%pythoncode %{
+
+    # See http://onlamp.com/lpt/a/3388 for an intro to Python metaclasses and
+    # http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+    from enthought.traits.api import HasTraits
+    from enthought.traits.has_traits import MetaHasTraits
+    class AddHasTraitsAncestor(MetaHasTraits):
+        def __new__(cls, name, bases, dct):
+            return MetaHasTraits.__new__(cls, name, cls.modify(bases), dct)
+
+        def __init__(cls, name, bases, dct):
+            super(AddHasTraitsAncestor, cls).__init__(name, cls.modify(bases), dct)
+
+        @staticmethod
+        def modify(bases):
+            if (bases == (object,)):
+                return (HasTraits,)
+            else:
+                new_bases = list(bases)
+                new_bases.insert(0, HasTraits)
+                return tuple(new_bases)
+
+%}
+
 // Have SWIG parse nsctpl namespace forward declarations
 %include "nsctpl_fwd.hpp"
 
@@ -25,6 +50,11 @@ namespace nsctpl {
 
 // Instantiate templated nsctpl::primitive members for doubles
 %extend primitive {
+
+    // Cause Python class to inherit from enthought.traits.api.HasTraits
+    %pythoncode %{
+        __metaclass__ = AddHasTraitsAncestor
+    %}
 
     %template(__call__) operator()<double,double,double,double>;
     %template(_t      ) _t        <double,double,double,double>;
@@ -47,6 +77,11 @@ namespace nsctpl {
 
 // Instantiate templated nsctpl::manufactured_solution members for doubles
 %extend manufactured_solution {
+
+    // Cause Python class to inherit from enthought.traits.api.HasTraits
+    %pythoncode %{
+        __metaclass__ = AddHasTraitsAncestor
+    %}
 
     %template(grad_rho) grad_rho<double,double,double,double>;
     %template(grad_u  ) grad_u  <double,double,double,double>;
