@@ -18,9 +18,10 @@
 #include "nsctpl.hpp"
 %}
 
-// Verbatim class definition for within the Python module declaration
+// Verbatim definitions for within the Python module declaration
 %pythoncode %{
 
+    # A metaclass that adds enthought.traits.api.HasTraits as an ancestor
     # See http://onlamp.com/lpt/a/3388 for an intro to Python metaclasses and
     # http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
     from enthought.traits.api import HasTraits
@@ -40,6 +41,24 @@
                 new_bases = list(bases)
                 new_bases.insert(0, HasTraits)
                 return tuple(new_bases)
+
+    # Logic that adds SWIG-based attributes as Property Traits
+    def add_swig_attributes_as_traits(clazz):
+        from enthought.traits.api import Property
+
+        attrset = set(clazz.__swig_getmethods__.iterkeys()).union(
+                      clazz.__swig_setmethods__.iterkeys())
+
+        for a in attrset:
+            fget = clazz.__swig_getmethods__.get(a)
+            fset = clazz.__swig_setmethods__.get(a)
+
+            # Wrap SWIG builtins in lambdas per
+            # https://svn.enthought.com/enthought/ticket/1139
+            if fget: fget = lambda inst      : fget(inst)
+            if fset: fset = lambda inst, val : fset(inst, val)
+
+            clazz.add_class_trait(a, Property(fget=fget, fset=fset))
 
 %}
 
