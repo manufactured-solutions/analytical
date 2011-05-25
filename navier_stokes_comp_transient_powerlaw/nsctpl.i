@@ -4,7 +4,8 @@
 
 %module nsctpl
 
-// Need double* methods to interact with nsctpl::primitive Scalar* members
+// Basic C++ type support
+%include "std_string.i"
 %include "cpointer.i"
 %pointer_functions(double, doublep);
 
