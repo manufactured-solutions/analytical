@@ -42,24 +42,6 @@
                 new_bases.insert(0, HasTraits)
                 return tuple(new_bases)
 
-    # Logic that adds SWIG-based attributes as Property Traits
-    def add_swig_attributes_as_traits(clazz):
-        from enthought.traits.api import Property
-
-        attrset = set(clazz.__swig_getmethods__.iterkeys()).union(
-                      clazz.__swig_setmethods__.iterkeys())
-
-        for a in attrset:
-            fget = clazz.__swig_getmethods__.get(a)
-            fset = clazz.__swig_setmethods__.get(a)
-
-            # Wrap SWIG builtins in lambdas per
-            # https://svn.enthought.com/enthought/ticket/1139
-            if fget: fget = lambda inst      : fget(inst)
-            if fset: fset = lambda inst, val : fset(inst, val)
-
-            clazz.add_class_trait(a, Property(fget=fget, fset=fset))
-
 %}
 
 // Have SWIG parse nsctpl namespace forward declarations
