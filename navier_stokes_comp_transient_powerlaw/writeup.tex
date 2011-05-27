@@ -139,10 +139,10 @@ computed directly from the chosen solutions.
 Though they increase the solution's complexity significantly, mixed partial
 spatial derivatives are included to improve code coverage.  Each term has an
 adjustable amplitude, frequency, and phase for all spatial dimensions.  Cosines
-were chosen so terms can be ``turned off'' by employing zero coefficients.  It
-is suggested that users gradually ``turn on'' the more complicated features of
-the solution (i.e. use non-zero coefficients) after ensuring simpler usage has
-been successful.
+were chosen so all terms can be ``turned off'' by employing zero coefficients.
+It is suggested that users gradually ``turn on'' the more complicated features
+of the solution (i.e. use non-zero coefficients) after ensuring simpler usage
+has been successful.
 
 The Python-based computer algebra system SymPy (\url{http://sympy.org})
 can both compute the derivatives and output C code for computing these
