@@ -154,53 +154,37 @@ for var in [m.u, m.v, m.w, m.T]:
 
 # Set wavenumbers for all solution variables spatial variations
 for var in [m.rho, m.u, m.v, m.w, m.T]:
-    var.b_x = 3
-    var.b_y = 1
-    var.b_z = 2
-    var.b_xy = var.b_xz = var.b_yz = 1
-    var.d_x = 1
-    var.d_y = 1
-    var.d_z = 1
-    var.d_xy = var.d_xz = var.d_yz = 1
-    var.f_x  = var.f_y  = var.f_z  = 1
-    var.f_xy = var.f_xz = var.f_yz = 1
+    var.b_y  = var.d_y  = var.f_y  = 1 # Omit _x, _z
+    var.b_xy = var.d_xy = var.f_xy = 3
+    var.b_xz = var.d_xz = var.f_xz = 1
+    var.b_yz = var.d_yz = var.f_yz = 2
 
 m.rho.a_0  = 1
-m.rho.a_x  = m.rho.a_0 / 11
-m.rho.a_y  = m.rho.a_0 / 23
-m.rho.a_z  = m.rho.a_0 / 31
-m.rho.a_xy = m.rho.a_0 / 61
-m.rho.a_xz = m.rho.a_0 / 67
-m.rho.a_yz = m.rho.a_0 / 71
+m.rho.a_y  = m.rho.a_0 /  7
+m.rho.a_xy = m.rho.a_0 / 11
+m.rho.a_xz = m.rho.a_0 / 23
+m.rho.a_yz = m.rho.a_0 / 31
 
 m.T.a_0   = m.T_r
-m.T.a_x   = m.T.a_0 / 13
-m.T.a_y   = m.T.a_0 / 29
-m.T.a_z   = m.T.a_0 / 37
-m.T.a_xy  = m.T.a_0 / 101
-m.T.a_xz  = m.T.a_0 / 103
-m.T.a_yz  = m.T.a_0 / 107
+m.T.a_y   = m.T.a_0 / 13
+m.T.a_xy  = m.T.a_0 / 17
+m.T.a_xz  = m.T.a_0 / 29
+m.T.a_yz  = m.T.a_0 / 37
 
 m.u.a_0  = 0
 m.u.a_y  = 1.25 * sqrt(m.gamma * m.R * m.T.a_0) # Supersonic
-m.u.a_x  = m.u.a_y / 503
-m.u.a_z  = m.u.a_y / 509
-m.u.a_xy = m.u.a_y / 983
-m.u.a_xz = m.u.a_y / 991
-m.u.a_yz = m.u.a_y / 997
+m.u.a_xy = m.u.a_y / 503
+m.u.a_xz = m.u.a_y / 509
+m.u.a_yz = m.u.a_y / 511
 
 m.v.a_0  = 0
-m.v.a_x  = 2
 m.v.a_y  = 3
-m.v.a_z  = 7
 m.v.a_xx = 2
 m.v.a_xy = 3
 m.v.a_yz = 5
 
 m.w.a_0  = 0
-m.w.a_x  = 2
 m.w.a_y  = 3
-m.w.a_z  = 7
 m.w.a_xx = 2
 m.w.a_xy = 3
 m.w.a_yz = 5
@@ -211,10 +195,11 @@ Ny = (119 / 1.5)
 Nz = (80  / 1.5)
 x, y, z = grid(Nx, Ny, Nz)
 
-
+# Plot a particular field updating the module-level numpy array 'd'
 def plotfield(ufunc):
-    mlab.clf()
     d = ufunc(x, y, z, t)
+    setattr(sys.modules[__name__], "d", d)
+    mlab.clf()
     f = mlab.contour3d(x, y, z, d, transparent = True)
 
 ## Plot up density field as a starting point
