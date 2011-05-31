@@ -142,67 +142,65 @@ m.Lx       = 4*pi
 m.Ly       = 2
 m.Lz       = 4*pi/3
 
-# Populate primitive solution parameters for an isothermal channel
+# Populate primitive solution parameters for an isothermal channel where Y is
+# the wall-normal direction.  Want u, v, w, and T constant at the y = {0, Ly}
+# walls Accomplish by using phase offset pi / 2 since cos(pi/2) = 0 and by
+# omitting all solution terms which cannot be made to vanish at walls.
 
-# Y is the wall-normal direction
-# Want u, v, w, and T constant at the y = {0, Ly} walls
-# Accomplish using phase offset pi / 2 since cos(pi/2) = 0
 for var in [m.u, m.v, m.w, m.T]:
-    for phase in ['c_x', 'c_xy', 'c_xz', 'c_y', 'c_yz', 'c_z',
-                         'e_xy', 'e_xz',        'e_yz',       ]:
+    for phase in ['c_xy', 'c_y', 'c_yz',
+                  'e_xy',        'e_yz', ]:
         setattr(var, phase, pi/2)
 
-# Set wavenumbers for all solution variables spatial variations
 for var in [m.rho, m.u, m.v, m.w, m.T]:
-    var.b_y  = var.d_y  = var.f_y  = 1 # Omit _x, _z
+    var.b_y  = var.d_y  = var.f_y  = 1
     var.b_xy = var.d_xy = var.f_xy = 3
-    var.b_xz = var.d_xz = var.f_xz = 1
     var.b_yz = var.d_yz = var.f_yz = 2
 
-m.rho.a_0  = 1
-m.rho.a_y  = m.rho.a_0 /  7
-m.rho.a_xy = m.rho.a_0 / 11
-m.rho.a_xz = m.rho.a_0 / 23
-m.rho.a_yz = m.rho.a_0 / 31
+m.rho.a_0  = 1.
+m.rho.a_y  = m.rho.a_0 /  7.
+m.rho.a_xy = m.rho.a_0 / 11.
+m.rho.a_yz = m.rho.a_0 / 31.
 
 m.T.a_0   = m.T_r
-m.T.a_y   = m.T.a_0 / 13
-m.T.a_xy  = m.T.a_0 / 17
-m.T.a_xz  = m.T.a_0 / 29
-m.T.a_yz  = m.T.a_0 / 37
+m.T.a_y   = m.T.a_0 / 13.
+m.T.a_xy  = m.T.a_0 / 17.
+m.T.a_yz  = m.T.a_0 / 37.
 
-m.u.a_0  = 0
-m.u.a_y  = 1.25 * sqrt(m.gamma * m.R * m.T.a_0) # Supersonic
-m.u.a_xy = m.u.a_y / 503
-m.u.a_xz = m.u.a_y / 509
-m.u.a_yz = m.u.a_y / 511
+m.u.a_0  = 0.
+m.u.a_y  = 53.
+m.u.a_xy = m.u.a_y / 37.
+m.u.a_yz = m.u.a_y / 41.
 
-m.v.a_0  = 0
-m.v.a_y  = 3
-m.v.a_xx = 2
-m.v.a_xy = 3
-m.v.a_yz = 5
+m.v.a_0  = 0.
+m.v.a_y  = 2.
+m.v.a_xy = 3.
+m.v.a_yz = 5.
 
-m.w.a_0  = 0
-m.w.a_y  = 3
-m.w.a_xx = 2
-m.w.a_xy = 3
-m.w.a_yz = 5
+m.w.a_0  = 0.
+m.w.a_y  = 7.
+m.w.a_xy = 11.
+m.w.a_yz = 13.
 
-# Compute a default grid based on a coarsening of Coleman et al JFM 1995
-Nx = (144 / 1.5)
-Ny = (119 / 1.5)
-Nz = (80  / 1.5)
+# Compute a default grid based on Coleman et al JFM 1995
+Nx = 144
+Ny = 119
+Nz = 80
 x, y, z = grid(Nx, Ny, Nz)
+t = 0
 
-# Plot a particular field updating the module-level numpy array 'd'
+# Plot a particular field's isocontours
 def plotfield(ufunc):
     d = ufunc(x, y, z, t)
-    setattr(sys.modules[__name__], "d", d)
+    print "field: min, max, mean, std = %g, %g, %g, %g" % (
+            d.min(), d.max(), d.mean(), d.std() )
+    print "lwall: min, max, mean, std = %g, %g, %g, %g" % (
+            d[:,0,:].min(), d[:,0,:].max(), d[:,0,:].mean(), d[:,0,:].std() )
+    print "uwall: min, max, mean, std = %g, %g, %g, %g" % (
+            d[:,-1,:].min(), d[:,-1,:].max(), d[:,-1,:].mean(), d[:,-1,:].std() )
     mlab.clf()
     f = mlab.contour3d(x, y, z, d, transparent = True)
+    return (d, f)
 
-## Plot up density field as a starting point
-t = 0
-plotfield(rho)
-
+## Now, for example, plot up density field using
+# d, f = plotfield(rho)
