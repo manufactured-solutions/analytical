@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 """
-SYNOPSIS
-
-    vizcoeff.py [-h,--help]
-
 DESCRIPTION
 
-    This script is provides helpful definitions for interactively
-    visualizing manufactured quantities within a Mayavi
-    (http://code.enthought.com/projects/mayavi/) session.
+    This script is provides helpful definitions for interactively visualizing
+    manufactured quantities within a Mayavi
+    (http://code.enthought.com/projects/mayavi/) or IPython session.  It is
+    /not/ a standalone program and should be %run from within an 'python
+    -wthread -pylab' session.
 
 VERSION
 
@@ -20,6 +18,7 @@ import sys, os, traceback, optparse, string, textwrap, numpy
 import nsctpl
 from math import pi, sqrt
 from enthought.mayavi import mlab
+from matplotlib import pyplot
 
 # Create a manufactured solution to which we'll bind nearly everything
 m = nsctpl.manufactured_solution()
@@ -108,18 +107,24 @@ ufuncs_to_define = [
     ("Q_rhoe"   , m.Q_rhoe  , 4, 1)
 ]
 
-def ufunc_generator(name, base):
+# Extra mucking around necessary for returned ndarray to have float type
+def ufunc_generator(name, base, nin, nout):
+    ufunc = numpy.frompyfunc(base, nin, nout)
     def f(*args):
-        b = numpy.broadcast(*args)
+        b   = numpy.broadcast(*args)
         out = numpy.empty(b.shape, dtype=numpy.float)
-        out.flat = [base(*(map(float,arg))) for arg in b]
+        args = list(args)
+        args.append(out)
+        args = tuple(args)
+        ufunc(*args)
         return out
     return f
 
 # Programmatically set a module variable for each generated ufunc
 # See http://stackoverflow.com/questions/1429814
 for (name, base, nin, nout) in ufuncs_to_define:
-    setattr(sys.modules[__name__], name, ufunc_generator(name, base))
+    setattr(sys.modules[__name__], name, ufunc_generator(name, base, nin, nout))
+
 
 def grid(Nx, Ny, Nz):
     """Create a numpy.mgrid using the solution domain"""
@@ -128,7 +133,6 @@ def grid(Nx, Ny, Nz):
               0 : m.Ly   : Ny * 1j,
         -m.Lz/2 : m.Lz/2 : Nz * 1j
     ]
-
 
 # Establish scenario parameters
 m.gamma    = 1.4
@@ -142,20 +146,31 @@ m.Lx       = 4*pi
 m.Ly       = 2
 m.Lz       = 4*pi/3
 
+
+# The duration of the simulation used for verification
+# Not strictly a parameter but useful to track
+tfinal     = 1. / 10.
+
 # Populate primitive solution parameters for an isothermal channel where Y is
 # the wall-normal direction.  Want u, v, w, and T constant at the y = {0, Ly}
 # walls Accomplish by using phase offset pi / 2 since cos(pi/2) = 0 and by
-# omitting all solution terms which cannot be made to vanish at walls.
+# omitting all solution terms which cannot be made to vanish at walls.  Employ
+# time phase shifts towards pi / 4 to have appreciable time derivatives during
+# the simulation window [0, tfinal].
 
 for var in [m.u, m.v, m.w, m.T]:
-    for phase in ['c_xy', 'c_y', 'c_yz',
-                  'e_xy',        'e_yz', ]:
-        setattr(var, phase, pi/2)
+    var.c_xy = var.c_y = var.c_yz = pi/2
+    var.e_xy =           var.e_yz = pi/2
 
 for var in [m.rho, m.u, m.v, m.w, m.T]:
     var.b_y  = var.d_y  = var.f_y  = 1
     var.b_xy = var.d_xy = var.f_xy = 3
     var.b_yz = var.d_yz = var.f_yz = 2
+
+for var in [m.rho, m.u, m.v, m.w, m.T]:
+    var.g_y  = pi / 4 - tfinal / 2
+    var.g_xy = pi / 4
+    var.g_yz = pi / 4 + tfinal / 2
 
 m.rho.a_0  = 1.
 m.rho.a_y  = m.rho.a_0 /  7.
@@ -182,10 +197,10 @@ m.w.a_y  = 7.
 m.w.a_xy = 11.
 m.w.a_yz = 13.
 
-# Compute a default grid based on Coleman et al JFM 1995
-Nx = 144
-Ny = 119
-Nz = 80
+# Compute a default grid based on a coarsened Coleman et al JFM 1995
+Nx = int(144 / 2)
+Ny = int(119 / 2)
+Nz = int(80  / 2)
 x, y, z = grid(Nx, Ny, Nz)
 t = 0
 
@@ -201,6 +216,29 @@ def plotfield(ufunc):
     mlab.clf()
     f = mlab.contour3d(x, y, z, d, transparent = True)
     return (d, f)
+
+def fieldmin(ufunc, Nt = 100):
+    times = numpy.linspace(0, tfinal, Nt)
+    xlims = (times.min(), times.max())
+    mins  = numpy.zeros_like(times)
+
+    fig = pyplot.figure(num=None)
+    pyplot.clf()
+    for i in range(len(times)):
+        d = ufunc(x, y, z, times[i])
+        mins[i]  = d.min()
+
+        if i < 2:
+            continue
+
+        pyplot.figure(fig.number)
+        pyplot.hold(True);
+        pyplot.plot(times[0:i-1], mins[0:i-1])
+        pyplot.xlim(xlims)
+        pyplot.draw()
+
+    return (times, mins)
+
 
 ## Now, for example, plot up density field using
 # d, f = plotfield(rho)
