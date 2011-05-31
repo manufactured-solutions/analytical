@@ -19,6 +19,22 @@
 #include "nsctpl.hpp"
 %}
 
+// C++ code underneath dump() extension methods
+%{
+#include <iostream>
+#include <iomanip>
+
+static void print_nonzero_values(const std::string &name, double value) {
+    if (value != 0) {
+        std::cout << name
+                  << " = "
+                  << std::setprecision(std::numeric_limits<double>::digits10)
+                  << value
+                  << std::endl;
+    }
+}
+%}
+
 // Have SWIG parse nsctpl namespace forward declarations
 %include "nsctpl_fwd.hpp"
 
@@ -38,6 +54,10 @@ namespace nsctpl {
     %template(_yz     ) _yz       <double,double,double,double>;
     %template(_z      ) _z        <double,double,double,double>;
     %template(_zz     ) _zz       <double,double,double,double>;
+
+    void dump() {
+        $self->foreach_parameter(print_nonzero_values);
+    }
 }
 
 // Expose template instantiation of nsctpl::primitive for doubles
@@ -69,6 +89,10 @@ namespace nsctpl {
     %template(Q_rhov  ) Q_rhov  <double,double,double,double>;
     %template(Q_rhow  ) Q_rhow  <double,double,double,double>;
     %template(Q_rhoe  ) Q_rhoe  <double,double,double,double>;
+
+    void dump() {
+        $self->foreach_parameter(print_nonzero_values);
+    }
 }
 
 // Expose template instantiation of nsctpl::manufactured_solution for doubles
