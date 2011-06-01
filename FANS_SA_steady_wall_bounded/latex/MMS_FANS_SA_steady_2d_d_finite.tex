@@ -3,6 +3,7 @@
 \usepackage{amssymb, amsmath, amsfonts, amsthm, wasysym} % math
 \usepackage{nicefrac}
 \usepackage{geometry}
+\usepackage{epsfig, subfigure} % graphics
 %\usepackage[mathcal]{euscript}
 \geometry{ top=2.5cm, bottom=2cm, left=2cm, right=2cm}
 \usepackage[authoryear]{natbib}
@@ -87,7 +88,7 @@ random variables with associated probability density functions,
 allowing the use of statistical techniques in the description and
 analysis of the flow. Or, in other words, the full influence of the turbulent fluctuations on the mean flow must be modeled.
 
-For flows with significant density variations it is possible to  capture the turbulent effects using the Favre averaged Navier-Stokes equations (FANS), together with baseline compressible Spalart--Allmaras (SA) turbulent model~\citep{Oliver2010}.
+For flows with significant density variations it is possible to  capture the turbulent effects using the Favre averaged Navier-Stokes equations (FANS), together with baseline compressible Spalart--Allmaras (SA) turbulent model~\citep{Oliver2010,Spalart_1994_One_Eqn_Turb_Model}.
 
 Mass conservation:
 \begin{equation}\label{eq:ns01}
@@ -260,6 +261,7 @@ Source terms $Q_{\brho}$, $Q_{\tu}$, $Q_{\tv}$, $Q_{\tE}$ and $Q_{\sa}$ are pres
 \end{split}
 \end{equation}
 which simply are the manufactured solutions, and the derivatives: 
+
 \begin{equation}\label{eq:aux_2d_02}
 \begin{split}
 %
@@ -284,7 +286,9 @@ which simply are the manufactured solutions, and the derivatives:
 & +\dfrac{r_T \, (\gamma-1) \, M_{\infty}^2 \, T_{\infty}    }{A \, u_{\infty} \,} \sin\left(\dfrac{A u_{eq}}{u_{\infty}}\right) \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\diff{^2u_{eq}}{x^2}, \\  
 %
 \diff{^2T}{y^2}  &= \dfrac{r_T \, (\gamma-1) \, M_{\infty}^2 \, T_{\infty} u_{\tau}^2 (y^{+})^2 }{\, u_{\infty}^2 \, y^2} \left[\cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2  - \sin\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2 \right]\left(\Dueqplusyplus\right)^2+ \\ 
-&+\dfrac{r_T \, (\gamma-1) \, M_{\infty}^2 \, T_{\infty} }{A \, u_{\infty} \,}	\sin\left(\dfrac{A u_{eq}}{u_{\infty}}\right) \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right) \diff{^2u_{eq}}{y^2}.
+&+\dfrac{r_T \, (\gamma-1) \, M_{\infty}^2 \, T_{\infty} }{A \, u_{\infty} \,}	\sin\left(\dfrac{A u_{eq}}{u_{\infty}}\right) \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right) \diff{^2u_{eq}}{y^2}, \\
+%
+ \dfrac{d u_{eq}^+}{d y^+} &= \dfrac{1}{1 + \kappa  y^{+}} + C_1  \left( \dfrac{\exp(\frac{-y^{+}}{\eta_1})}{\eta_1} - \dfrac{\exp(- b\,y^{+} )}{\eta_1} + \dfrac{ b  \, y^{+}  \exp(- b\, y^{+} )}{\eta_1}\right).
 \end{split}
 \end{equation}
 
@@ -650,12 +654,11 @@ double SourceQ_nu (double x, double y)
 
 %---------------------------------------------------------------------------------------------------------
 \bibliographystyle{chicago} 
-\bibliography{../../MMS_bib}
-
+\bibliography{MMS_bib}
 
 \appendix
-\input{Manuf_Solutions_Oliver}
-\input{list_of_variables}
+\input{Manuf_Solutions_and_Parameters_Oliver}
+%\input{list_of_variables}
 
 
 
