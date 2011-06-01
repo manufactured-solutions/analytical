@@ -10,7 +10,6 @@
 \usepackage{multicol}
 \usepackage{siunitx}
 \usepackage{verbatim}
-\usepackage{varioref}
 
 \newcommand{\tensor}[1]{\accentset{\leftrightarrow}{#1}}
 
@@ -186,7 +185,7 @@ In both geometries the streamwise, wall-normal, and spanwise directions are
 labeled $x$, $y$, and $z$ respectively.  Both $x$ and $z$ are periodic while
 $y\in\left\{0,L_y\right\}$ is not.  Transient tests should likely take place
 within the duration $0\leq{}t\leq{}1/10$ seconds as the time phase offsets
-(e.g. $g_{Tyz}$) have been chosen for appreciable transients to occur within
+(e.g. $g_{Tyz}$) have been chosen for appreciable transients to occur
 throughout this time window.
 
 For isothermal channel flow code verification we recommend testing using
@@ -197,7 +196,7 @@ For isothermal channel flow code verification we recommend testing using
   b_{w{}y}    =
   b_{T{}y}    = \frac{1}{2}
 \end{equation*}
-and the coefficients given in Table~\vref{tbl:auxcoeff}.  With these choices
+and the coefficients given in Table~\ref{tbl:auxcoeff}.  With these choices
 the manufactured solution satisfies isothermal, no-slip conditions at $y = 0,
 L_y$.  For isothermal flat plate code verification we recommend testing using
 \begin{equation*}
@@ -207,7 +206,7 @@ L_y$.  For isothermal flat plate code verification we recommend testing using
   b_{w{}y}    =
   b_{T{}y}    = \frac{1}{4}
 \end{equation*}
-and the coefficients given in Table~\vref{tbl:auxcoeff}.  With these choices
+and the coefficients given in Table~\ref{tbl:auxcoeff}.  With these choices
 the manufactured solution satisfies an isothermal, no-slip condition at $y =
 0$.
 

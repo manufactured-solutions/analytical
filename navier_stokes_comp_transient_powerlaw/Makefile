@@ -2,7 +2,7 @@ MAKEFLAGS := -k
 
 all: writeup.pdf check module
 
-writeup.pdf: writeup.tex soln.py forcing.py nsctpl_fwd.hpp nsctpl.hpp
+writeup.pdf: writeup.tex soln.py forcing.py nsctpl_fwd.hpp nsctpl.hpp README
 	md5sum soln.py forcing.py nsctpl_fwd.hpp nsctpl.hpp > CHECKSUMS
 	pdflatex writeup
 	pdflatex writeup
