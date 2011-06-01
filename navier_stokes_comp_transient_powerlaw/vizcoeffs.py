@@ -153,17 +153,18 @@ tfinal     = 1. / 10.
 
 # Populate primitive solution parameters for an isothermal channel where Y is
 # the wall-normal direction.  Want u, v, w, and T constant at the y = {0, Ly}
-# walls Accomplish by using phase offset pi / 2 since cos(pi/2) = 0 and by
-# omitting all solution terms which cannot be made to vanish at walls.  Employ
-# time phase shifts towards pi / 4 to have appreciable time derivatives during
-# the simulation window [0, tfinal].
+# walls.  Accomplish by using phase offset (- pi / 2) and by omitting all
+# solution terms which cannot be made to vanish at walls.  Employ time phase
+# shifts towards pi / 4 to have appreciable time derivatives during the
+# simulation window [0, tfinal].
 
 for var in [m.u, m.v, m.w, m.T]:
-    var.c_xy = var.c_y = var.c_yz = pi/2
-    var.e_xy =           var.e_yz = pi/2
+    var.c_xy = var.c_y = var.c_yz = -pi/2
+    var.e_xy =           var.e_yz = -pi/2
 
 for var in [m.rho, m.u, m.v, m.w, m.T]:
-    var.b_y  = var.d_y  = var.f_y  = 1
+    var.b_y  = 1. / 2.
+    var.f_y  = 1
     var.b_xy = var.d_xy = var.f_xy = 3
     var.b_yz = var.d_yz = var.f_yz = 2
 
