@@ -1,0 +1,142 @@
+\documentclass{article}
+\title{\bf{Incompressible Turbulence}}
+\author{Nicholas Malaya} \date{}
+
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%        model
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Formulation}
+
+
+Starting with the Navier-Stokes equations:
+\begin{equation}
+  \frac{\partial u_i}{\partial t} = -\frac{\partial P}{\partial x_i} + H_i + \frac{1}{Re}\nabla^2 u_i
+\end{equation}
+With H being the convective terms.
+
+In addition, we are dealing with incompressible turbulence,
+\begin{equation}
+  \frac{\partial u_i}{\partial x_i} = 0
+\end{equation}
+We Define: 
+\begin{equation}
+  \nabla^2 v(y) = \phi(y)
+\end{equation}
+and, 
+\begin{equation}
+  \nabla \times v(y) = g(y)
+\end{equation}
+We can now reduce the NS equations to:
+
+\begin{equation}
+  \frac{\partial }{\partial t} \nabla^2 v = h_v + \frac{1}{Re}\nabla^4 v
+\end{equation}
+and,
+\begin{equation}
+  \frac{\partial}{\partial t} g = h_g + \frac{1}{Re}\nabla^2 g
+\end{equation}
+Where we have defined hv as, 
+\begin{equation}
+  h_v=-\frac{\partial}{\partial y}(\frac{\partial H_1}{\partial x} + \frac{\partial H_3}{\partial z}) + (\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial z^2})H_2
+\end{equation}
+and hg is,
+\begin{equation}
+  h_g= \frac{\partial H_1}{\partial z} - \frac{\partial H_3}{\partial x}
+\end{equation}
+Notice that the derivatives with respect to Z and X are trivial to compute, since those velocities are in wavespace. However, hv requires a derivative with respect to y, which is more complex. 
+(Typically Chebyshev polynomials, compact finite difference, or B-splines are used to evaluate this derivative)
+
+\newpage
+\section{Numerical Procedure}
+
+This section is based around a third-order low storage Runge-Kutta (RK3) method (see ''Spalart Moser Rogers, J. Computational Physics, (1991) vol. 96 pp. 297-324'' )
+
+At this time we discretize our equations for time advancement. RK3 treats the nonlinear terms explicitly, and the viscous terms implicitly.
+
+The RK3 substeps go as,
+\begin{equation}
+  \begin{array}{l l}
+    u'=u^0   + \Delta t[L(\alpha_1 u^0 + \beta_1 u') + \gamma_1 N^0] \\
+    u''=u'   + \Delta t[L(\alpha_2 u' + \beta_2 u'') + \gamma_2 N^1 + \xi_1 N^0] \\
+    u'''=u'' + \Delta t[L(\alpha_3 u'' + \beta_3 u''') + \gamma_3 N^2 + \xi_2 N^1] \\ \end{array}
+\end{equation}
+Or, in general, 
+\begin{equation}
+  \frac{u^{n+1} - u^{n}}{\Delta t} = L(\alpha_{n+1} u^n + \beta_{n+1} u^{n+1}) + \gamma_{n+1} N^n + \xi_{n} N^{n-1}
+\end{equation}
+Where the variables alpha, beta, gamma and xi are,
+
+%% \begin{equation} 
+%%   \begin{tabular}{| c | c | c | c |}
+%%     \alpha_1 =  \frac{29}{96} & \beta_1 =  \frac{37}{160} & \gamma_1 =  \frac{8}{15} & \xi_1 = 0 \\
+%%     \alpha_2 = -\frac{3}{40}  & \beta_2 =  \frac{5}{24}   & \gamma_2 =  \frac{5}{12} & \xi_2 = -\frac{17}{60} \\
+%%     \alpha_3 =  \frac{1}{6}   & \beta_3 =  \frac{1}{6}    & \gamma_3 =  \frac{3}{4}  & \xi_3 = -\frac{5}{12}  \\
+%%   \end{tabular}
+%% \end{equation}
+
+Notice that,
+\begin{equation} 
+  \partial_t g = h_g + \frac{1}{Re}\nabla^2 g
+\end{equation}
+is, (for the first substep)
+\begin{equation} 
+  \frac{u^1-u^0}{\Delta t} =  L(\alpha_1 u^0 + \beta_1 u^1) + \gamma_1 N^0
+\end{equation}
+We can rearrange this as,
+\begin{equation} 
+  u^1= u^0 + \Delta t[L( \alpha_1 u^0 + \frac{\beta_1}{Re} \nabla^2 u^1) + \gamma_1 N^0]
+\end{equation}
+Or,
+\begin{equation} 
+  (1 - \frac{\beta_1 \Delta t}{Re} \nabla^2) u^1= u^0 + \Delta t[ \alpha_1 L(u^0) + \gamma_1 N^0]
+\end{equation}
+Multiply both sides by the negative Reynolds number divided by Beta times the timestep,
+
+\begin{eqnarray} 
+    ((-1)(\frac{Re}{\beta_1 \Delta t}  - \nabla^2) u^1= - \frac{Re}{\beta_1 \Delta t} (u^0 + \Delta t[ \alpha_1 L(u^0) + \gamma_1 N^0]) \\
+    \nabla^2 = \partial_{yy} - k_x^2 - k_y^2 \\
+    Rk_i = \frac{Re}{\beta_i \Delta t}
+\end{eqnarray}
+
+Then,
+\begin{equation}   
+  (\partial_{yy} - Rk_1 - k_x^2 - k_y^2) u^1= - Rk_1 (u^0 + \Delta t [ \alpha_1 \nabla^2 u^0 + \gamma_1 h_g^0]) \\
+\end{equation}
+
+Generalized for the nth substep, this becomes,
+\begin{equation} 
+  (\partial_{yy} - Rk_{n+1} - k_x^2 - k_y^2) u^{n+1} = - Rk_{n+1} (u^n + \Delta t[ \alpha_{n+1} (\partial_{yy} - k_x^2 - k_z^2) u^{n} + \gamma_{n+1} h_g^{n} + \xi_{n} h_g^{n-1}]) \\
+\end{equation}
+
+\newpage
+\section{Unit tests}
+
+We test our implementation of this method by the ''method of manufactured solution''. This is useful for any problem that does 
+not have obvious (or possibly, does not possess) analytical solutions. To use this method, we choose a solution that is 
+capable of satisfying the equations, find the required inputs, and then use this as inputs for the numerical code. 
+
+We choose a suitable polynomial as our 'manufactured solution' that satisfies the boundary conditions:
+\begin{equation} 
+  v(y) = P(y)(1-y)^2(1+y)^2
+\end{equation}
+
+\begin{equation} 
+  P(y) = y^5 + y^4 + y^3 + y^2 + y \\
+\end{equation}
+
+%Where the derivatives are equal to, 
+%\begin{equation} 
+%  \begin{array}
+%    av'(y) = (1 - y)^2 (1 + y)^2 (1+2y+3y^2+4y^3+5y^4) \\
+%    + 2(1-y)^2(1+y)(y+y^2+y^3+y^4+y^5) \\
+%    -2(1-y)(1+y)^2(y+y^2+y^3+y^4+y^5) \\
+%  \end{array}
+%\end{equation}
+
+\end{document}
