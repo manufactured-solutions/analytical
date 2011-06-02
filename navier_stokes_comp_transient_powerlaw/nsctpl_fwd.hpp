@@ -217,7 +217,7 @@ public:
     Scalar beta;             //!< Viscosity power law exponent
     Scalar mu_r;             //!< Reference dynamic viscosity
     Scalar T_r;              //!< Reference temperature
-    Scalar k_r;              //!< Reference thermal conductivity
+    Scalar kappa_r;          //!< Reference thermal conductivity
     Scalar lambda_r;         //!< Reference bulk viscosity
     //!@}
 
@@ -239,7 +239,7 @@ public:
 
     //! Default constructor
     manufactured_solution()
-        : gamma(0), R(0), beta(0), mu_r(0), T_r(0), k_r(0), lambda_r(0),
+        : gamma(0), R(0), beta(0), mu_r(0), T_r(0), kappa_r(0), lambda_r(0),
           rho("rho", Lx, Ly, Lz),
           u  ("u"  , Lx, Ly, Lz),
           v  ("v"  , Lx, Ly, Lz),
@@ -257,7 +257,7 @@ public:
         f(::std::string("beta"),     beta    );
         f(::std::string("mu_r"),     mu_r    );
         f(::std::string("T_r"),      T_r     );
-        f(::std::string("k_r"),      k_r     );
+        f(::std::string("kappa_r"),  kappa_r );
         f(::std::string("lambda_r"), lambda_r);
         rho.foreach_parameter(f);
         u.foreach_parameter(f);
@@ -277,7 +277,7 @@ public:
         f(::std::string("beta"),     beta    );
         f(::std::string("mu_r"),     mu_r    );
         f(::std::string("T_r"),      T_r     );
-        f(::std::string("k_r"),      k_r     );
+        f(::std::string("kappa_r"),  kappa_r );
         f(::std::string("lambda_r"), lambda_r);
         rho.foreach_parameter(f);
         u.foreach_parameter(f);

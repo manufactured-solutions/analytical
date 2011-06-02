@@ -727,9 +727,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhoe(
     const Scalar lambda_x = lambda_r / mu_r * mu_x;
     const Scalar lambda_y = lambda_r / mu_r * mu_y;
     const Scalar lambda_z = lambda_r / mu_r * mu_z;
-    const Scalar qx_x     = - k_r / mu_r * (mu_x * T_x + mu * T_xx);
-    const Scalar qy_y     = - k_r / mu_r * (mu_y * T_y + mu * T_yy);
-    const Scalar qz_z     = - k_r / mu_r * (mu_z * T_z + mu * T_zz);
+    const Scalar qx_x     = - kappa_r / mu_r * (mu_x * T_x + mu * T_xx);
+    const Scalar qy_y     = - kappa_r / mu_r * (mu_y * T_y + mu * T_yy);
+    const Scalar qz_z     = - kappa_r / mu_r * (mu_z * T_z + mu * T_zz);
 
     /* Computations stemming from the compressible, Newtonian fluid model */
     const Scalar rhoe_t  = rho_t * e + rho * e_t;

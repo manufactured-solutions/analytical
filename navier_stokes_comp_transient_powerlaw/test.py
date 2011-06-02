@@ -17,7 +17,7 @@ params = {
     'beta'     : Real(5, PREC),
     'mu_r'     : Real(7, PREC),
     'T_r'      : Real(11, PREC),
-    'k_r'      : Real(13, PREC),
+    'kappa_r'  : Real(13, PREC),
     'lambda_r' : Real(17, PREC),
     'a_rho0'   : Real(19, PREC),
     'a_rhox'   : Real(23, PREC),

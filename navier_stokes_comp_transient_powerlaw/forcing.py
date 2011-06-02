@@ -5,7 +5,7 @@
 #   w,   w_t,   w_x,   w_xx,   w_xy,   w_xz,   w_y,   w_yy,   w_yz,   w_z,   w_zz
 #   T,   T_t,   T_x,   T_xx,   T_xy,   T_xz,   T_y,   T_yy,   T_yz,   T_z,   T_zz
 # and the coefficients
-#   gamma, R, beta, mu_r, T_r, k_r, lambda_r
+#   gamma, R, beta, mu_r, T_r, kappa_r, lambda_r
 # compute the source terms
 #   Q_rho, Q_rhou, Q_rhov, Q_rhow, Q_rhoe
 # necessary to force the solution rho, u, v, w, and T.
@@ -28,12 +28,12 @@ lambda_  = lambda_r / mu_r * mu   # "lambda" is a Python keyword
 lambda_x = lambda_r / mu_r * mu_x
 lambda_y = lambda_r / mu_r * mu_y
 lambda_z = lambda_r / mu_r * mu_z
-qx       = - k_r / mu_r *  mu   * T_x
-qy       = - k_r / mu_r *  mu   * T_y
-qz       = - k_r / mu_r *  mu   * T_z
-qx_x     = - k_r / mu_r * (mu_x * T_x + mu * T_xx)
-qy_y     = - k_r / mu_r * (mu_y * T_y + mu * T_yy)
-qz_z     = - k_r / mu_r * (mu_z * T_z + mu * T_zz)
+qx       = - kappa_r / mu_r *  mu   * T_x
+qy       = - kappa_r / mu_r *  mu   * T_y
+qz       = - kappa_r / mu_r *  mu   * T_z
+qx_x     = - kappa_r / mu_r * (mu_x * T_x + mu * T_xx)
+qy_y     = - kappa_r / mu_r * (mu_y * T_y + mu * T_yy)
+qz_z     = - kappa_r / mu_r * (mu_z * T_z + mu * T_zz)
 
 # Computations stemming from the compressible, Newtonian fluid model
 rhou    = rho * u
