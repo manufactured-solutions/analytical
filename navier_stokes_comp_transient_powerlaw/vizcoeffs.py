@@ -142,6 +142,7 @@ Ny = int(119 / 2)
 Nz = int(80  / 2)
 x, y, z = grid(Nx, Ny, Nz)
 t = 0
+tfinal = 1 / 10
 
 # Plot a particular field's isocontours
 def plotfield(ufunc):
