@@ -102,7 +102,9 @@ namespace nsctpl {
 %}
 
 // Instantiate utility templates
-%template(zero) zero<primitive<double> >;
-%template(zero) zero<manufactured_solution<double> >;
+%template(zero)                  zero<primitive<double> >;
+%template(zero)                  zero<manufactured_solution<double> >;
+%template(isothermal_channel)    isothermal_channel<manufactured_solution<double> >;
+%template(isothermal_flat_plate) isothermal_flat_plate<manufactured_solution<double> >;
 
 }

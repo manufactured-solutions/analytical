@@ -367,9 +367,17 @@ public:
 }; // end class
 
 
+// Utilities take generic templated types to allow reuse by
+// any variants satisfying the necessary APIs.
+
 /** Zero all of an instance's parameters using foreach_parameter */
 template <class T> void zero(T& t);
 
+/** Set recommended isothermal channel problem parameters per write up */
+template <class T> void isothermal_channel(T& t);
+
+/** Set recommended isothermal channel problem parameters per write up */
+template <class T> void isothermal_flat_plate(T& t);
 
 } // end namespace nsctpl
 

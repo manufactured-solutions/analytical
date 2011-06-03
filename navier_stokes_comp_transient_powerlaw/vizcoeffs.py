@@ -23,6 +23,9 @@ from matplotlib import pyplot
 # Create a manufactured solution to which we'll bind nearly everything
 m = nsctpl.manufactured_solution()
 
+# Establish isothermal channel scenario parameters
+nsctpl.isothermal_channel(m)
+
 # Used to programmatically generate ufuncs of the appropriate types
 ufuncs_to_define = [
     ("rho"    , m.rho.__call__, 4, 1),
@@ -125,7 +128,6 @@ def ufunc_generator(name, base, nin, nout):
 for (name, base, nin, nout) in ufuncs_to_define:
     setattr(sys.modules[__name__], name, ufunc_generator(name, base, nin, nout))
 
-
 def grid(Nx, Ny, Nz):
     """Create a numpy.mgrid using the solution domain"""
     return numpy.mgrid[
@@ -133,70 +135,6 @@ def grid(Nx, Ny, Nz):
               0 : m.Ly   : Ny * 1j,
         -m.Lz/2 : m.Lz/2 : Nz * 1j
     ]
-
-# Establish scenario parameters
-m.gamma    = 1.4
-m.R        = 287
-m.beta     = 2./3.
-m.mu_r     = 185.2e-7
-m.T_r      = 300
-m.kappa_r  = m.gamma*m.R*m.mu_r/(m.gamma - 1)/0.70
-m.lambda_r = - 2./3. *m.mu_r
-m.Lx       = 4*pi
-m.Ly       = 2
-m.Lz       = 4*pi/3
-
-
-# The duration of the simulation used for verification
-# Not strictly a parameter but useful to track
-tfinal     = 1. / 10.
-
-# Populate primitive solution parameters for an isothermal channel where Y is
-# the wall-normal direction.  Want u, v, w, and T constant at the y = {0, Ly}
-# walls.  Accomplish by using phase offset (- pi / 2) and by omitting all
-# solution terms which cannot be made to vanish at walls.  Employ time phase
-# shifts towards pi / 4 to have appreciable time derivatives during the
-# simulation window [0, tfinal].
-
-for var in [m.u, m.v, m.w, m.T]:
-    var.c_xy = var.c_y = var.c_yz = -pi/2
-    var.e_xy =           var.e_yz = -pi/2
-
-for var in [m.rho, m.u, m.v, m.w, m.T]:
-    var.b_y  = 1. / 2.
-    var.f_y  = 1
-    var.b_xy = var.d_xy = var.f_xy = 3
-    var.b_yz = var.d_yz = var.f_yz = 2
-
-for var in [m.rho, m.u, m.v, m.w, m.T]:
-    var.g_y  = pi / 4 - tfinal / 2
-    var.g_xy = pi / 4
-    var.g_yz = pi / 4 + tfinal / 2
-
-m.rho.a_0  = 1.
-m.rho.a_y  = m.rho.a_0 /  7.
-m.rho.a_xy = m.rho.a_0 / 11.
-m.rho.a_yz = m.rho.a_0 / 31.
-
-m.T.a_0   = m.T_r
-m.T.a_y   = m.T.a_0 / 13.
-m.T.a_xy  = m.T.a_0 / 17.
-m.T.a_yz  = m.T.a_0 / 37.
-
-m.u.a_0  = 0.
-m.u.a_y  = 53.
-m.u.a_xy = m.u.a_y / 37.
-m.u.a_yz = m.u.a_y / 41.
-
-m.v.a_0  = 0.
-m.v.a_y  = 2.
-m.v.a_xy = 3.
-m.v.a_yz = 5.
-
-m.w.a_0  = 0.
-m.w.a_y  = 7.
-m.w.a_xy = 11.
-m.w.a_yz = 13.
 
 # Compute a default grid based on a coarsened Coleman et al JFM 1995
 Nx = int(144 / 2)
@@ -240,6 +178,7 @@ def fieldmin(ufunc, Nt = 100):
 
     return (times, mins)
 
-
-## Now, for example, plot up density field using
+## Now, for example, one can plot up density contours using
 # d, f = plotfield(rho)
+## Or, for example, look at how minimum density changes with time using
+# times, mins = fieldmin(rho)

@@ -800,17 +800,152 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhoe(
 
 namespace { // anonymous
 
-template <typename Scalar>
-void zero_helper(const std::string&, Scalar& value) {
+template <typename Scalar> void zero_helper(const std::string&, Scalar& value)
+{
     value = 0;
 }
 
 }
 
-template <class T>
-void zero(T& t) {
+template <class T> void zero(T& t)
+{
     void (*z)(const std::string&, typename T::scalar_type&) = &zero_helper;
     t.foreach_parameter(z);
+}
+
+// ---------------------------------------------------------------------------
+// Utilities: isothermal channel recommended coefficients
+// ---------------------------------------------------------------------------
+
+template <class T> void isothermal_channel(T& t)
+{
+    typedef typename T::scalar_type scalar;
+    const scalar pi = 4 * atan(scalar(1));
+
+    t.gamma    = scalar(14)/scalar(10);
+    t.R        = scalar(287);
+    t.beta     = scalar(2)/scalar(3);
+    t.mu_r     = scalar(1852)/scalar(100000000);
+    t.T_r      = scalar(300);
+    t.kappa_r  = (t.gamma*t.R*t.mu_r) / ((t.gamma - 1)*scalar(7)/scalar(10));
+    t.lambda_r = - scalar(2)/scalar(3)*t.mu_r;
+    t.Lx       = scalar(4)*pi;
+    t.Ly       = scalar(2);
+    t.Lz       = scalar(4)*pi/scalar(3);
+
+    t.rho.a_0  = scalar(1);
+    t.rho.a_xy = scalar(1) / scalar(11);
+    t.rho.b_xy = scalar(3);
+    t.rho.d_xy = scalar(3);
+    t.rho.f_xy = scalar(3);
+    t.rho.g_xy = pi / scalar(4);
+    t.rho.a_y  = scalar(1) / scalar(7);
+    t.rho.b_y  = scalar(1) / scalar(2);
+    t.rho.f_y  = scalar(1);
+    t.rho.g_y  = pi / scalar(4) - scalar(1) / scalar(20);
+    t.rho.a_yz = scalar(1) / scalar(31);
+    t.rho.b_yz = scalar(2);
+    t.rho.d_yz = scalar(2);
+    t.rho.f_yz = scalar(2);
+    t.rho.g_yz = pi / scalar(4) + scalar(1) / scalar(20);
+
+    t.u.a_xy = scalar(53) / scalar(37);
+    t.u.b_xy = scalar(3);
+    t.u.c_xy = - pi / scalar(2);
+    t.u.d_xy = scalar(3);
+    t.u.e_xy = - pi / scalar(2);
+    t.u.f_xy = scalar(3);
+    t.u.g_xy = pi / scalar(4);
+    t.u.a_y  = scalar(53);
+    t.u.b_y  = scalar(1) / scalar(2);
+    t.u.c_y  = - pi / scalar(2);
+    t.u.f_y  = scalar(1);
+    t.u.g_y  = pi / scalar(4) - scalar(1) / scalar(20);
+    t.u.a_yz = scalar(53) / scalar(41);
+    t.u.b_yz = scalar(2);
+    t.u.c_yz = - pi / scalar(2);
+    t.u.d_yz = scalar(2);
+    t.u.e_yz = - pi / scalar(2);
+    t.u.f_yz = scalar(2);
+    t.u.g_yz = pi / scalar(4) + scalar(1) / scalar(20);
+
+    t.v.a_xy = scalar(3);
+    t.v.b_xy = scalar(3);
+    t.v.c_xy = - pi / scalar(2);
+    t.v.d_xy = scalar(3);
+    t.v.e_xy = - pi / scalar(2);
+    t.v.f_xy = scalar(3);
+    t.v.g_xy = pi / scalar(4);
+    t.v.a_y  = scalar(2);
+    t.v.b_y  = scalar(1) / scalar(2);
+    t.v.c_y  = - pi / scalar(2);
+    t.v.f_y  = scalar(1);
+    t.v.g_y  = pi / scalar(4) - scalar(1) / scalar(20);
+    t.v.a_yz = scalar(5);
+    t.v.b_yz = scalar(2);
+    t.v.c_yz = -pi / scalar(2);
+    t.v.d_yz = scalar(2);
+    t.v.e_yz = -pi / scalar(2);
+    t.v.f_yz = scalar(2);
+    t.v.g_yz = pi / scalar(4) + scalar(1) / scalar(20);
+
+    t.w.a_xy = scalar(11);
+    t.w.b_xy = scalar(3);
+    t.w.c_xy = -pi / scalar(2);
+    t.w.d_xy = scalar(3);
+    t.w.e_xy = -pi / scalar(2);
+    t.w.f_xy = scalar(3);
+    t.w.g_xy = pi / scalar(4);
+    t.w.a_y  = scalar(7);
+    t.w.b_y  = scalar(1) / scalar(2);
+    t.w.c_y  = - pi / scalar(2);
+    t.w.f_y  = scalar(1);
+    t.w.g_y  = pi / scalar(4) - scalar(1) / scalar(20);
+    t.w.a_yz = scalar(13);
+    t.w.b_yz = scalar(2);
+    t.w.c_yz = - pi / scalar(2);
+    t.w.d_yz = scalar(2);
+    t.w.e_yz = - pi / scalar(2);
+    t.w.f_yz = scalar(2);
+    t.w.g_yz = pi / scalar(4) + scalar(1) / scalar(20);
+
+    t.T.a_0  = scalar(300);
+    t.T.a_xy = scalar(300) / scalar(17);
+    t.T.b_xy = scalar(3);
+    t.T.c_xy = - pi / scalar(2);
+    t.T.d_xy = scalar(3);
+    t.T.e_xy = - pi / scalar(2);
+    t.T.f_xy = scalar(3);
+    t.T.g_xy = pi / scalar(4);
+    t.T.a_y  = scalar(300) / scalar(13);
+    t.T.b_y  = scalar(1) / scalar(2);
+    t.T.c_y  = - pi / scalar(2);
+    t.T.f_y  = scalar(1);
+    t.T.g_y  = pi / scalar(4) - scalar(1) / scalar(20);
+    t.T.a_yz = scalar(300) / scalar(37);
+    t.T.b_yz = scalar(2);
+    t.T.c_yz = - pi / scalar(2);
+    t.T.d_yz = scalar(2);
+    t.T.e_yz = - pi / scalar(2);
+    t.T.f_yz = scalar(2);
+    t.T.g_yz = pi / scalar(4) + scalar(1) / scalar(20);
+}
+
+// ---------------------------------------------------------------------------
+// Utilities: isothermal flat plate recommended coefficients
+// ---------------------------------------------------------------------------
+
+template <class T> void isothermal_flat_plate(T& t)
+{
+    typedef typename T::scalar_type scalar;
+
+    // Implemented as a delta relative to the isothermal channel
+    isothermal_channel(t);
+    t.rho.b_y = scalar(1) / scalar(4);
+    t.u.b_y   = scalar(1) / scalar(4);
+    t.v.b_y   = scalar(1) / scalar(4);
+    t.w.b_y   = scalar(1) / scalar(4);
+    t.T.b_y   = scalar(1) / scalar(4);
 }
 
 
