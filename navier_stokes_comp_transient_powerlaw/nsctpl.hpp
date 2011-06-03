@@ -197,6 +197,9 @@ Scalar primitive<Scalar>::_zz(T1 x, T2 y, T3 z, T4 t) const
 #endif
 
 NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+const int manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::index_base = IndexBase;
+
+NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
 Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_rho(
         T1 x, T2 y, T3 z, T4 t, int index) const
@@ -790,6 +793,26 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhoe(
 
 #undef NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
 #undef NSCTPL_MANUFACTURED_SOLUTION_TPNAMES
+
+// ---------------------------------------------------------------------------
+// Utilities: zero
+// ---------------------------------------------------------------------------
+
+namespace { // anonymous
+
+template <typename Scalar>
+void zero_helper(const std::string&, Scalar& value) {
+    value = 0;
+}
+
+}
+
+template <class T>
+void zero(T& t) {
+    void (*z)(const std::string&, typename T::scalar_type&) = &zero_helper;
+    t.foreach_parameter(z);
+}
+
 
 } // end namespace nsctpl
 

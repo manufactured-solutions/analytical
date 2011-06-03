@@ -101,4 +101,8 @@ namespace nsctpl {
     manufactured_solution = manufactured_solution_double
 %}
 
+// Instantiate utility templates
+%template(zero) zero<primitive<double> >;
+%template(zero) zero<manufactured_solution<double> >;
+
 }

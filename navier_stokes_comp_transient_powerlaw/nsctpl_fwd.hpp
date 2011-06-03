@@ -59,6 +59,8 @@ class primitive {
 
 public:
 
+    typedef Scalar scalar_type;  //!< Scalar type employed
+
      // X macro per http://drdobbs.com/blogs/cpp/228700289 which will
      // apply a macro on all solution parameter prefix/suffix pairs.
 #define NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(apply)                             \
@@ -204,11 +206,18 @@ template <typename Scalar,
           template <typename> class Primitive = primitive>
 #else
 template <typename Scalar, int IndexBase = 0>
-#define Primitive primitive
 #endif
 class manufactured_solution {
 
 public:
+
+    typedef Scalar scalar_type;                //!< Scalar type employed
+    static const int index_base;               //!< Indexing base for gradients
+#ifndef SWIG
+    typedef Primitive<Scalar> primitive_type;  //!< Primitive solution type
+#else
+    typedef primitive<Scalar> primitive_type;  //!< Primitive solution type
+#endif
 
     //! Scenario parameters
     //!@{
@@ -223,11 +232,11 @@ public:
 
     //! Analytic solutions (which contain additional parameters)
     //!@{
-    Primitive<Scalar> rho;   //!< Analytic solution for rho
-    Primitive<Scalar> u;     //!< Analytic solution for u
-    Primitive<Scalar> v;     //!< Analytic solution for v
-    Primitive<Scalar> w;     //!< Analytic solution for w
-    Primitive<Scalar> T;     //!< Analytic solution for T
+    primitive_type rho;      //!< Analytic solution for rho
+    primitive_type u;        //!< Analytic solution for u
+    primitive_type v;        //!< Analytic solution for v
+    primitive_type w;        //!< Analytic solution for w
+    primitive_type T;        //!< Analytic solution for T
     //!@}
 
     //! Domain extents
@@ -357,9 +366,10 @@ public:
 
 }; // end class
 
-#ifdef SWIG
-#undef Primitive primitive
-#endif
+
+/** Zero all of an instance's parameters using foreach_parameter */
+template <class T> void zero(T& t);
+
 
 } // end namespace nsctpl
 
