@@ -814,13 +814,15 @@ template <class T> void zero(T& t)
 }
 
 // ---------------------------------------------------------------------------
-// Utilities: isothermal channel recommended coefficients
+// Utilities: isothermal channel recommended parameters
 // ---------------------------------------------------------------------------
 
 template <class T> void isothermal_channel(T& t)
 {
     typedef typename T::scalar_type scalar;
     const scalar pi = 4 * atan(scalar(1));
+
+    zero(t);   // All parameters not set here must be zeros
 
     t.gamma    = scalar(14)/scalar(10);
     t.R        = scalar(287);
@@ -932,7 +934,7 @@ template <class T> void isothermal_channel(T& t)
 }
 
 // ---------------------------------------------------------------------------
-// Utilities: isothermal flat plate recommended coefficients
+// Utilities: isothermal flat plate recommended parameters
 // ---------------------------------------------------------------------------
 
 template <class T> void isothermal_flat_plate(T& t)
