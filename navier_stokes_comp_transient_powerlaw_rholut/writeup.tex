@@ -1,0 +1,356 @@
+\documentclass[10pt,reqno]{amsart}
+
+\usepackage{accents}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{siunitx}
+\usepackage{verbatim}
+
+\newcommand{\tensor}[1]{\accentset{\leftrightarrow}{#1}}
+
+\lstset{ %
+basicstyle=\scriptsize,         % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\tiny,              % the size of the fonts that are used for the line-numbers
+stepnumber=5,                   % the step between two line-numbers. If it's 1, each line
+                                % will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+frame=single,                   % adds a frame around the code
+showstringspaces=false          % underline spaces within strings
+}
+
+\begin{document}
+
+\title{
+    A transient manufactured solution for the compressible Navier--Stokes
+    equations with a power law viscosity
+}
+\author{Rhys Ulerich}
+
+\begin{abstract}
+A time-varying manufactured solution is presented for the compressible
+Navier--Stokes equations under the assumption of a constant Prandtl number,
+Newtonian perfect gas obeying a power law viscosity.  The solution form
+includes waveforms with adjustable phase offsets and mixed partial derivatives
+to bolster code coverage.  Temperature, rather than pressure, is selected to
+have a simple analytic form to aid verifying codes having temperature-based
+boundary conditions.  Suggested verification tests for isothermal channel and
+flat plate codes are provided.  A C++ implementation of the manufactured
+solution and the forcing it requires is provided.  Tests are included to ensure
+the implementation matches the solution form to within acceptable floating
+point loss.
+\end{abstract}
+
+\maketitle
+
+\section{Mathematical model}
+
+Under assumptions of
+\begin{itemize}
+\item a Newtonian, compressible, perfect gas;
+\item the fluid's first viscosity obeys a power law in temperature;
+\item the second viscosity is a constant multiple of the first viscosity;
+\item Fourier's law of heat conduction; and
+\item a constant Prandtl number
+\end{itemize}
+the dimensional Navier--Stokes equations may take the form
+\begin{subequations}
+\label{eq:model}
+\begin{align}
+  \frac{\partial}{\partial{}t}\rho
+&=
+  - \nabla\cdot\rho{}\vec{u}
+  + Q_{\rho}
+  \\
+  \frac{\partial{}}{\partial{}t}\rho{}\vec{u}
+&=
+  - \nabla\cdot(\vec{u}\otimes{}\rho{}\vec{u})
+  -\nabla{} p
+  + \nabla\cdot{} \tensor{\tau}
+  + \vec{Q}_{\rho{}u}
+  \\
+  \frac{\partial}{\partial{}t} \rho{}e
+&=
+  - \nabla\cdot{}\rho{}e\vec{u}
+  - \nabla\cdot{} p \vec{u}
+  - \nabla\cdot{} \vec{q}
+  + \nabla\cdot{}\tensor{\tau} \vec{u}
+  + Q_{\rho{}e}
+\intertext{
+  with the auxiliary relations
+}
+  p &=   \left(\gamma-1\right)\left(\rho{}e
+       - \rho\frac{\vec{u}\cdot{}\vec{u}}{2} \right)
+  \\
+  T &= \frac{p}{\rho{}R}
+  \\
+  \mu &= \mu_{r} \left( \frac{T}{T_{r}} \right)^{\beta}
+  \\
+  \lambda &= \frac{\lambda_{r}}{\mu_{r}} \mu
+  \\
+  \tensor{\tau}
+       &=   \mu \left( \nabla{}\vec{u} + {\nabla{}\vec{u}}^{\mathsf{T}} \right)
+          + \lambda \left( \nabla\cdot{}\vec{u} \right) I
+  \\
+  \vec{q} &= - \frac{\kappa_{r}}{\mu_{r}} \mu \nabla{} T
+\end{align}
+\end{subequations}
+where all symbols have their customary interpretations.  Note $e$ denotes the
+specific total energy and that later we will refer to the components of
+$\vec{u}$ as the scalars $u$, $v$, and $w$.  The free constants in the model
+are the ratio of specific heats $\gamma$, the gas constant $R$, the viscosity
+power law exponent $\beta$, and the reference properties $\mu_r$, $T_r$,
+$\kappa_r$, and $\lambda_r$.  One fixes $\kappa_r$ when choosing the Prandtl
+number $\mbox{Pr}$ because $\kappa_r = \frac{\gamma R
+\mu_r}{\left(\gamma-1\right)\mbox{Pr}}$.  Selecting $\lambda_r = - 2 \mu_r / 3$
+recovers Stokes' hypothesis.  The thermal conductivity $\kappa$ does not appear
+in the above equations as our constant Prandtl number assumption and the
+observation that $\kappa$ increases with $\mu$ implies $\mu/\mu_r =
+\kappa/\kappa_r$.  The arbitrary forcing terms $Q_{\rho}$, $\vec{Q}_{\rho{}u}$,
+and $Q_{\rho{}e}$ will be used to obtain the desired manufactured solution.
+
+
+\section{Manufactured solution}
+\label{sec:solution}
+
+For all $\phi\in\left\{\rho, u, v, w, T\right\}$ we select analytical solutions
+of the form
+\begin{alignat}{20}
+\label{eq:solution}
+  \phi\!\left(x, y, z, t\right)
+  &= &&a_{\phi{}0}  &&          &&             &&               &&  &&            &&       &&          &&             &&                &&  &&            &&        &&\cos\Bigl(&&f_{\phi{}0 } &&t &&+ &&g_{\phi{}0 }&&\Bigr)       \\
+  &+ &&a_{\phi{}x } &&\cos\Bigl(&&b_{\phi{}x } &&2\pi x L_x^{-1}&&+ &&c_{\phi{}x }&&\Bigr) &&          &&             &&                &&  &&            &&        &&\cos\Bigl(&&f_{\phi{}x } &&t &&+ &&g_{\phi{}x }&&\Bigr) \notag\\
+  &+ &&a_{\phi{}xy} &&\cos\Bigl(&&b_{\phi{}xy} &&2\pi x L_x^{-1}&&+ &&c_{\phi{}xy}&&\Bigr) &&\cos\Bigl(&&d_{\phi{}xy} &&2\pi y L_y^{-1} &&+ &&e_{\phi{}xy}&&\Bigr)  &&\cos\Bigl(&&f_{\phi{}xy} &&t &&+ &&g_{\phi{}xy}&&\Bigr) \notag\\
+  &+ &&a_{\phi{}xz} &&\cos\Bigl(&&b_{\phi{}xz} &&2\pi x L_x^{-1}&&+ &&c_{\phi{}xz}&&\Bigr) &&\cos\Bigl(&&d_{\phi{}xz} &&2\pi z L_z^{-1} &&+ &&e_{\phi{}xz}&&\Bigr)  &&\cos\Bigl(&&f_{\phi{}xz} &&t &&+ &&g_{\phi{}xz}&&\Bigr) \notag\\
+  &+ &&a_{\phi{}y } &&\cos\Bigl(&&b_{\phi{}y } &&2\pi y L_y^{-1}&&+ &&c_{\phi{}y }&&\Bigr) &&          &&             &&                &&  &&            &&        &&\cos\Bigl(&&f_{\phi{}y } &&t &&+ &&g_{\phi{}y }&&\Bigr) \notag\\
+  &+ &&a_{\phi{}yz} &&\cos\Bigl(&&b_{\phi{}yz} &&2\pi y L_y^{-1}&&+ &&c_{\phi{}yz}&&\Bigr) &&\cos\Bigl(&&d_{\phi{}yz} &&2\pi z L_z^{-1} &&+ &&e_{\phi{}yz}&&\Bigr)  &&\cos\Bigl(&&f_{\phi{}yz} &&t &&+ &&g_{\phi{}yz}&&\Bigr) \notag\\
+  &+ &&a_{\phi{}z } &&\cos\Bigl(&&b_{\phi{}z } &&2\pi z L_z^{-1}&&+ &&c_{\phi{}z }&&\Bigr) &&          &&             &&                &&  &&            &&        &&\cos\Bigl(&&f_{\phi{}z } &&t &&+ &&g_{\phi{}z }&&\Bigr) \notag
+\end{alignat}
+where $a$, $b$, $c$, $d$, $e$, $f$, and $g$ are constant coefficient
+collections indexed by $\phi$ and one or more directions.  To aid in providing
+reusable, physically realizable coefficients for Cartesian domains of arbitrary
+size, domain extents $L_x$, $L_y$, $L_z$ have been introduced.  Partial
+derivatives $\phi_{t }$, $\phi_{x }$, $\phi_{y }$, $\phi_{z }$, $\phi_{xx}$,
+$\phi_{xy}$, $\phi_{xz}$, $\phi_{yy}$, $\phi_{yz}$, and $\phi_{zz}$ may be
+computed directly from the chosen solutions.
+
+Though they increase the solution's complexity significantly, mixed partial
+spatial derivatives are included to improve code coverage.  Each term has an
+adjustable amplitude, frequency, and phase for all spatial dimensions.  Cosines
+were chosen so all terms can be ``turned off'' by employing zero coefficients.
+It is suggested that users gradually ``turn on'' the more complicated features
+of the solution (i.e. use non-zero coefficients) after ensuring simpler usage
+has been successful.
+
+The Python-based computer algebra system SymPy (\url{http://sympy.org})
+can both compute the derivatives and output C code for computing these
+values at some $x$, $y$, $z$, and $t$:
+\lstinputlisting[language=Python]{soln.py}
+
+\section{Forcing terms}
+\label{sec:forcing}
+
+The solutions given by equation~\eqref{eq:solution} may be plugged into
+equation~\eqref{eq:model} and solved for the forcing terms $Q_{\rho}$,
+$\vec{Q}_{\rho{}u}$, and $Q_{\rho{}e}$.  However, solving for these complete
+terms entirely within the context of a computer algebra system causes an
+unwieldy explosion of terms.  As the fully expanded forcing terms are too
+large to be usable in any meaningful way, they are not shown.
+
+Instead, starting from the solution and its the analytic derivatives, we use
+basic calculus followed by algebraic operations performed in floating point to
+obtain the necessary forcing \emph{at runtime}.  The errors arising in this
+process behave like standard floating point truncation issues.  Many of the
+computations are independent of the constitutive relations used and could be
+employed for other manufactured solutions.
+
+Computing the forcing terms looks as follows:
+\lstinputlisting[language=python]{forcing.py}
+
+\section{Suggested coefficients for isothermal channels and flat plates}
+\label{sec:suggest}
+
+Employing the manufactured solution requires fixing the more than two hundred
+coefficients appearing in equations \eqref{eq:model} and \eqref{eq:solution}.
+Selecting usable values is not difficult but it can be time consuming.  We
+therefore present reasonable coefficient choices for testing channel and flat
+plate codes.
+
+In both geometries the streamwise, wall-normal, and spanwise directions are
+labeled $x$, $y$, and $z$ respectively.  Both $x$ and $z$ are periodic while
+$y\in\left\{0,L_y\right\}$ is not.  Transient tests should likely take place
+within the duration $0\leq{}t\leq{}1/10$ seconds as the time phase offsets
+(e.g. $g_{Tyz}$) have been chosen for appreciable transients to occur
+throughout this time window.
+
+For isothermal channel flow code verification we recommend testing using
+\begin{equation*}
+  b_{\rho{}y} =
+  b_{u{}y}    =
+  b_{v{}y}    =
+  b_{w{}y}    =
+  b_{T{}y}    = \frac{1}{2}
+\end{equation*}
+and the coefficients given in Table~\ref{tbl:auxcoeff}.  With these choices
+the manufactured solution satisfies isothermal, no-slip conditions at $y = 0,
+L_y$.  For isothermal flat plate code verification we recommend testing using
+\begin{equation*}
+  b_{\rho{}y} =
+  b_{u{}y}    =
+  b_{v{}y}    =
+  b_{w{}y}    =
+  b_{T{}y}    = \frac{1}{4}
+\end{equation*}
+and the coefficients given in Table~\ref{tbl:auxcoeff}.  With these choices
+the manufactured solution satisfies an isothermal, no-slip condition at $y =
+0$.
+
+\section{Reference Implementation}
+
+A templated, precision-agnostic C++ implementation for evaluating the
+manufactured solution and its associated forcing is included.  Also included is
+a high precision test case which ensures the implementation computes exactly
+what is described in this documentation.  The test can do so because it
+executes the same Python source files used to generate this document.
+
+One can ensure the implementation files match this documentation by comparing
+against the following MD5 checksums:
+
+\verbatiminput{CHECKSUMS}
+
+More details on the implementation and tests can be found in the solution's
+README:
+
+\verbatiminput{README}
+
+\begin{table}[p]
+\allowdisplaybreaks
+\begin{multicols}{3}
+\begin{small}
+\begin{align*}
+\gamma &= \num{1.4} \\
+R &= 287 \\
+\beta &= 2 / 3 \\
+\mu_r &= \num{1.852e-5} \\
+T_r &= 300 \\
+\kappa_r & = \frac{\gamma R \mu_r}{(\gamma - 1) \mbox{Pr}}
+             \text{ with }\mbox{Pr} = 7/10 \\
+\lambda_r & = - 2 \mu_r / 3 \\
+L_x &= 4 \pi \\
+L_y &= 2 \\
+L_z &= 4 \pi / 3 \\
+\intertext{}
+a_{\rho{}0} &= 1 \\
+a_{\rho{}xy} &= 1 / 11 \\
+b_{\rho{}xy} &= 3 \\
+d_{\rho{}xy} &= 3 \\
+f_{\rho{}xy} &= 3 \\
+g_{\rho{}xy} &= \pi / 4 \\
+a_{\rho{}y} &= 1 / 7 \\
+b_{\rho{}y} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
+f_{\rho{}y} &= 1 \\
+g_{\rho{}y} &= \pi / 4 - 1 / 20 \\
+a_{\rho{}yz} &= 1 / 31 \\
+b_{\rho{}yz} &= 2 \\
+d_{\rho{}yz} &= 2 \\
+f_{\rho{}yz} &= 2 \\
+g_{\rho{}yz} &= \pi / 4 + 1 / 20 \\
+\intertext{}
+a_{uxy} &= 53 / 37 \\
+b_{uxy} &= 3 \\
+c_{uxy} &= - \pi / 2 \\
+d_{uxy} &= 3 \\
+e_{uxy} &= - \pi / 2 \\
+f_{uxy} &= 3 \\
+g_{uxy} &= \pi / 4 \\
+a_{uy} &= 53 \\
+b_{uy} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
+c_{uy} &= -\pi / 2 \\
+f_{uy} &= 1 \\
+g_{uy} &= \pi / 4 - 1 / 20 \\
+a_{uyz} &= 53 / 41 \\
+b_{uyz} &= 2 \\
+c_{uyz} &= - \pi / 2 \\
+d_{uyz} &= 2 \\
+e_{uyz} &= - \pi / 2 \\
+f_{uyz} &= 2 \\
+g_{uyz} &= \pi / 4 + 1 / 20 \\
+\intertext{}
+a_{vxy} &= 3 \\
+b_{vxy} &= 3 \\
+c_{vxy} & = - \pi / 2 \\
+d_{vxy} & = 3         \\
+e_{vxy} & = - \pi / 2 \\
+f_{vxy} &= 3 \\
+g_{vxy} &= \pi / 4 \\
+a_{vy} &= 2 \\
+b_{vy} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
+c_{vy} &= - \pi / 2 \\
+f_{vy} &= 1 \\
+g_{vy} &= \pi / 4 - 1 / 20 \\
+a_{vyz} &= 5 \\
+b_{vyz} &= 2 \\
+c_{vyz} &= -\pi / 2 \\
+d_{vyz} &= 2 \\
+e_{vyz} &= -\pi / 2 \\
+f_{vyz} &= 2 \\
+g_{vyz} &= \pi / 4 + 1 / 20 \\
+\intertext{}
+a_{wxy} &= 11 \\
+b_{wxy} &= 3 \\
+c_{wxy} &= -\pi / 2 \\
+d_{wxy} &= 3 \\
+e_{wxy} &= -\pi / 2 \\
+f_{wxy} &= 3 \\
+g_{wxy} &= \pi / 4 \\
+a_{wy} &= 7 \\
+b_{wy} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
+c_{wy} &= - \pi / 2 \\
+f_{wy} &= 1 \\
+g_{wy} &= \pi / 4 - 1 / 20 \\
+a_{wyz} &= 13 \\
+b_{wyz} &= 2 \\
+c_{wyz} &= - \pi / 2 \\
+d_{wyz} &= 2 \\
+e_{wyz} &= - \pi / 2 \\
+f_{wyz} &= 2 \\
+g_{wyz} &= \pi / 4 + 1 / 20 \\
+\intertext{}
+a_{T0} &= 300 \\
+a_{Txy} &= 300 / 17 \\
+b_{Txy} &= 3 \\
+c_{Txy} &= - \pi / 2 \\
+d_{Txy} &= 3 \\
+e_{Txy} &= - \pi / 2 \\
+f_{Txy} &= 3 \\
+g_{Txy} &= \pi / 4 \\
+a_{Ty} &= 300 / 13 \\
+b_{Ty} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
+c_{Ty} &= - \pi / 2 \\
+f_{Ty} &= 1 \\
+g_{Ty} &= \pi / 4 - 1 / 20 \\
+a_{Tyz} &= 300 / 37 \\
+b_{Tyz} &= 2 \\
+c_{Tyz} &= - \pi / 2 \\
+d_{Tyz} &= 2 \\
+e_{Tyz} &= - \pi / 2 \\
+f_{Tyz} &= 2 \\
+g_{Tyz} &= \pi / 4 + 1 / 20 \\
+\end{align*}
+\end{small}
+\end{multicols}
+\caption{Coefficient recommendations from section~\ref{sec:suggest}.
+         Standard MKS units are implied with each value; e.g.
+         $R$ is given in
+         \si{\joule\per\kilo\gram\per\kelvin} and $\mu_r$ is given in
+         \si{\pascal\second}.
+         Unlisted coefficients should be set to zero.
+         \label{tbl:auxcoeff}}
+\end{table}
+
+\end{document}

@@ -1,0 +1,63 @@
+How to review this manufactured solution:
+
+    1) Assuming you have make, md5sum, g++, pdflatex, Python, SymPy,
+       and SWIG installed, you can build the PDF documentation, a test
+       program called 'check', and a Python module by running 'make'.
+    2) Review the generated 'writeup.pdf' to familiarize yourself with the
+       solution.
+    3) Run 'check' and review the relative errors shown to convince yourself
+       the C++ code in nsctpl_fwd.hpp and nsctpl.hpp correctly implements
+       the manufactured solution and the associated manufactured forcing
+       as presented in 'writeup.pdf'.  Results are shown for float, double,
+       and long double computations.
+
+How to use this manufactured solution in your C++ flow solver:
+
+    1) Use nsctpl_fwd.hpp and nsctpl.hpp in your code by #include-ing them.
+       See the top of nsctpl_fwd.hpp for some #include prerequisites and
+       check.cpp for how you might instantiate and use the provided classes.
+    2) At time zero, initialize your code's state to contain the exact
+       manufactured solution.
+    3) At each time step, add the appropriate manufactured forcing to each
+       equation within your flow solver.
+    4) After advancing for some time, compare the approximate state
+       fields your flow solver has computed with the exact solution.
+
+Documentation:
+
+    README:      This file
+    writeup.tex: Discussion of the model and the manufactured solution
+    soln.py:     Generates C code for the solution and its derivatives
+                 Included by writeup.tex
+    forcing.py:  Step-by-step details of computing the necessary forcing
+                 Included by writeup.tex
+
+Reference Implementation:
+
+    Makefile:        A GNU Makefile for building the LaTeX documentation,
+                     C++ implementation and tests, and a Python module.
+    nsctpl_fwd.hpp:  C++ header file with forward declarations for the
+                     manufactured solution.  Code written to allow
+                     #include-ing from some other file, possibly within an
+                     anonymous namespace.
+    nsctpl.hpp:      C++ header file containing templated implementation
+                     details for nsctpl.hpp based upon output of running
+                     soln.py.  Similar #include-related comments apply.
+    nsctpl.i:        SWIG (http://www.swig.org/) declarations for building
+                     a Python module named 'nsctpl' exposing the C++
+                     implementation.
+    setup.py:        Python distutils script used to build 'nsctpl' module.
+                     See Makefile for more build-related details.
+    vizcoeffs.py:    A Mayavi- and matplotlib-based script to visualize
+                     the effect of making different coefficient choices.
+
+Tests:
+
+    test.py:         Using Sympy, computes high precision results for
+                     a particular set of solution coefficients using
+                     'soln.py' and 'forcing.py'.  Results saved into
+                     test.hpp and employed in check.cpp.
+    check.cpp:       Very simple driver used to ensure nsctpl.hpp compiles
+                     at several different precisions and behaves sanely.
+                     Checks that ensure C++ implementation matches
+                     writeup.tex/soln.py/forcing.py to acceptable tolerance.
