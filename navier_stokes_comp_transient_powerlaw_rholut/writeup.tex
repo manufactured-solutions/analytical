@@ -7,11 +7,18 @@
 \usepackage{fullpage}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{mathtools}
 \usepackage{multicol}
 \usepackage{siunitx}
 \usepackage{verbatim}
 
+\mathtoolsset{showonlyrefs,showmanualtags}
+\allowdisplaybreaks[1] % Allow grouped equations to be split across pages
+
 \newcommand{\tensor}[1]{\accentset{\leftrightarrow}{#1}}
+\newcommand{\Mach}[1][]{\ensuremath{\mbox{Ma}_{#1}}}
+\newcommand{\Reynolds}[1][]{\ensuremath{\mbox{Re}_{#1}}}
+\newcommand{\Prandtl}[1][]{\ensuremath{\mbox{Pr}_{#1}}}
 
 \lstset{ %
 basicstyle=\scriptsize,         % the size of the fonts that are used for the code
@@ -27,38 +34,33 @@ showstringspaces=false          % underline spaces within strings
 \begin{document}
 
 \title{
-    A transient manufactured solution for the compressible Navier--Stokes
-    equations with a power law viscosity
+    A transient manufactured solution for the nondimensional, compressible
+    Navier--Stokes equations with a power law viscosity
 }
 \author{Rhys Ulerich}
 
 \begin{abstract}
-A time-varying manufactured solution is presented for the compressible
-Navier--Stokes equations under the assumption of a constant Prandtl number,
-Newtonian perfect gas obeying a power law viscosity.  The solution form
-includes waveforms with adjustable phase offsets and mixed partial derivatives
-to bolster code coverage.  Temperature, rather than pressure, is selected to
-have a simple analytic form to aid verifying codes having temperature-based
-boundary conditions.  Suggested verification tests for isothermal channel and
-flat plate codes are provided.  A C++ implementation of the manufactured
-solution and the forcing it requires is provided.  Tests are included to ensure
-the implementation matches the solution form to within acceptable floating
-point loss.
+A time-varying manufactured solution is presented for the nondimensional,
+compressible Navier--Stokes equations under the assumption of a constant
+Prandtl number, Newtonian perfect gas obeying a power law viscosity.  The
+chosen nondimensionalization employs a reference density, length, velocity, and
+temperature.  The solution form includes waveforms with adjustable phase
+offsets and mixed partial derivatives to bolster code coverage.  Temperature,
+rather than pressure, is selected to have a simple analytic form to aid
+verifying codes having temperature-based boundary conditions.  Suggested
+verification tests for isothermal channel and flat plate codes are provided.  A
+C++ implementation of the manufactured solution and the forcing it requires is
+provided.  Tests are included to ensure the implementation matches the solution
+form to within acceptable floating point loss.
 \end{abstract}
 
 \maketitle
 
 \section{Mathematical model}
+\label{sec:model}
 
-Under assumptions of
-\begin{itemize}
-\item a Newtonian, compressible, perfect gas;
-\item the fluid's first viscosity obeys a power law in temperature;
-\item the second viscosity is a constant multiple of the first viscosity;
-\item Fourier's law of heat conduction; and
-\item a constant Prandtl number
-\end{itemize}
-the dimensional Navier--Stokes equations may take the form
+Under common assumptions the nondimensional Navier--Stokes equations
+may take the form
 \begin{subequations}
 \label{eq:model}
 \begin{align}
@@ -70,8 +72,8 @@ the dimensional Navier--Stokes equations may take the form
   \frac{\partial{}}{\partial{}t}\rho{}\vec{u}
 &=
   - \nabla\cdot(\vec{u}\otimes{}\rho{}\vec{u})
-  -\nabla{} p
-  + \nabla\cdot{} \tensor{\tau}
+  - \frac{1}{\Mach^{2}} \nabla{} p
+  + \frac{1}{\Reynolds} \nabla\cdot{} \tensor{\tau}
   + \vec{Q}_{\rho{}u}
   \\
   \frac{\partial}{\partial{}t} \rho{}e
@@ -79,40 +81,47 @@ the dimensional Navier--Stokes equations may take the form
   - \nabla\cdot{}\rho{}e\vec{u}
   - \nabla\cdot{} p \vec{u}
   - \nabla\cdot{} \vec{q}
-  + \nabla\cdot{}\tensor{\tau} \vec{u}
+  + \frac{\Mach^2}{\Reynolds} \nabla\cdot{}\tensor{\tau} \vec{u}
   + Q_{\rho{}e}
-\intertext{
-  with the auxiliary relations
-}
+\end{align}
+aided by the auxiliary relations
+\begin{align}
   p &=   \left(\gamma-1\right)\left(\rho{}e
-       - \rho\frac{\vec{u}\cdot{}\vec{u}}{2} \right)
+          - \Mach^{2} \rho\frac{\vec{u}\cdot{}\vec{u}}{2} \right)
+  &
+  T &= \gamma\frac{p}{\rho}
   \\
-  T &= \frac{p}{\rho{}R}
-  \\
-  \mu &= \mu_{r} \left( \frac{T}{T_{r}} \right)^{\beta}
-  \\
-  \lambda &= \frac{\lambda_{r}}{\mu_{r}} \mu
+  \mu &= T^{\beta}
+  &
+  \lambda &= \left(\alpha-\frac{2}{3}\right) \mu
   \\
   \tensor{\tau}
        &=   \mu \left( \nabla{}\vec{u} + {\nabla{}\vec{u}}^{\mathsf{T}} \right)
           + \lambda \left( \nabla\cdot{}\vec{u} \right) I
-  \\
-  \vec{q} &= - \frac{\kappa_{r}}{\mu_{r}} \mu \nabla{} T
+  &
+  \vec{q} &= - \frac{1}{\Reynolds\Prandtl\left(\gamma-1\right)} \mu \nabla{} T
 \end{align}
+where the nondimensional quantities
+\begin{align}
+  \Reynolds &= \frac{\rho_{0}u_{0}l_{0}}{\mu_{0}}
+  &
+  \Mach &= \frac{u_{0}}{a_{0}}
+  &
+  \Prandtl &= \frac{\mu_{0}C_{p}}{\kappa_{0}}
+  &
+  \gamma &= \frac{C_{p}}{C_{v}}
+\end{align}
+are the constant Reynolds number, Mach number, and Prandtl number, and ratio
+of specific heats, respectively.
 \end{subequations}
-where all symbols have their customary interpretations.  Note $e$ denotes the
+The fluid's nondimensional dynamic viscosity follows a power law in temperature
+with exponent $\beta$.  The fluid's bulk viscosity is a constant multiple
+$\alpha$ of the dynamic viscosity.  Setting $\alpha = 0$ is equivalent to
+Stokes' hypothesis that the bulk viscosity is zero.  Here $e$ denotes the
 specific total energy and that later we will refer to the components of
-$\vec{u}$ as the scalars $u$, $v$, and $w$.  The free constants in the model
-are the ratio of specific heats $\gamma$, the gas constant $R$, the viscosity
-power law exponent $\beta$, and the reference properties $\mu_r$, $T_r$,
-$\kappa_r$, and $\lambda_r$.  One fixes $\kappa_r$ when choosing the Prandtl
-number $\mbox{Pr}$ because $\kappa_r = \frac{\gamma R
-\mu_r}{\left(\gamma-1\right)\mbox{Pr}}$.  Selecting $\lambda_r = - 2 \mu_r / 3$
-recovers Stokes' hypothesis.  The thermal conductivity $\kappa$ does not appear
-in the above equations as our constant Prandtl number assumption and the
-observation that $\kappa$ increases with $\mu$ implies $\mu/\mu_r =
-\kappa/\kappa_r$.  The arbitrary forcing terms $Q_{\rho}$, $\vec{Q}_{\rho{}u}$,
-and $Q_{\rho{}e}$ will be used to obtain the desired manufactured solution.
+$\vec{u}$ as the scalars $u$, $v$, and $w$.  The arbitrary forcing terms
+$Q_{\rho}$, $\vec{Q}_{\rho{}u}$, and $Q_{\rho{}e}$ will be used to obtain the
+desired manufactured solution.
 
 
 \section{Manufactured solution}
@@ -155,11 +164,11 @@ values at some $x$, $y$, $z$, and $t$:
 \section{Forcing terms}
 \label{sec:forcing}
 
-The solutions given by equation~\eqref{eq:solution} may be plugged into
-equation~\eqref{eq:model} and solved for the forcing terms $Q_{\rho}$,
-$\vec{Q}_{\rho{}u}$, and $Q_{\rho{}e}$.  However, solving for these complete
-terms entirely within the context of a computer algebra system causes an
-unwieldy explosion of terms.  As the fully expanded forcing terms are too
+The solutions given in \textsection~\ref{sec:solution} may be plugged into the
+model from \textsection~\ref{sec:model} and solved for the forcing terms
+$Q_{\rho}$, $\vec{Q}_{\rho{}u}$, and $Q_{\rho{}e}$.  However, solving for these
+complete terms entirely within the context of a computer algebra system causes
+an unwieldy explosion of terms.  As the fully expanded forcing terms are too
 large to be usable in any meaningful way, they are not shown.
 
 Instead, starting from the solution and its the analytic derivatives, we use

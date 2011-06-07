@@ -5,10 +5,12 @@
 #   w,   w_t,   w_x,   w_xx,   w_xy,   w_xz,   w_y,   w_yy,   w_yz,   w_z,   w_zz
 #   T,   T_t,   T_x,   T_xx,   T_xy,   T_xz,   T_y,   T_yy,   T_yz,   T_z,   T_zz
 # and the coefficients
-#   gamma, R, beta, mu_r, T_r, kappa_r, lambda_r
+#   Re, Ma, Pr, alpha, beta, gamma
 # compute the source terms
 #   Q_rho, Q_rhou, Q_rhov, Q_rhow, Q_rhoe
 # necessary to force the solution rho, u, v, w, and T.
+
+FIXME STARTHERE FIXME
 
 # Computations stemming from the constitutive relationships
 e        = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2
