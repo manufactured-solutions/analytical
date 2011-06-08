@@ -193,9 +193,9 @@ plate codes.
 In both geometries the streamwise, wall-normal, and spanwise directions are
 labeled $x$, $y$, and $z$ respectively.  Both $x$ and $z$ are periodic while
 $y\in\left\{0,L_y\right\}$ is not.  Transient tests should likely take place
-within the duration $0\leq{}t\leq{}1/10$ seconds as the time phase offsets
-(e.g. $g_{Tyz}$) have been chosen for appreciable transients to occur
-throughout this time window.
+within the duration $0\leq{}t\leq{}1/10$ nondimensional time units as the time
+phase offsets (e.g. $g_{Tyz}$) have been chosen for appreciable transients to
+occur throughout this time window.
 
 For isothermal channel flow code verification we recommend testing using
 \begin{equation*}
@@ -242,19 +242,17 @@ README:
 \begin{multicols}{3}
 \begin{small}
 \begin{align*}
-\gamma &= \num{1.4} \\
-R &= 287 \\
-\beta &= 2 / 3 \\
-\mu_r &= \num{1.852e-5} \\
-T_r &= 300 \\
-\kappa_r & = \frac{\gamma R \mu_r}{(\gamma - 1) \mbox{Pr}}
-             \text{ with }\mbox{Pr} = 7/10 \\
-\lambda_r & = - 2 \mu_r / 3 \\
-L_x &= 4 \pi \\
-L_y &= 2 \\
-L_z &= 4 \pi / 3 \\
+\alpha    &= 0          \\
+\beta     &= 2/3        \\
+\gamma    &= \num{1.4}  \\
+\Mach     &= \num{1.15} \\
+\Prandtl  &= \num{0.7}  \\
+\Reynolds &= 100 \\
+L_x       &= 4 \pi \\
+L_y       &= 2 \\
+L_z       &= 4 \pi / 3 \\
 \intertext{}
-a_{\rho{}0} &= 1 \\
+a_{\rho{}0}  &= 1 \\
 a_{\rho{}xy} &= 1 / 11 \\
 b_{\rho{}xy} &= 3 \\
 d_{\rho{}xy} &= 3 \\
@@ -270,19 +268,19 @@ d_{\rho{}yz} &= 2 \\
 f_{\rho{}yz} &= 2 \\
 g_{\rho{}yz} &= \pi / 4 + 1 / 20 \\
 \intertext{}
-a_{uxy} &= 53 / 37 \\
+a_{uxy} &= 37 / 251 \\
 b_{uxy} &= 3 \\
 c_{uxy} &= - \pi / 2 \\
 d_{uxy} &= 3 \\
 e_{uxy} &= - \pi / 2 \\
 f_{uxy} &= 3 \\
 g_{uxy} &= \pi / 4 \\
-a_{uy} &= 53 \\
+a_{uy} &= 1 \\
 b_{uy} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
 c_{uy} &= -\pi / 2 \\
 f_{uy} &= 1 \\
 g_{uy} &= \pi / 4 - 1 / 20 \\
-a_{uyz} &= 53 / 41 \\
+a_{uyz} &= 41 / 257 \\
 b_{uyz} &= 2 \\
 c_{uyz} &= - \pi / 2 \\
 d_{uyz} &= 2 \\
@@ -290,19 +288,19 @@ e_{uyz} &= - \pi / 2 \\
 f_{uyz} &= 2 \\
 g_{uyz} &= \pi / 4 + 1 / 20 \\
 \intertext{}
-a_{vxy} &= 3 \\
+a_{vxy} &= 3 / 337 \\
 b_{vxy} &= 3 \\
 c_{vxy} & = - \pi / 2 \\
 d_{vxy} & = 3         \\
 e_{vxy} & = - \pi / 2 \\
 f_{vxy} &= 3 \\
 g_{vxy} &= \pi / 4 \\
-a_{vy} &= 2 \\
+a_{vy} &= 2 / 127 \\
 b_{vy} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
 c_{vy} &= - \pi / 2 \\
 f_{vy} &= 1 \\
 g_{vy} &= \pi / 4 - 1 / 20 \\
-a_{vyz} &= 5 \\
+a_{vyz} &= 5 / 347 \\
 b_{vyz} &= 2 \\
 c_{vyz} &= -\pi / 2 \\
 d_{vyz} &= 2 \\
@@ -310,19 +308,19 @@ e_{vyz} &= -\pi / 2 \\
 f_{vyz} &= 2 \\
 g_{vyz} &= \pi / 4 + 1 / 20 \\
 \intertext{}
-a_{wxy} &= 11 \\
+a_{wxy} &= 11 / 409 \\
 b_{wxy} &= 3 \\
 c_{wxy} &= -\pi / 2 \\
 d_{wxy} &= 3 \\
 e_{wxy} &= -\pi / 2 \\
 f_{wxy} &= 3 \\
 g_{wxy} &= \pi / 4 \\
-a_{wy} &= 7 \\
+a_{wy} &= 7 / 373 \\
 b_{wy} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
 c_{wy} &= - \pi / 2 \\
 f_{wy} &= 1 \\
 g_{wy} &= \pi / 4 - 1 / 20 \\
-a_{wyz} &= 13 \\
+a_{wyz} &= 13 / 389 \\
 b_{wyz} &= 2 \\
 c_{wyz} &= - \pi / 2 \\
 d_{wyz} &= 2 \\
@@ -330,20 +328,20 @@ e_{wyz} &= - \pi / 2 \\
 f_{wyz} &= 2 \\
 g_{wyz} &= \pi / 4 + 1 / 20 \\
 \intertext{}
-a_{T0} &= 300 \\
-a_{Txy} &= 300 / 17 \\
+a_{T0} &= 1 \\
+a_{Txy} &= 1 / 17 \\
 b_{Txy} &= 3 \\
 c_{Txy} &= - \pi / 2 \\
 d_{Txy} &= 3 \\
 e_{Txy} &= - \pi / 2 \\
 f_{Txy} &= 3 \\
 g_{Txy} &= \pi / 4 \\
-a_{Ty} &= 300 / 13 \\
+a_{Ty} &= 1 / 13 \\
 b_{Ty} &= \text{\emph{see \textsection{}~\ref{sec:suggest}}} \\
 c_{Ty} &= - \pi / 2 \\
 f_{Ty} &= 1 \\
 g_{Ty} &= \pi / 4 - 1 / 20 \\
-a_{Tyz} &= 300 / 37 \\
+a_{Tyz} &= 1 / 37 \\
 b_{Tyz} &= 2 \\
 c_{Tyz} &= - \pi / 2 \\
 d_{Tyz} &= 2 \\
@@ -354,10 +352,6 @@ g_{Tyz} &= \pi / 4 + 1 / 20 \\
 \end{small}
 \end{multicols}
 \caption{Coefficient recommendations from section~\ref{sec:suggest}.
-         Standard MKS units are implied with each value; e.g.
-         $R$ is given in
-         \si{\joule\per\kilo\gram\per\kelvin} and $\mu_r$ is given in
-         \si{\pascal\second}.
          Unlisted coefficients should be set to zero.
          \label{tbl:auxcoeff}}
 \end{table}

@@ -15,16 +15,16 @@ VERSION
 
 import cPickle as pickle
 import sys, os, traceback, optparse, string, textwrap, numpy
-import nsctpl
+import nsctpl_rholut
 from math import pi, sqrt
 from enthought.mayavi import mlab
 from matplotlib import pyplot
 
 # Create a manufactured solution to which we'll bind nearly everything
-m = nsctpl.manufactured_solution()
+m = nsctpl_rholut.manufactured_solution()
 
 # Establish isothermal channel scenario parameters
-nsctpl.isothermal_channel(m)
+nsctpl_rholut.isothermal_channel(m)
 
 # Used to programmatically generate ufuncs of the appropriate types
 ufuncs_to_define = [
