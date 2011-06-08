@@ -221,13 +221,12 @@ public:
 
     //! Scenario parameters
     //!@{
+    Scalar alpha;            //!< Ratio of bulk to dynamic viscosity
+    Scalar beta;             //!< Temperature power law exponent
     Scalar gamma;            //!< Constant ratio of specific heats
-    Scalar R;                //!< Gas constant
-    Scalar beta;             //!< Viscosity power law exponent
-    Scalar mu_r;             //!< Reference dynamic viscosity
-    Scalar T_r;              //!< Reference temperature
-    Scalar kappa_r;          //!< Reference thermal conductivity
-    Scalar lambda_r;         //!< Reference bulk viscosity
+    Scalar Ma;               //!< Mach number
+    Scalar Pr;               //!< Prandtl number
+    Scalar Re;               //!< Reynolds number
     //!@}
 
     //! Analytic solutions (which contain additional parameters)
@@ -248,7 +247,7 @@ public:
 
     //! Default constructor
     manufactured_solution()
-        : gamma(0), R(0), beta(0), mu_r(0), T_r(0), kappa_r(0), lambda_r(0),
+        : alpha(0), beta(0), gamma(0), Ma(0), Pr(0), Re(0),
           rho("rho", Lx, Ly, Lz),
           u  ("u"  , Lx, Ly, Lz),
           v  ("v"  , Lx, Ly, Lz),
@@ -261,41 +260,39 @@ public:
     //! Invoke the binary function f on each parameter name and its constant value.
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) const {
-        f(::std::string("gamma"),    gamma   );
-        f(::std::string("R"),        R       );
-        f(::std::string("beta"),     beta    );
-        f(::std::string("mu_r"),     mu_r    );
-        f(::std::string("T_r"),      T_r     );
-        f(::std::string("kappa_r"),  kappa_r );
-        f(::std::string("lambda_r"), lambda_r);
-        f(::std::string("Lx"), Lx);
-        f(::std::string("Ly"), Ly);
-        f(::std::string("Lz"), Lz);
+        f(::std::string("alpha"), alpha);
+        f(::std::string("beta"),  beta );
+        f(::std::string("gamma"), gamma);
+        f(::std::string("Ma"),    Ma);
+        f(::std::string("Pr"),    Pr);
+        f(::std::string("Re"),    Re);
         rho.foreach_parameter(f);
         u.foreach_parameter(f);
         v.foreach_parameter(f);
         w.foreach_parameter(f);
         T.foreach_parameter(f);
+        f(::std::string("Lx"), Lx);
+        f(::std::string("Ly"), Ly);
+        f(::std::string("Lz"), Lz);
     }
 
     //! Invoke the binary function f on each parameter name and its mutable value.
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) {
-        f(::std::string("gamma"),    gamma   );
-        f(::std::string("R"),        R       );
-        f(::std::string("beta"),     beta    );
-        f(::std::string("mu_r"),     mu_r    );
-        f(::std::string("T_r"),      T_r     );
-        f(::std::string("kappa_r"),  kappa_r );
-        f(::std::string("lambda_r"), lambda_r);
-        f(::std::string("Lx"), Lx);
-        f(::std::string("Ly"), Ly);
-        f(::std::string("Lz"), Lz);
+        f(::std::string("alpha"), alpha);
+        f(::std::string("beta"),  beta );
+        f(::std::string("gamma"), gamma);
+        f(::std::string("Ma"),    Ma);
+        f(::std::string("Pr"),    Pr);
+        f(::std::string("Re"),    Re);
         rho.foreach_parameter(f);
         u.foreach_parameter(f);
         v.foreach_parameter(f);
         w.foreach_parameter(f);
         T.foreach_parameter(f);
+        f(::std::string("Lx"), Lx);
+        f(::std::string("Ly"), Ly);
+        f(::std::string("Lz"), Lz);
     }
 
     // Analytically determined quantities

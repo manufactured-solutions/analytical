@@ -5,7 +5,7 @@
 #   w,   w_t,   w_x,   w_xx,   w_xy,   w_xz,   w_y,   w_yy,   w_yz,   w_z,   w_zz
 #   T,   T_t,   T_x,   T_xx,   T_xy,   T_xz,   T_y,   T_yy,   T_yz,   T_z,   T_zz
 # and the coefficients
-#   Re, Ma, Pr, alpha, beta, gamma
+#   alpha, beta, gamma, Ma, Pr, Re
 # compute the source terms
 #   Q_rho, Q_rhou, Q_rhov, Q_rhow, Q_rhoe
 # necessary to force the solution rho, u, v, w, and T.
@@ -24,10 +24,10 @@ mu       = pow(T, beta)
 mu_x     = beta * pow(T, beta - 1) * T_x
 mu_y     = beta * pow(T, beta - 1) * T_y
 mu_z     = beta * pow(T, beta - 1) * T_z
-lambda_  = (alpha - 2 / 3) * mu   # "lambda" is a Python keyword
-lambda_x = (alpha - 2 / 3) * mu_x
-lambda_y = (alpha - 2 / 3) * mu_y
-lambda_z = (alpha - 2 / 3) * mu_z
+lambda_  = (3 * alpha - 2) * mu    / 3 # "lambda" is a Python keyword
+lambda_x = (3 * alpha - 2) * mu_x  / 3 # Strange order of operations allows...
+lambda_y = (3 * alpha - 2) * mu_y  / 3 # ...arbitrary precision library to...
+lambda_z = (3 * alpha - 2) * mu_z  / 3 # ...handle (alpha-2/3) factor correctly
 qx       = - 1 / Re / Pr / (gamma - 1) *  mu   * T_x
 qy       = - 1 / Re / Pr / (gamma - 1) *  mu   * T_y
 qz       = - 1 / Re / Pr / (gamma - 1) *  mu   * T_z

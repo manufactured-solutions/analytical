@@ -278,7 +278,8 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::e(
     const Scalar u = this->u(x, y, z, t);
     const Scalar v = this->v(x, y, z, t);
     const Scalar w = this->w(x, y, z, t);
-    const Scalar e = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2;
+    const Scalar e = T / (gamma * (gamma - 1))
+                   + (Ma * Ma) * (u*u   + v*v   + w*w  ) / 2;
     return e;
 }
 
@@ -289,7 +290,7 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::p(
 {
     const Scalar T   = this->T(x, y, z, t);
     const Scalar rho = this->rho(x, y, z, t); // shadow
-    const Scalar p   = rho * R * T;
+    const Scalar p   = rho * T / gamma;
     return p;
 }
 
@@ -299,7 +300,7 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::mu(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T  = this->T(x, y, z, t);
-    const Scalar mu = mu_r * ::std::pow(T / T_r, beta);
+    const Scalar mu = ::std::pow(T, beta);
     return mu;
 }
 
@@ -365,7 +366,8 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_
             break;
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
-    const Scalar de = R * dT / (gamma - 1) + (u*du + v*dv + w*dw);
+    const Scalar de =  dT / (gamma * (gamma - 1))
+                    + (Ma * Ma) * (u*du + v*dv + w*dw);
     return de;
 }
 
@@ -392,7 +394,7 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_
             break;
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
-    const Scalar dp = drho * R * T + rho * R * dT;
+    const Scalar dp = (drho * T + rho * dT) / gamma;
     return dp;
 }
 
@@ -415,7 +417,7 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_
             break;
         default: return ::std::numeric_limits<Scalar>::signaling_NaN();
     }
-    const Scalar dmu = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1) * dT;
+    const Scalar dmu = beta * ::std::pow(T, beta - 1) * dT;
     return dmu;
 }
 
@@ -485,16 +487,13 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar T_z  = this->T._z (x, y, z, t);
 
     /* Computations stemming from the constitutive relationships */
-    const Scalar p_x      = rho_x * R * T + rho * R * T_x;
-    const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
-    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_x;
-    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_y;
-    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_z;
-    const Scalar lambda   = lambda_r / mu_r * mu;
-    const Scalar lambda_x = lambda_r / mu_r * mu_x;
+    const Scalar p_x      = (rho_x * T + rho * T_x) / gamma;
+    const Scalar mu       = ::std::pow(T, beta);
+    const Scalar mu_x     = beta * (mu / T) * T_x;
+    const Scalar mu_y     = beta * (mu / T) * T_y;
+    const Scalar mu_z     = beta * (mu / T) * T_z;
+    const Scalar lambda   = (alpha - Scalar(2)/Scalar(3)) * mu;
+    const Scalar lambda_x = (alpha - Scalar(2)/Scalar(3)) * mu_x;
 
     /* Computations stemming from the compressible, Newtonian fluid model */
     const Scalar rhou_t  = rho_t * u + rho * u_t;
@@ -512,7 +511,8 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar tauxz_z = mu_z * (u_z + w_x) + mu * (u_zz + w_xz);
 
     const Scalar Q_rhou = rhou_t + rhouu_x + rhouv_y + rhouw_z
-                        + p_x - tauxx_x - tauxy_y - tauxz_z;
+                        + p_x / (Ma * Ma)
+                        - (1 / Re) * (tauxx_x + tauxy_y + tauxz_z);
 
     return Q_rhou;
 }
@@ -554,16 +554,13 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar T_z  = this->T._z (x, y, z, t);
 
     /* Computations stemming from the constitutive relationships */
-    const Scalar p_y      = rho_y * R * T + rho * R * T_y;
-    const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
-    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_x;
-    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_y;
-    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_z;
-    const Scalar lambda   = lambda_r / mu_r * mu;
-    const Scalar lambda_y = lambda_r / mu_r * mu_y;
+    const Scalar p_y      = (rho_y * T + rho * T_y) / gamma;
+    const Scalar mu       = ::std::pow(T, beta);
+    const Scalar mu_x     = beta * (mu / T) * T_x;
+    const Scalar mu_y     = beta * (mu / T) * T_y;
+    const Scalar mu_z     = beta * (mu / T) * T_z;
+    const Scalar lambda   = (alpha - Scalar(2)/Scalar(3)) * mu;
+    const Scalar lambda_y = (alpha - Scalar(2)/Scalar(3)) * mu_y;
 
     /* Computations stemming from the compressible, Newtonian fluid model */
     const Scalar rhov_t  = rho_t * v + rho * v_t;
@@ -581,7 +578,8 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar tauyz_z = mu_z * (v_z + w_y) + mu * (v_zz + w_yz);
 
     const Scalar Q_rhov = rhov_t + rhouv_x + rhovv_y + rhovw_z
-                        + p_y - tauxy_x - tauyy_y - tauyz_z;
+                        + p_y / (Ma * Ma)
+                        - (1 / Re) * (tauxy_x + tauyy_y + tauyz_z);
 
     return Q_rhov;
 }
@@ -623,16 +621,13 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar T_z  = this->T._z (x, y, z, t);
 
     /* Computations stemming from the constitutive relationships */
-    const Scalar p_z      = rho_z * R * T + rho * R * T_z;
-    const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
-    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_x;
-    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_y;
-    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_z;
-    const Scalar lambda   = lambda_r / mu_r * mu;
-    const Scalar lambda_z = lambda_r / mu_r * mu_z;
+    const Scalar p_z      = (rho_z * T + rho * T_z) / gamma;
+    const Scalar mu       = ::std::pow(T, beta);
+    const Scalar mu_x     = beta * (mu / T) * T_x;
+    const Scalar mu_y     = beta * (mu / T) * T_y;
+    const Scalar mu_z     = beta * (mu / T) * T_z;
+    const Scalar lambda   = (alpha - Scalar(2)/Scalar(3)) * mu;
+    const Scalar lambda_z = (alpha - Scalar(2)/Scalar(3)) * mu_z;
 
     /* Computations stemming from the compressible, Newtonian fluid model */
     const Scalar rhow_t  = rho_t * w + rho * w_t;
@@ -650,7 +645,8 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar tauyz_y = mu_y * (v_z + w_y) + mu * (v_yz + w_yy);
 
     const Scalar Q_rhow = rhow_t + rhouw_x + rhovw_y + rhoww_z
-                        + p_z - tauxz_x - tauyz_y - tauzz_z;
+                        + p_z / (Ma * Ma)
+                        - (1 / Re) * (tauxz_x + tauyz_y + tauzz_z);
 
     return Q_rhow;
 }
@@ -709,30 +705,33 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar T_z  = this->T._z (x, y, z, t);
     const Scalar T_zz = this->T._zz(x, y, z, t);
 
+    /* Nondimensional quantities that repeatedly appear */
+    const Scalar inv_gamma_gamma1 = 1 / (gamma * (gamma - 1));
+    const Scalar inv_Re_Pr_gamma1 = 1 / (Re * Pr * (gamma - 1));
+    const Scalar Ma2              = Ma * Ma;
+    const Scalar alpha23          = alpha - Scalar(2) / Scalar(3);
+
     /* Computations stemming from the constitutive relationships */
-    const Scalar e        = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2;
-    const Scalar e_x      = R * T_x / (gamma - 1) + (u*u_x + v*v_x + w*w_x);
-    const Scalar e_y      = R * T_y / (gamma - 1) + (u*u_y + v*v_y + w*w_y);
-    const Scalar e_z      = R * T_z / (gamma - 1) + (u*u_z + v*v_z + w*w_z);
-    const Scalar e_t      = R * T_t / (gamma - 1) + (u*u_t + v*v_t + w*w_t);
-    const Scalar p        = rho * R * T;
-    const Scalar p_x      = rho_x * R * T + rho * R * T_x;
-    const Scalar p_y      = rho_y * R * T + rho * R * T_y;
-    const Scalar p_z      = rho_z * R * T + rho * R * T_z;
-    const Scalar mu       = mu_r * ::std::pow(T / T_r, beta);
-    const Scalar mu_x     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_x;
-    const Scalar mu_y     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_y;
-    const Scalar mu_z     = beta * mu_r / T_r * ::std::pow(T / T_r, beta - 1)
-                          * T_z;
-    const Scalar lambda   = lambda_r / mu_r * mu;
-    const Scalar lambda_x = lambda_r / mu_r * mu_x;
-    const Scalar lambda_y = lambda_r / mu_r * mu_y;
-    const Scalar lambda_z = lambda_r / mu_r * mu_z;
-    const Scalar qx_x     = - kappa_r / mu_r * (mu_x * T_x + mu * T_xx);
-    const Scalar qy_y     = - kappa_r / mu_r * (mu_y * T_y + mu * T_yy);
-    const Scalar qz_z     = - kappa_r / mu_r * (mu_z * T_z + mu * T_zz);
+    const Scalar e        = T   * inv_gamma_gamma1 + Ma2 * (u*u   + v*v   + w*w  ) / 2;
+    const Scalar e_x      = T_x * inv_gamma_gamma1 + Ma2 * (u*u_x + v*v_x + w*w_x);
+    const Scalar e_y      = T_y * inv_gamma_gamma1 + Ma2 * (u*u_y + v*v_y + w*w_y);
+    const Scalar e_z      = T_z * inv_gamma_gamma1 + Ma2 * (u*u_z + v*v_z + w*w_z);
+    const Scalar e_t      = T_t * inv_gamma_gamma1 + Ma2 * (u*u_t + v*v_t + w*w_t);
+    const Scalar p        = (rho   * T            ) / gamma;
+    const Scalar p_x      = (rho_x * T + rho * T_x) / gamma;
+    const Scalar p_y      = (rho_y * T + rho * T_y) / gamma;
+    const Scalar p_z      = (rho_z * T + rho * T_z) / gamma;
+    const Scalar mu       = ::std::pow(T, beta);
+    const Scalar mu_x     = beta * (mu / T) * T_x;
+    const Scalar mu_y     = beta * (mu / T) * T_y;
+    const Scalar mu_z     = beta * (mu / T) * T_z;
+    const Scalar lambda   = alpha23 * mu;
+    const Scalar lambda_x = alpha23 * mu_x;
+    const Scalar lambda_y = alpha23 * mu_y;
+    const Scalar lambda_z = alpha23 * mu_z;
+    const Scalar qx_x     = - inv_Re_Pr_gamma1 * (mu_x * T_x + mu * T_xx);
+    const Scalar qy_y     = - inv_Re_Pr_gamma1 * (mu_y * T_y + mu * T_yy);
+    const Scalar qz_z     = - inv_Re_Pr_gamma1 * (mu_z * T_z + mu * T_zz);
 
     /* Computations stemming from the compressible, Newtonian fluid model */
     const Scalar rhoe_t  = rho_t * e + rho * e_t;
@@ -784,9 +783,9 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar Q_rhoe = rhoe_t + rhoue_x + rhove_y + rhowe_z
                         + pu_x + pv_y + pw_z
                         + qx_x + qy_y + qz_z
-                        - utauxx_x - vtauxy_x - wtauxz_x
-                        - utauxy_y - vtauyy_y - wtauyz_y
-                        - utauxz_z - vtauyz_z - wtauzz_z;
+                        - (Ma * Ma / Re) * (  utauxx_x + vtauxy_x + wtauxz_x
+                                            + utauxy_y + vtauyy_y + wtauyz_y
+                                            + utauxz_z + vtauyz_z + wtauzz_z);
 
     return Q_rhoe;
 }
@@ -824,16 +823,15 @@ template <class T> void isothermal_channel(T& t)
 
     zero(t);   // All parameters not set here must be zeros
 
-    t.gamma    = scalar(14)/scalar(10);
-    t.R        = scalar(287);
-    t.beta     = scalar(2)/scalar(3);
-    t.mu_r     = scalar(1852)/scalar(100000000);
-    t.T_r      = scalar(300);
-    t.kappa_r  = (t.gamma*t.R*t.mu_r) / ((t.gamma - 1)*scalar(7)/scalar(10));
-    t.lambda_r = - scalar(2)/scalar(3)*t.mu_r;
-    t.Lx       = scalar(4)*pi;
-    t.Ly       = scalar(2);
-    t.Lz       = scalar(4)*pi/scalar(3);
+    t.alpha = scalar(0);
+    t.beta  = scalar(2)/scalar(3);
+    t.gamma = scalar(14)/scalar(10);
+    t.Ma    = scalar(115)/scalar(100);
+    t.Pr    = scalar(7)/scalar(10);
+    t.Re    = scalar(100);
+    t.Lx    = scalar(4)*pi;
+    t.Ly    = scalar(2);
+    t.Lz    = scalar(4)*pi/scalar(3);
 
     t.rho.a_0  = scalar(1);
     t.rho.a_xy = scalar(1) / scalar(11);

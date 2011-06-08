@@ -34,9 +34,6 @@ params = {
     'Ma'       : Real(p.next(), PREC),
     'Pr'       : Real(p.next(), PREC),
     'Re'       : Real(p.next(), PREC),
-    'Lx'       : Real(p.next(), PREC),
-    'Ly'       : Real(p.next(), PREC),
-    'Lz'       : Real(p.next(), PREC),
     'a_rho0'   : Real(p.next(), PREC),
     'a_rhox'   : Real(p.next(), PREC),
     'a_rhoxy'  : Real(p.next(), PREC),
@@ -231,7 +228,10 @@ params = {
     'g_Txz'    : Real(p.next(), PREC),
     'g_Ty'     : Real(p.next(), PREC),
     'g_Tyz'    : Real(p.next(), PREC),
-    'g_Tz'     : Real(p.next(), PREC)
+    'g_Tz'     : Real(p.next(), PREC),
+    'Lx'       : Real(p.next(), PREC),
+    'Ly'       : Real(p.next(), PREC),
+    'Lz'       : Real(p.next(), PREC)
 }
 
 # Load test parameters as global names for evaluation purposes
