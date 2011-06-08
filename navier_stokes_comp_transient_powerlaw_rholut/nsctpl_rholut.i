@@ -1,22 +1,22 @@
-// SWIG declarations for building nsctpl module
+// SWIG declarations for building nsctpl_rholut module
 // See SWIG documentation at http://www.swig.org/
 // Especially the SWIG and C++ details on templates
 
-%module nsctpl
+%module nsctpl_rholut
 
 // Basic C++ type support
 %include "std_string.i"
 %include "cpointer.i"
 %pointer_functions(double, doublep);
 
-// Verbatim #includes passed into C++ compilation taken from nsctpl_fwd.hpp
+// Verbatim #includes passed into C++ compilation taken from nsctpl_rholut_fwd.hpp
 %{
 #define SWIG_FILE_WITH_INIT
 #include <cmath>
 #include <limits>
 #include <sstream>
 #include <string>
-#include "nsctpl.hpp"
+#include "nsctpl_rholut.hpp"
 %}
 
 // C++ code underneath dump() extension methods
@@ -35,12 +35,12 @@ static void print_nonzero_values(const std::string &name, double value) {
 }
 %}
 
-// Have SWIG parse nsctpl namespace forward declarations
-%include "nsctpl_fwd.hpp"
+// Have SWIG parse nsctpl_rholut namespace forward declarations
+%include "nsctpl_rholut_fwd.hpp"
 
-namespace nsctpl {
+namespace nsctpl_rholut {
 
-// Instantiate templated nsctpl::primitive members for doubles
+// Instantiate templated nsctpl_rholut::primitive members for doubles
 %extend primitive {
 
     %template(__call__) operator()<double,double,double,double>;
@@ -60,13 +60,13 @@ namespace nsctpl {
     }
 }
 
-// Expose template instantiation of nsctpl::primitive for doubles
+// Expose template instantiation of nsctpl_rholut::primitive for doubles
 %template(primitive_double) primitive<double>;
 %pythoncode %{
     primitive = primitive_double
 %}
 
-// Instantiate templated nsctpl::manufactured_solution members for doubles
+// Instantiate templated nsctpl_rholut::manufactured_solution members for doubles
 %extend manufactured_solution {
 
     %template(grad_rho) grad_rho<double,double,double,double>;
@@ -95,7 +95,7 @@ namespace nsctpl {
     }
 }
 
-// Expose template instantiation of nsctpl::manufactured_solution for doubles
+// Expose template instantiation of nsctpl_rholut::manufactured_solution for doubles
 %template(manufactured_solution_double) manufactured_solution<double>;
 %pythoncode %{
     manufactured_solution = manufactured_solution_double

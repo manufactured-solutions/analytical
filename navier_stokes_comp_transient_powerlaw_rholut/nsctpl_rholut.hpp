@@ -21,12 +21,12 @@
 //
 //-----------------------------------------------------------------------el-
 
-#include "nsctpl_fwd.hpp"
+#include "nsctpl_rholut_fwd.hpp"
 
-#ifndef NSCTPL_HPP
-#define NSCTPL_HPP
+#ifndef NSCTPL_RHOLUT_HPP
+#define NSCTPL_RHOLUT_HPP
 
-namespace nsctpl {
+namespace nsctpl_rholut {
 
 // ---------------------------------------------------------------------------
 // primitive<Scalar> member implementations
@@ -177,31 +177,31 @@ Scalar primitive<Scalar>::_zz(T1 x, T2 y, T3 z, T4 t) const
 
 // ---------------------------------------------------------------------------
 // manufactured_solution<Scalar,IndexBase,Primitive> analytical member
-// implementations See comments in nsctpl_fwd.hpp regarding SWIG-related
+// implementations See comments in nsctpl_rholut_fwd.hpp regarding SWIG-related
 // #ifdefs
 // ---------------------------------------------------------------------------
 
 #ifndef SWIG
-#define NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION     \
-        template <typename Scalar,                     \
-                  int IndexBase,                       \
+#define NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION \
+        template <typename Scalar,                        \
+                  int IndexBase,                          \
                   template <typename> class Primitive>
-#define NSCTPL_MANUFACTURED_SOLUTION_TPNAMES           \
+#define NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES       \
         Scalar,IndexBase,Primitive
 #else
-#define NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION     \
-        template <typename Scalar,                     \
+#define NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION \
+        template <typename Scalar,                        \
                   int IndexBase>
-#define NSCTPL_MANUFACTURED_SOLUTION_TPNAMES           \
+#define NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES       \
         Scalar,IndexBase
 #endif
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
-const int manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::index_base = IndexBase;
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
+const int manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::index_base = IndexBase;
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_rho(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_rho(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -212,9 +212,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_rho(
     }
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_u(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_u(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -225,9 +225,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_u(
     }
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_v(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_v(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -238,9 +238,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_v(
     }
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_w(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_w(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -251,9 +251,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_w(
     }
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_T(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_T(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     switch (index) {
@@ -269,9 +269,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_T(
 // implementations derived from analytical results
 // ---------------------------------------------------------------------------
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::e(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::e(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T = this->T(x, y, z, t);
@@ -282,9 +282,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::e(
     return e;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::p(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::p(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T   = this->T(x, y, z, t);
@@ -293,9 +293,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::p(
     return p;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::mu(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::mu(
         T1 x, T2 y, T3 z, T4 t) const
 {
     const Scalar T  = this->T(x, y, z, t);
@@ -303,41 +303,41 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::mu(
     return mu;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::rhou(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::rhou(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * u(x, y, z, t);
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::rhov(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::rhov(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * v(x, y, z, t);
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::rhow(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::rhow(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * w(x, y, z, t);
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::rhoe(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::rhoe(
         T1 x, T2 y, T3 z, T4 t) const
 {
     return rho(x, y, z, t) * e(x, y, z, t);
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_e(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_e(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar u = this->u(x, y, z, t);
@@ -369,9 +369,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_e(
     return de;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_p(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_p(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar rho = this->rho(x, y, z, t); // shadow
@@ -396,9 +396,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_p(
     return dp;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_mu(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::grad_mu(
         T1 x, T2 y, T3 z, T4 t, int index) const
 {
     const Scalar T = this->T(x, y, z, t);
@@ -419,9 +419,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::grad_mu(
     return dmu;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -448,9 +448,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho(
     return Q_rho;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhou(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhou(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -517,9 +517,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhou(
     return Q_rhou;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhov(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhov(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -586,9 +586,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhov(
     return Q_rhov;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhow(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhow(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -655,9 +655,9 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhow(
     return Q_rhow;
 }
 
-NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
 template <typename T1, typename T2, typename T3, typename T4>
-Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhoe(
+Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhoe(
         T1 x, T2 y, T3 z, T4 t) const
 {
     /* Computations retrieving primitive solution details */
@@ -791,8 +791,8 @@ Scalar manufactured_solution<NSCTPL_MANUFACTURED_SOLUTION_TPNAMES>::Q_rhoe(
     return Q_rhoe;
 }
 
-#undef NSCTPL_MANUFACTURED_SOLUTION_TPDECLARATION
-#undef NSCTPL_MANUFACTURED_SOLUTION_TPNAMES
+#undef NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
+#undef NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES
 
 // ---------------------------------------------------------------------------
 // Utilities: zero
@@ -951,6 +951,6 @@ template <class T> void isothermal_flat_plate(T& t)
 }
 
 
-} // end namespace nsctpl
+} // end namespace nsctpl_rholut
 
-#endif /* NSCTPL_HPP */
+#endif /* NSCTPL_RHOLUT_HPP */

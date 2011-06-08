@@ -7,20 +7,20 @@
 #include <string>
 #include <typeinfo>
 
-#include "nsctpl.hpp"
+#include "nsctpl_rholut.hpp"
 #include "test.hpp"
 
 #define STRINGIFY(foo) #foo
 
 // Explicitly instantiate the primitive solution to ensure compilation
-template class nsctpl::primitive<float>;
-template class nsctpl::primitive<double>;
-template class nsctpl::primitive<long double>;
+template class nsctpl_rholut::primitive<float>;
+template class nsctpl_rholut::primitive<double>;
+template class nsctpl_rholut::primitive<long double>;
 
 // Explicitly instantiate the manufactured forcing to ensure compilation
-template class nsctpl::manufactured_solution<float,1>;
-template class nsctpl::manufactured_solution<double,1>;
-template class nsctpl::manufactured_solution<long double,1>;
+template class nsctpl_rholut::manufactured_solution<float,1>;
+template class nsctpl_rholut::manufactured_solution<double,1>;
+template class nsctpl_rholut::manufactured_solution<long double,1>;
 
 // Used to output each solution parameter on std::cout
 template<typename Scalar>
@@ -82,125 +82,125 @@ void run_tests()
 {
     std::cout.precision(std::numeric_limits<Scalar>::digits10);
 
-    nsctpl::manufactured_solution<Scalar,1> ms;
+    nsctpl_rholut::manufactured_solution<Scalar,1> ms;
     {
         prime_it<Scalar> p;
         ms.foreach_parameter(p);
     }
 
-    using nsctpl::test::x;
-    using nsctpl::test::y;
-    using nsctpl::test::z;
-    using nsctpl::test::t;
+    using nsctpl_rholut::test::x;
+    using nsctpl_rholut::test::y;
+    using nsctpl_rholut::test::z;
+    using nsctpl_rholut::test::t;
 
     std::cout << std::endl
               << "Analytic solution evaluations for type "
               << typeid(Scalar).name()
               << " (digits10 = " << std::numeric_limits<Scalar>::digits10 << ")"
               << std::endl;
-    CHECK(ms.rho    (x, y, z, t), nsctpl::test::rho);
-    CHECK(ms.rho._t (x, y, z, t), nsctpl::test::rho_t );
-    CHECK(ms.rho._x (x, y, z, t), nsctpl::test::rho_x );
-    CHECK(ms.rho._xx(x, y, z, t), nsctpl::test::rho_xx);
-    CHECK(ms.rho._xy(x, y, z, t), nsctpl::test::rho_xy);
-    CHECK(ms.rho._xz(x, y, z, t), nsctpl::test::rho_xz);
-    CHECK(ms.rho._y (x, y, z, t), nsctpl::test::rho_y );
-    CHECK(ms.rho._yy(x, y, z, t), nsctpl::test::rho_yy);
-    CHECK(ms.rho._yz(x, y, z, t), nsctpl::test::rho_yz);
-    CHECK(ms.rho._z (x, y, z, t), nsctpl::test::rho_z );
-    CHECK(ms.rho._zz(x, y, z, t), nsctpl::test::rho_zz);
-    CHECK(ms.u    (x, y, z, t), nsctpl::test::u   );
-    CHECK(ms.u._t (x, y, z, t), nsctpl::test::u_t );
-    CHECK(ms.u._x (x, y, z, t), nsctpl::test::u_x );
-    CHECK(ms.u._xx(x, y, z, t), nsctpl::test::u_xx);
-    CHECK(ms.u._xy(x, y, z, t), nsctpl::test::u_xy);
-    CHECK(ms.u._xz(x, y, z, t), nsctpl::test::u_xz);
-    CHECK(ms.u._y (x, y, z, t), nsctpl::test::u_y );
-    CHECK(ms.u._yy(x, y, z, t), nsctpl::test::u_yy);
-    CHECK(ms.u._yz(x, y, z, t), nsctpl::test::u_yz);
-    CHECK(ms.u._z (x, y, z, t), nsctpl::test::u_z );
-    CHECK(ms.u._zz(x, y, z, t), nsctpl::test::u_zz);
-    CHECK(ms.v    (x, y, z, t), nsctpl::test::v   );
-    CHECK(ms.v._t (x, y, z, t), nsctpl::test::v_t );
-    CHECK(ms.v._x (x, y, z, t), nsctpl::test::v_x );
-    CHECK(ms.v._xx(x, y, z, t), nsctpl::test::v_xx);
-    CHECK(ms.v._xy(x, y, z, t), nsctpl::test::v_xy);
-    CHECK(ms.v._xz(x, y, z, t), nsctpl::test::v_xz);
-    CHECK(ms.v._y (x, y, z, t), nsctpl::test::v_y );
-    CHECK(ms.v._yy(x, y, z, t), nsctpl::test::v_yy);
-    CHECK(ms.v._yz(x, y, z, t), nsctpl::test::v_yz);
-    CHECK(ms.v._z (x, y, z, t), nsctpl::test::v_z );
-    CHECK(ms.v._zz(x, y, z, t), nsctpl::test::v_zz);
-    CHECK(ms.w    (x, y, z, t), nsctpl::test::w   );
-    CHECK(ms.w._t (x, y, z, t), nsctpl::test::w_t );
-    CHECK(ms.w._x (x, y, z, t), nsctpl::test::w_x );
-    CHECK(ms.w._xx(x, y, z, t), nsctpl::test::w_xx);
-    CHECK(ms.w._xy(x, y, z, t), nsctpl::test::w_xy);
-    CHECK(ms.w._xz(x, y, z, t), nsctpl::test::w_xz);
-    CHECK(ms.w._y (x, y, z, t), nsctpl::test::w_y );
-    CHECK(ms.w._yy(x, y, z, t), nsctpl::test::w_yy);
-    CHECK(ms.w._yz(x, y, z, t), nsctpl::test::w_yz);
-    CHECK(ms.w._z (x, y, z, t), nsctpl::test::w_z );
-    CHECK(ms.w._zz(x, y, z, t), nsctpl::test::w_zz);
-    CHECK(ms.T    (x, y, z, t), nsctpl::test::T   );
-    CHECK(ms.T._t (x, y, z, t), nsctpl::test::T_t );
-    CHECK(ms.T._x (x, y, z, t), nsctpl::test::T_x );
-    CHECK(ms.T._xx(x, y, z, t), nsctpl::test::T_xx);
-    CHECK(ms.T._xy(x, y, z, t), nsctpl::test::T_xy);
-    CHECK(ms.T._xz(x, y, z, t), nsctpl::test::T_xz);
-    CHECK(ms.T._y (x, y, z, t), nsctpl::test::T_y );
-    CHECK(ms.T._yy(x, y, z, t), nsctpl::test::T_yy);
-    CHECK(ms.T._yz(x, y, z, t), nsctpl::test::T_yz);
-    CHECK(ms.T._z (x, y, z, t), nsctpl::test::T_z );
-    CHECK(ms.T._zz(x, y, z, t), nsctpl::test::T_zz);
+    CHECK(ms.rho    (x, y, z, t), nsctpl_rholut::test::rho);
+    CHECK(ms.rho._t (x, y, z, t), nsctpl_rholut::test::rho_t );
+    CHECK(ms.rho._x (x, y, z, t), nsctpl_rholut::test::rho_x );
+    CHECK(ms.rho._xx(x, y, z, t), nsctpl_rholut::test::rho_xx);
+    CHECK(ms.rho._xy(x, y, z, t), nsctpl_rholut::test::rho_xy);
+    CHECK(ms.rho._xz(x, y, z, t), nsctpl_rholut::test::rho_xz);
+    CHECK(ms.rho._y (x, y, z, t), nsctpl_rholut::test::rho_y );
+    CHECK(ms.rho._yy(x, y, z, t), nsctpl_rholut::test::rho_yy);
+    CHECK(ms.rho._yz(x, y, z, t), nsctpl_rholut::test::rho_yz);
+    CHECK(ms.rho._z (x, y, z, t), nsctpl_rholut::test::rho_z );
+    CHECK(ms.rho._zz(x, y, z, t), nsctpl_rholut::test::rho_zz);
+    CHECK(ms.u    (x, y, z, t), nsctpl_rholut::test::u   );
+    CHECK(ms.u._t (x, y, z, t), nsctpl_rholut::test::u_t );
+    CHECK(ms.u._x (x, y, z, t), nsctpl_rholut::test::u_x );
+    CHECK(ms.u._xx(x, y, z, t), nsctpl_rholut::test::u_xx);
+    CHECK(ms.u._xy(x, y, z, t), nsctpl_rholut::test::u_xy);
+    CHECK(ms.u._xz(x, y, z, t), nsctpl_rholut::test::u_xz);
+    CHECK(ms.u._y (x, y, z, t), nsctpl_rholut::test::u_y );
+    CHECK(ms.u._yy(x, y, z, t), nsctpl_rholut::test::u_yy);
+    CHECK(ms.u._yz(x, y, z, t), nsctpl_rholut::test::u_yz);
+    CHECK(ms.u._z (x, y, z, t), nsctpl_rholut::test::u_z );
+    CHECK(ms.u._zz(x, y, z, t), nsctpl_rholut::test::u_zz);
+    CHECK(ms.v    (x, y, z, t), nsctpl_rholut::test::v   );
+    CHECK(ms.v._t (x, y, z, t), nsctpl_rholut::test::v_t );
+    CHECK(ms.v._x (x, y, z, t), nsctpl_rholut::test::v_x );
+    CHECK(ms.v._xx(x, y, z, t), nsctpl_rholut::test::v_xx);
+    CHECK(ms.v._xy(x, y, z, t), nsctpl_rholut::test::v_xy);
+    CHECK(ms.v._xz(x, y, z, t), nsctpl_rholut::test::v_xz);
+    CHECK(ms.v._y (x, y, z, t), nsctpl_rholut::test::v_y );
+    CHECK(ms.v._yy(x, y, z, t), nsctpl_rholut::test::v_yy);
+    CHECK(ms.v._yz(x, y, z, t), nsctpl_rholut::test::v_yz);
+    CHECK(ms.v._z (x, y, z, t), nsctpl_rholut::test::v_z );
+    CHECK(ms.v._zz(x, y, z, t), nsctpl_rholut::test::v_zz);
+    CHECK(ms.w    (x, y, z, t), nsctpl_rholut::test::w   );
+    CHECK(ms.w._t (x, y, z, t), nsctpl_rholut::test::w_t );
+    CHECK(ms.w._x (x, y, z, t), nsctpl_rholut::test::w_x );
+    CHECK(ms.w._xx(x, y, z, t), nsctpl_rholut::test::w_xx);
+    CHECK(ms.w._xy(x, y, z, t), nsctpl_rholut::test::w_xy);
+    CHECK(ms.w._xz(x, y, z, t), nsctpl_rholut::test::w_xz);
+    CHECK(ms.w._y (x, y, z, t), nsctpl_rholut::test::w_y );
+    CHECK(ms.w._yy(x, y, z, t), nsctpl_rholut::test::w_yy);
+    CHECK(ms.w._yz(x, y, z, t), nsctpl_rholut::test::w_yz);
+    CHECK(ms.w._z (x, y, z, t), nsctpl_rholut::test::w_z );
+    CHECK(ms.w._zz(x, y, z, t), nsctpl_rholut::test::w_zz);
+    CHECK(ms.T    (x, y, z, t), nsctpl_rholut::test::T   );
+    CHECK(ms.T._t (x, y, z, t), nsctpl_rholut::test::T_t );
+    CHECK(ms.T._x (x, y, z, t), nsctpl_rholut::test::T_x );
+    CHECK(ms.T._xx(x, y, z, t), nsctpl_rholut::test::T_xx);
+    CHECK(ms.T._xy(x, y, z, t), nsctpl_rholut::test::T_xy);
+    CHECK(ms.T._xz(x, y, z, t), nsctpl_rholut::test::T_xz);
+    CHECK(ms.T._y (x, y, z, t), nsctpl_rholut::test::T_y );
+    CHECK(ms.T._yy(x, y, z, t), nsctpl_rholut::test::T_yy);
+    CHECK(ms.T._yz(x, y, z, t), nsctpl_rholut::test::T_yz);
+    CHECK(ms.T._z (x, y, z, t), nsctpl_rholut::test::T_z );
+    CHECK(ms.T._zz(x, y, z, t), nsctpl_rholut::test::T_zz);
 
     std::cout << std::endl
               << "Analytically determined quantities for "
               << typeid(Scalar).name()
               << " (digits10 = " << std::numeric_limits<Scalar>::digits10 << ")"
               << std::endl;
-    CHECK(ms.grad_rho(x, y, z, t, 1), nsctpl::test::rho_x);
-    CHECK(ms.grad_rho(x, y, z, t, 2), nsctpl::test::rho_y);
-    CHECK(ms.grad_rho(x, y, z, t, 3), nsctpl::test::rho_z);
-    CHECK(ms.grad_u  (x, y, z, t, 1), nsctpl::test::u_x);
-    CHECK(ms.grad_u  (x, y, z, t, 2), nsctpl::test::u_y);
-    CHECK(ms.grad_u  (x, y, z, t, 3), nsctpl::test::u_z);
-    CHECK(ms.grad_v  (x, y, z, t, 1), nsctpl::test::v_x);
-    CHECK(ms.grad_v  (x, y, z, t, 2), nsctpl::test::v_y);
-    CHECK(ms.grad_v  (x, y, z, t, 3), nsctpl::test::v_z);
-    CHECK(ms.grad_w  (x, y, z, t, 1), nsctpl::test::w_x);
-    CHECK(ms.grad_w  (x, y, z, t, 2), nsctpl::test::w_y);
-    CHECK(ms.grad_w  (x, y, z, t, 3), nsctpl::test::w_z);
-    CHECK(ms.grad_T  (x, y, z, t, 1), nsctpl::test::T_x);
-    CHECK(ms.grad_T  (x, y, z, t, 2), nsctpl::test::T_y);
-    CHECK(ms.grad_T  (x, y, z, t, 3), nsctpl::test::T_z);
+    CHECK(ms.grad_rho(x, y, z, t, 1), nsctpl_rholut::test::rho_x);
+    CHECK(ms.grad_rho(x, y, z, t, 2), nsctpl_rholut::test::rho_y);
+    CHECK(ms.grad_rho(x, y, z, t, 3), nsctpl_rholut::test::rho_z);
+    CHECK(ms.grad_u  (x, y, z, t, 1), nsctpl_rholut::test::u_x);
+    CHECK(ms.grad_u  (x, y, z, t, 2), nsctpl_rholut::test::u_y);
+    CHECK(ms.grad_u  (x, y, z, t, 3), nsctpl_rholut::test::u_z);
+    CHECK(ms.grad_v  (x, y, z, t, 1), nsctpl_rholut::test::v_x);
+    CHECK(ms.grad_v  (x, y, z, t, 2), nsctpl_rholut::test::v_y);
+    CHECK(ms.grad_v  (x, y, z, t, 3), nsctpl_rholut::test::v_z);
+    CHECK(ms.grad_w  (x, y, z, t, 1), nsctpl_rholut::test::w_x);
+    CHECK(ms.grad_w  (x, y, z, t, 2), nsctpl_rholut::test::w_y);
+    CHECK(ms.grad_w  (x, y, z, t, 3), nsctpl_rholut::test::w_z);
+    CHECK(ms.grad_T  (x, y, z, t, 1), nsctpl_rholut::test::T_x);
+    CHECK(ms.grad_T  (x, y, z, t, 2), nsctpl_rholut::test::T_y);
+    CHECK(ms.grad_T  (x, y, z, t, 3), nsctpl_rholut::test::T_z);
 
     std::cout << std::endl
               << "Quantities built from the analytical solutions for "
               << typeid(Scalar).name()
               << " (digits10 = " << std::numeric_limits<Scalar>::digits10 << ")"
               << std::endl;
-    CHECK(ms.e      (x, y, z, t),    nsctpl::test::e);
-    CHECK(ms.p      (x, y, z, t),    nsctpl::test::p);
-    CHECK(ms.mu     (x, y, z, t),    nsctpl::test::mu);
-    CHECK(ms.rhou   (x, y, z, t),    nsctpl::test::rhou);
-    CHECK(ms.rhov   (x, y, z, t),    nsctpl::test::rhov);
-    CHECK(ms.rhow   (x, y, z, t),    nsctpl::test::rhow);
-    CHECK(ms.rhoe   (x, y, z, t),    nsctpl::test::rhoe);
-    CHECK(ms.grad_e (x, y, z, t, 1), nsctpl::test::e_x);
-    CHECK(ms.grad_e (x, y, z, t, 2), nsctpl::test::e_y);
-    CHECK(ms.grad_e (x, y, z, t, 3), nsctpl::test::e_z);
-    CHECK(ms.grad_p (x, y, z, t, 1), nsctpl::test::p_x);
-    CHECK(ms.grad_p (x, y, z, t, 2), nsctpl::test::p_y);
-    CHECK(ms.grad_p (x, y, z, t, 3), nsctpl::test::p_z);
-    CHECK(ms.grad_mu(x, y, z, t, 1), nsctpl::test::mu_x);
-    CHECK(ms.grad_mu(x, y, z, t, 2), nsctpl::test::mu_y);
-    CHECK(ms.grad_mu(x, y, z, t, 3), nsctpl::test::mu_z);
-    CHECK(ms.Q_rho  (x, y, z, t),    nsctpl::test::Q_rho);
-    CHECK(ms.Q_rhou (x, y, z, t),    nsctpl::test::Q_rhou);
-    CHECK(ms.Q_rhov (x, y, z, t),    nsctpl::test::Q_rhov);
-    CHECK(ms.Q_rhow (x, y, z, t),    nsctpl::test::Q_rhow);
-    CHECK(ms.Q_rhoe (x, y, z, t),    nsctpl::test::Q_rhoe);
+    CHECK(ms.e      (x, y, z, t),    nsctpl_rholut::test::e);
+    CHECK(ms.p      (x, y, z, t),    nsctpl_rholut::test::p);
+    CHECK(ms.mu     (x, y, z, t),    nsctpl_rholut::test::mu);
+    CHECK(ms.rhou   (x, y, z, t),    nsctpl_rholut::test::rhou);
+    CHECK(ms.rhov   (x, y, z, t),    nsctpl_rholut::test::rhov);
+    CHECK(ms.rhow   (x, y, z, t),    nsctpl_rholut::test::rhow);
+    CHECK(ms.rhoe   (x, y, z, t),    nsctpl_rholut::test::rhoe);
+    CHECK(ms.grad_e (x, y, z, t, 1), nsctpl_rholut::test::e_x);
+    CHECK(ms.grad_e (x, y, z, t, 2), nsctpl_rholut::test::e_y);
+    CHECK(ms.grad_e (x, y, z, t, 3), nsctpl_rholut::test::e_z);
+    CHECK(ms.grad_p (x, y, z, t, 1), nsctpl_rholut::test::p_x);
+    CHECK(ms.grad_p (x, y, z, t, 2), nsctpl_rholut::test::p_y);
+    CHECK(ms.grad_p (x, y, z, t, 3), nsctpl_rholut::test::p_z);
+    CHECK(ms.grad_mu(x, y, z, t, 1), nsctpl_rholut::test::mu_x);
+    CHECK(ms.grad_mu(x, y, z, t, 2), nsctpl_rholut::test::mu_y);
+    CHECK(ms.grad_mu(x, y, z, t, 3), nsctpl_rholut::test::mu_z);
+    CHECK(ms.Q_rho  (x, y, z, t),    nsctpl_rholut::test::Q_rho);
+    CHECK(ms.Q_rhou (x, y, z, t),    nsctpl_rholut::test::Q_rhou);
+    CHECK(ms.Q_rhov (x, y, z, t),    nsctpl_rholut::test::Q_rhov);
+    CHECK(ms.Q_rhow (x, y, z, t),    nsctpl_rholut::test::Q_rhow);
+    CHECK(ms.Q_rhoe (x, y, z, t),    nsctpl_rholut::test::Q_rhoe);
 }
 
 int main(int argc, char *argv[])
@@ -208,22 +208,22 @@ int main(int argc, char *argv[])
     using std::cout;
     using std::endl;
 
-    cout << "navier_stokes_comp_transient_powerlaw implementation test" << endl
+    cout << "navier_stokes_comp_transient_powerlaw_rholut implementation test" << endl
          << '\t' << STRINGIFY($Id$) << endl;
 
     cout << endl
          << "Solution parameters after initialization:" << endl;
-    nsctpl::manufactured_solution<double> ms;
+    nsctpl_rholut::manufactured_solution<double> ms;
     prime_it<double> p;
     ms.foreach_parameter(p);
     ms.foreach_parameter(print_it<double>);
 
     cout << endl
          << "Evaluation takes place at" << endl
-         << "\tx = " << nsctpl::test::x << endl
-         << "\ty = " << nsctpl::test::y << endl
-         << "\tz = " << nsctpl::test::z << endl
-         << "\tt = " << nsctpl::test::t << endl;
+         << "\tx = " << nsctpl_rholut::test::x << endl
+         << "\ty = " << nsctpl_rholut::test::y << endl
+         << "\tz = " << nsctpl_rholut::test::z << endl
+         << "\tt = " << nsctpl_rholut::test::t << endl;
 
     run_tests<float>();
     run_tests<double>();

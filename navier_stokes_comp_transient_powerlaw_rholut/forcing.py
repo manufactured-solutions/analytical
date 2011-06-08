@@ -10,32 +10,30 @@
 #   Q_rho, Q_rhou, Q_rhov, Q_rhow, Q_rhoe
 # necessary to force the solution rho, u, v, w, and T.
 
-FIXME STARTHERE FIXME
-
 # Computations stemming from the constitutive relationships
-e        = R * T   / (gamma - 1) + (u*u   + v*v   + w*w  ) / 2
-e_x      = R * T_x / (gamma - 1) + (u*u_x + v*v_x + w*w_x)
-e_y      = R * T_y / (gamma - 1) + (u*u_y + v*v_y + w*w_y)
-e_z      = R * T_z / (gamma - 1) + (u*u_z + v*v_z + w*w_z)
-e_t      = R * T_t / (gamma - 1) + (u*u_t + v*v_t + w*w_t)
-p        = rho * R * T
-p_x      = rho_x * R * T + rho * R * T_x
-p_y      = rho_y * R * T + rho * R * T_y
-p_z      = rho_z * R * T + rho * R * T_z
-mu       = mu_r * pow(T / T_r, beta)
-mu_x     = beta * mu_r / T_r * pow(T / T_r, beta - 1) * T_x
-mu_y     = beta * mu_r / T_r * pow(T / T_r, beta - 1) * T_y
-mu_z     = beta * mu_r / T_r * pow(T / T_r, beta - 1) * T_z
-lambda_  = lambda_r / mu_r * mu   # "lambda" is a Python keyword
-lambda_x = lambda_r / mu_r * mu_x
-lambda_y = lambda_r / mu_r * mu_y
-lambda_z = lambda_r / mu_r * mu_z
-qx       = - kappa_r / mu_r *  mu   * T_x
-qy       = - kappa_r / mu_r *  mu   * T_y
-qz       = - kappa_r / mu_r *  mu   * T_z
-qx_x     = - kappa_r / mu_r * (mu_x * T_x + mu * T_xx)
-qy_y     = - kappa_r / mu_r * (mu_y * T_y + mu * T_yy)
-qz_z     = - kappa_r / mu_r * (mu_z * T_z + mu * T_zz)
+e        = T   / gamma / (gamma - 1) + Ma * Ma * (u*u   + v*v   + w*w  ) / 2
+e_x      = T_x / gamma / (gamma - 1) + Ma * Ma * (u*u_x + v*v_x + w*w_x)
+e_y      = T_y / gamma / (gamma - 1) + Ma * Ma * (u*u_y + v*v_y + w*w_y)
+e_z      = T_z / gamma / (gamma - 1) + Ma * Ma * (u*u_z + v*v_z + w*w_z)
+e_t      = T_t / gamma / (gamma - 1) + Ma * Ma * (u*u_t + v*v_t + w*w_t)
+p        = (rho   * T            ) / gamma
+p_x      = (rho_x * T + rho * T_x) / gamma
+p_y      = (rho_y * T + rho * T_y) / gamma
+p_z      = (rho_z * T + rho * T_z) / gamma
+mu       = pow(T, beta)
+mu_x     = beta * pow(T, beta - 1) * T_x
+mu_y     = beta * pow(T, beta - 1) * T_y
+mu_z     = beta * pow(T, beta - 1) * T_z
+lambda_  = (alpha - 2 / 3) * mu   # "lambda" is a Python keyword
+lambda_x = (alpha - 2 / 3) * mu_x
+lambda_y = (alpha - 2 / 3) * mu_y
+lambda_z = (alpha - 2 / 3) * mu_z
+qx       = - 1 / Re / Pr / (gamma - 1) *  mu   * T_x
+qy       = - 1 / Re / Pr / (gamma - 1) *  mu   * T_y
+qz       = - 1 / Re / Pr / (gamma - 1) *  mu   * T_z
+qx_x     = - 1 / Re / Pr / (gamma - 1) * (mu_x * T_x + mu * T_xx)
+qy_y     = - 1 / Re / Pr / (gamma - 1) * (mu_y * T_y + mu * T_yy)
+qz_z     = - 1 / Re / Pr / (gamma - 1) * (mu_z * T_z + mu * T_zz)
 
 # Computations stemming from the compressible, Newtonian fluid model
 rhou    = rho * u
@@ -97,12 +95,18 @@ utauxz_z = u_z * tauxz + u * tauxz_z
 vtauyz_z = v_z * tauyz + v * tauyz_z
 wtauzz_z = w_z * tauzz + w * tauzz_z
 
-Q_rho  = rho_t  + rhou_x + rhov_y + rhow_z
-Q_rhou = ( rhou_t + rhouu_x + rhouv_y + rhouw_z + p_x - tauxx_x - tauxy_y - tauxz_z )
-Q_rhov = ( rhov_t + rhouv_x + rhovv_y + rhovw_z + p_y - tauxy_x - tauyy_y - tauyz_z )
-Q_rhow = ( rhow_t + rhouw_x + rhovw_y + rhoww_z + p_z - tauxz_x - tauyz_y - tauzz_z )
+Q_rho  = rho_t + rhou_x + rhov_y + rhow_z
+Q_rhou = ( rhou_t + rhouu_x + rhouv_y + rhouw_z
+                  + p_x / (Ma * Ma)
+                  - (1 / Re) * (tauxx_x + tauxy_y + tauxz_z) )
+Q_rhov = ( rhov_t + rhouv_x + rhovv_y + rhovw_z
+                  + p_y / (Ma * Ma)
+                  - (1 / Re) * (tauxy_x + tauyy_y + tauyz_z) )
+Q_rhow = ( rhow_t + rhouw_x + rhovw_y + rhoww_z
+                  + p_z / (Ma * Ma)
+                  - (1 / Re) * (tauxz_x + tauyz_y + tauzz_z) )
 Q_rhoe = ( rhoe_t + rhoue_x + rhove_y + rhowe_z
                   + pu_x + pv_y + pw_z + qx_x + qy_y + qz_z
-                  - utauxx_x - vtauxy_x - wtauxz_x
-                  - utauxy_y - vtauyy_y - wtauyz_y
-                  - utauxz_z - vtauyz_z - wtauzz_z )
+                  - (Ma * Ma / Re) * (  utauxx_x + vtauxy_x + wtauxz_x
+                                      + utauxy_y + vtauyy_y + wtauyz_y
+                                      + utauxz_z + vtauyz_z + wtauzz_z) )

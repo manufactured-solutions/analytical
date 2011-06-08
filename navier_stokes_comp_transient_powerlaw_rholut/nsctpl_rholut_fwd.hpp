@@ -26,10 +26,10 @@
 // file inside any namespace, as is the consistent use of ::std instead of
 // merely std.
 
-#ifndef NSCTPL_FWD_HPP
-#define NSCTPL_FWD_HPP
+#ifndef NSCTPL_RHOLUT_FWD_HPP
+#define NSCTPL_RHOLUT_FWD_HPP
 
-namespace nsctpl {
+namespace nsctpl_rholut {
 
 /**
  * Class providing operations for evaluating an analytical solution at a
@@ -63,7 +63,7 @@ public:
 
      // X macro per http://drdobbs.com/blogs/cpp/228700289 which will
      // apply a macro on all solution parameter prefix/suffix pairs.
-#define NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(apply)                             \
+#define NSCTPL_RHOLUT_FOR_EACH_PRIMITIVE_PARAMETER(apply)                      \
     apply(a_,0)                                                                \
     apply(a_,x) apply(a_,xy) apply(a_,xz) apply(a_,y) apply(a_,yz) apply(a_,z) \
     apply(b_,x) apply(b_,xy) apply(b_,xz) apply(b_,y) apply(b_,yz) apply(b_,z) \
@@ -76,9 +76,9 @@ public:
     apply(g_,x) apply(g_,xy) apply(g_,xz) apply(g_,y) apply(g_,yz) apply(g_,z)
 
     // Declare all solution parameters as members, e.g. 'a_xy'
-#define NSCTPL_APPLY(pre,suf) Scalar pre##suf;
-    NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)
-#undef NSCTPL_APPLY
+#define NSCTPL_RHOLUT_APPLY(pre,suf) Scalar pre##suf;
+    NSCTPL_RHOLUT_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_RHOLUT_APPLY)
+#undef NSCTPL_RHOLUT_APPLY
 
     //! The name used infix in foreach_parameter' names.  For example,
     //! name = 'phi' implies parameters names like 'a_phix'.
@@ -95,9 +95,9 @@ public:
                        const Scalar& Lx,
                        const Scalar& Ly,
                        const Scalar& Lz)
-#define NSCTPL_APPLY(pre,suf) pre##suf(0),
-        : NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)  // has final comma
-#undef NSCTPL_APPLY
+#define NSCTPL_RHOLUT_APPLY(pre,suf) pre##suf(0),
+        : NSCTPL_RHOLUT_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_RHOLUT_APPLY)  // ,
+#undef NSCTPL_RHOLUT_APPLY
           name(name), Lx(&Lx), Ly(&Ly), Lz(&Lz)
     {}
 
@@ -105,36 +105,36 @@ public:
     //! Domain sizes Lx, Ly, and Lz \b must be set prior to invoking any
     //! member methods.  All parameters set to zero at construction time.
     explicit primitive(const ::std::string &name = "")
-#define NSCTPL_APPLY(pre,suf) pre##suf(0),
-        : NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)  // has final comma
-#undef NSCTPL_APPLY
+#define NSCTPL_RHOLUT_APPLY(pre,suf) pre##suf(0),
+        : NSCTPL_RHOLUT_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_RHOLUT_APPLY)  // ,
+#undef NSCTPL_RHOLUT_APPLY
           name(name), Lx(NULL), Ly(NULL), Lz(NULL)
     {}
 
-#define NSCTPL_APPLY_STRINGIFY(s) #s
-#define NSCTPL_APPLY(pre,suf)              \
-        os.clear(); os.str("");            \
-        os << NSCTPL_APPLY_STRINGIFY(pre)  \
-           << this->name                   \
-           << NSCTPL_APPLY_STRINGIFY(suf); \
+#define NSCTPL_RHOLUT_APPLY_STRINGIFY(s) #s
+#define NSCTPL_RHOLUT_APPLY(pre,suf)              \
+        os.clear(); os.str("");                   \
+        os << NSCTPL_RHOLUT_APPLY_STRINGIFY(pre)  \
+           << this->name                          \
+           << NSCTPL_RHOLUT_APPLY_STRINGIFY(suf); \
         f(os.str(), this->pre##suf);
 
     //! Invoke the binary function f on each parameter name and its value.
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) const {
         ::std::ostringstream os;
-        NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)
+        NSCTPL_RHOLUT_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_RHOLUT_APPLY)
     }
 
     //! Invoke the binary function f on each parameter name and its value.
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) {
         ::std::ostringstream os;
-        NSCTPL_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_APPLY)
+        NSCTPL_RHOLUT_FOR_EACH_PRIMITIVE_PARAMETER(NSCTPL_RHOLUT_APPLY)
     }
 
-#undef NSCTPL_APPLY
-#undef NSCTPL_APPLY_STRINGIFY
+#undef NSCTPL_RHOLUT_APPLY
+#undef NSCTPL_RHOLUT_APPLY_STRINGIFY
 
     //! Evaluate the solution
     template <typename T1, typename T2, typename T3, typename T4>
@@ -268,14 +268,14 @@ public:
         f(::std::string("T_r"),      T_r     );
         f(::std::string("kappa_r"),  kappa_r );
         f(::std::string("lambda_r"), lambda_r);
+        f(::std::string("Lx"), Lx);
+        f(::std::string("Ly"), Ly);
+        f(::std::string("Lz"), Lz);
         rho.foreach_parameter(f);
         u.foreach_parameter(f);
         v.foreach_parameter(f);
         w.foreach_parameter(f);
         T.foreach_parameter(f);
-        f(::std::string("Lx"), Lx);
-        f(::std::string("Ly"), Ly);
-        f(::std::string("Lz"), Lz);
     }
 
     //! Invoke the binary function f on each parameter name and its mutable value.
@@ -288,14 +288,14 @@ public:
         f(::std::string("T_r"),      T_r     );
         f(::std::string("kappa_r"),  kappa_r );
         f(::std::string("lambda_r"), lambda_r);
+        f(::std::string("Lx"), Lx);
+        f(::std::string("Ly"), Ly);
+        f(::std::string("Lz"), Lz);
         rho.foreach_parameter(f);
         u.foreach_parameter(f);
         v.foreach_parameter(f);
         w.foreach_parameter(f);
         T.foreach_parameter(f);
-        f(::std::string("Lx"), Lx);
-        f(::std::string("Ly"), Ly);
-        f(::std::string("Lz"), Lz);
     }
 
     // Analytically determined quantities
@@ -379,6 +379,6 @@ template <class T> void isothermal_channel(T& t);
 /** Set recommended isothermal channel problem parameters per write up */
 template <class T> void isothermal_flat_plate(T& t);
 
-} // end namespace nsctpl
+} // end namespace nsctpl_rholut
 
-#endif /* NSCTPL_FWD_HPP */
+#endif /* NSCTPL_RHOLUT_FWD_HPP */
