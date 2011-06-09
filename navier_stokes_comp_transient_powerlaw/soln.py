@@ -4,7 +4,6 @@
 # logic will be used to compute the manufactured solutions rho, u, v, w, and T.
 
 from sympy import *
-from sympy.utilities.codegen import codegen
 
 # Coordinates
 var('x y z t', real=True)
@@ -43,6 +42,7 @@ phi_yz = phi_y.diff(z)
 phi_zz = phi_z.diff(z)
 
 # Save these results to files 'soln.c' and 'soln.h' as C code
+from sympy.utilities.codegen import codegen
 codegen((
             ("phi",    phi   ),
             ("phi_t",  phi_t ),
@@ -55,8 +55,4 @@ codegen((
             ("phi_yz", phi_yz),
             ("phi_z",  phi_z ),
             ("phi_zz", phi_zz),
-        ),
-        "C",
-        "soln",
-        header=False,
-        to_files=True)
+        ), "C", "soln", header=False, to_files=True)
