@@ -783,11 +783,183 @@ Scalar manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_rho
     const Scalar Q_rhoe = rhoe_t + rhoue_x + rhove_y + rhowe_z
                         + pu_x + pv_y + pw_z
                         + qx_x + qy_y + qz_z
-                        - (Ma * Ma / Re) * (  utauxx_x + vtauxy_x + wtauxz_x
-                                            + utauxy_y + vtauyy_y + wtauyz_y
-                                            + utauxz_z + vtauyz_z + wtauzz_z);
+                        - (Ma2 / Re) * (  utauxx_x + vtauxy_x + wtauxz_x
+                                        + utauxy_y + vtauyy_y + wtauyz_y
+                                        + utauxz_z + vtauyz_z + wtauzz_z);
 
     return Q_rhoe;
+}
+
+NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION
+template <typename T1, typename T2, typename T3, typename T4, typename Result>
+void manufactured_solution<NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPNAMES>::Q_conservative(
+        T1 x, T2 y, T3 z, T4 t,
+        Result& Q_rho,
+        Result& Q_rhou,
+        Result& Q_rhov,
+        Result& Q_rhow,
+        Result& Q_rhoe) const
+{
+    /* Computations retrieving primitive solution details */
+    const Scalar rho   = this->rho   (x, y, z, t);  // shadow
+    const Scalar rho_t = this->rho._t(x, y, z, t);
+    const Scalar rho_x = this->rho._x(x, y, z, t);
+    const Scalar rho_y = this->rho._y(x, y, z, t);
+    const Scalar rho_z = this->rho._z(x, y, z, t);
+
+    const Scalar u    = this->u    (x, y, z, t);    // shadow
+    const Scalar u_t  = this->u._t (x, y, z, t);
+    const Scalar u_x  = this->u._x (x, y, z, t);
+    const Scalar u_xx = this->u._xx(x, y, z, t);
+    const Scalar u_xy = this->u._xy(x, y, z, t);
+    const Scalar u_xz = this->u._xz(x, y, z, t);
+    const Scalar u_y  = this->u._y (x, y, z, t);
+    const Scalar u_yy = this->u._yy(x, y, z, t);
+    const Scalar u_z  = this->u._z (x, y, z, t);
+    const Scalar u_zz = this->u._zz(x, y, z, t);
+
+    const Scalar v    = this->v    (x, y, z, t);    // shadow
+    const Scalar v_t  = this->v._t (x, y, z, t);
+    const Scalar v_x  = this->v._x (x, y, z, t);
+    const Scalar v_xx = this->v._xx(x, y, z, t);
+    const Scalar v_xy = this->v._xy(x, y, z, t);
+    const Scalar v_y  = this->v._y (x, y, z, t);
+    const Scalar v_yy = this->v._yy(x, y, z, t);
+    const Scalar v_yz = this->v._yz(x, y, z, t);
+    const Scalar v_z  = this->v._z (x, y, z, t);
+    const Scalar v_zz = this->v._zz(x, y, z, t);
+
+    const Scalar w    = this->w    (x, y, z, t);    // shadow
+    const Scalar w_t  = this->w._t (x, y, z, t);
+    const Scalar w_x  = this->w._x (x, y, z, t);
+    const Scalar w_xx = this->w._xx(x, y, z, t);
+    const Scalar w_xz = this->w._xz(x, y, z, t);
+    const Scalar w_y  = this->w._y (x, y, z, t);
+    const Scalar w_yy = this->w._yy(x, y, z, t);
+    const Scalar w_yz = this->w._yz(x, y, z, t);
+    const Scalar w_z  = this->w._z (x, y, z, t);
+    const Scalar w_zz = this->w._zz(x, y, z, t);
+
+    const Scalar T    = this->T    (x, y, z, t);    // shadow
+    const Scalar T_t  = this->T._t (x, y, z, t);
+    const Scalar T_x  = this->T._x (x, y, z, t);
+    const Scalar T_xx = this->T._xx(x, y, z, t);
+    const Scalar T_y  = this->T._y (x, y, z, t);
+    const Scalar T_yy = this->T._yy(x, y, z, t);
+    const Scalar T_z  = this->T._z (x, y, z, t);
+    const Scalar T_zz = this->T._zz(x, y, z, t);
+
+    /* Nondimensional quantities that repeatedly appear */
+    const Scalar inv_Re           = 1 / Re;
+    const Scalar inv_gamma_gamma1 = 1 / (gamma * (gamma - 1));
+    const Scalar inv_Re_Pr_gamma1 = inv_Re / (Pr * (gamma - 1));
+    const Scalar Ma2              = Ma * Ma;
+    const Scalar alpha23          = alpha - Scalar(2) / Scalar(3);
+
+    /* Computations stemming from the constitutive relationships */
+    const Scalar e        = T   * inv_gamma_gamma1 + Ma2 * (u*u   + v*v   + w*w  ) / 2;
+    const Scalar e_x      = T_x * inv_gamma_gamma1 + Ma2 * (u*u_x + v*v_x + w*w_x);
+    const Scalar e_y      = T_y * inv_gamma_gamma1 + Ma2 * (u*u_y + v*v_y + w*w_y);
+    const Scalar e_z      = T_z * inv_gamma_gamma1 + Ma2 * (u*u_z + v*v_z + w*w_z);
+    const Scalar e_t      = T_t * inv_gamma_gamma1 + Ma2 * (u*u_t + v*v_t + w*w_t);
+    const Scalar p        = (rho   * T            ) / gamma;
+    const Scalar p_x      = (rho_x * T + rho * T_x) / gamma;
+    const Scalar p_y      = (rho_y * T + rho * T_y) / gamma;
+    const Scalar p_z      = (rho_z * T + rho * T_z) / gamma;
+    const Scalar mu       = ::std::pow(T, beta);
+    const Scalar mu_x     = beta * (mu / T) * T_x;
+    const Scalar mu_y     = beta * (mu / T) * T_y;
+    const Scalar mu_z     = beta * (mu / T) * T_z;
+    const Scalar lambda   = alpha23 * mu;
+    const Scalar lambda_x = alpha23 * mu_x;
+    const Scalar lambda_y = alpha23 * mu_y;
+    const Scalar lambda_z = alpha23 * mu_z;
+    const Scalar qx_x     = - inv_Re_Pr_gamma1 * (mu_x * T_x + mu * T_xx);
+    const Scalar qy_y     = - inv_Re_Pr_gamma1 * (mu_y * T_y + mu * T_yy);
+    const Scalar qz_z     = - inv_Re_Pr_gamma1 * (mu_z * T_z + mu * T_zz);
+
+    /* Computations stemming from the compressible, Newtonian fluid model */
+    const Scalar rhou_x  = rho_x * u + rho * u_x;
+    const Scalar rhov_y  = rho_y * v + rho * v_y;
+    const Scalar rhow_z  = rho_z * w + rho * w_z;
+
+    const Scalar rhou_t  = rho_t * u + rho * u_t;
+    const Scalar rhov_t  = rho_t * v + rho * v_t;
+    const Scalar rhow_t  = rho_t * w + rho * w_t;
+    const Scalar rhoe_t  = rho_t * e + rho * e_t;
+
+    const Scalar rhouu_x = (rho_x * u * u) + (rho * u_x * u) + (rho * u * u_x);
+    const Scalar rhouv_y = (rho_y * u * v) + (rho * u_y * v) + (rho * u * v_y);
+    const Scalar rhouw_z = (rho_z * u * w) + (rho * u_z * w) + (rho * u * w_z);
+
+    const Scalar rhouv_x = (rho_x * u * v) + (rho * u_x * v) + (rho * u * v_x);
+    const Scalar rhovv_y = (rho_y * v * v) + (rho * v_y * v) + (rho * v * v_y);
+    const Scalar rhovw_z = (rho_z * v * w) + (rho * v_z * w) + (rho * v * w_z);
+
+    const Scalar rhouw_x = (rho_x * u * w) + (rho * u_x * w) + (rho * u * w_x);
+    const Scalar rhovw_y = (rho_y * v * w) + (rho * v_y * w) + (rho * v * w_y);
+    const Scalar rhoww_z = (rho_z * w * w) + (rho * w_z * w) + (rho * w * w_z);
+
+    const Scalar rhoue_x = (rho_x * u * e) + (rho * u_x * e) + (rho * u * e_x);
+    const Scalar rhove_y = (rho_y * v * e) + (rho * v_y * e) + (rho * v * e_y);
+    const Scalar rhowe_z = (rho_z * w * e) + (rho * w_z * e) + (rho * w * e_z);
+
+    const Scalar tauxx = mu * (u_x + u_x) + lambda * (u_x + v_y + w_z);
+    const Scalar tauyy = mu * (v_y + v_y) + lambda * (u_x + v_y + w_z);
+    const Scalar tauzz = mu * (w_z + w_z) + lambda * (u_x + v_y + w_z);
+    const Scalar tauxy = mu * (u_y + v_x);
+    const Scalar tauxz = mu * (u_z + w_x);
+    const Scalar tauyz = mu * (v_z + w_y);
+
+    const Scalar tauxx_x = mu_x * (u_x  + u_x )
+                         + lambda_x * (u_x  + v_y  + w_z )
+                         + mu   * (u_xx + u_xx)
+                         + lambda   * (u_xx + v_xy + w_xz);
+    const Scalar tauyy_y = mu_y * (v_y  + v_y )
+                         + lambda_y * (u_x  + v_y  + w_z )
+                         + mu   * (v_yy + v_yy)
+                         + lambda   * (u_xy + v_yy + w_yz);
+    const Scalar tauzz_z = mu_z * (w_z  + w_z )
+                         + lambda_z * (u_x  + v_y  + w_z )
+                         + mu   * (w_zz + w_zz)
+                         + lambda   * (u_xz + v_yz + w_zz);
+
+    const Scalar tauxy_x = mu_x * (u_y + v_x) + mu * (u_xy + v_xx);
+    const Scalar tauxy_y = mu_y * (u_y + v_x) + mu * (u_yy + v_xy);
+    const Scalar tauxz_x = mu_x * (u_z + w_x) + mu * (u_xz + w_xx);
+    const Scalar tauxz_z = mu_z * (u_z + w_x) + mu * (u_zz + w_xz);
+    const Scalar tauyz_y = mu_y * (v_z + w_y) + mu * (v_yz + w_yy);
+    const Scalar tauyz_z = mu_z * (v_z + w_y) + mu * (v_zz + w_yz);
+
+    const Scalar pu_x = p_x * u + p * u_x;
+    const Scalar pv_y = p_y * v + p * v_y;
+    const Scalar pw_z = p_z * w + p * w_z;
+    const Scalar utauxx_x = u_x * tauxx + u * tauxx_x;
+    const Scalar vtauxy_x = v_x * tauxy + v * tauxy_x;
+    const Scalar wtauxz_x = w_x * tauxz + w * tauxz_x;
+    const Scalar utauxy_y = u_y * tauxy + u * tauxy_y;
+    const Scalar vtauyy_y = v_y * tauyy + v * tauyy_y;
+    const Scalar wtauyz_y = w_y * tauyz + w * tauyz_y;
+    const Scalar utauxz_z = u_z * tauxz + u * tauxz_z;
+    const Scalar vtauyz_z = v_z * tauyz + v * tauyz_z;
+    const Scalar wtauzz_z = w_z * tauzz + w * tauzz_z;
+
+    Q_rho  = rho_t  + rhou_x + rhov_y + rhow_z;
+    Q_rhou = rhou_t + rhouu_x + rhouv_y + rhouw_z
+           + p_x / Ma2
+           - inv_Re * (tauxx_x + tauxy_y + tauxz_z);
+    Q_rhov = rhov_t + rhouv_x + rhovv_y + rhovw_z
+           + p_y / Ma2
+           - inv_Re * (tauxy_x + tauyy_y + tauyz_z);
+    Q_rhow = rhow_t + rhouw_x + rhovw_y + rhoww_z
+           + p_z / Ma2
+           - inv_Re * (tauxz_x + tauyz_y + tauzz_z);
+    Q_rhoe = rhoe_t + rhoue_x + rhove_y + rhowe_z
+           + pu_x + pv_y + pw_z
+           + qx_x + qy_y + qz_z
+           - Ma2 * inv_Re * (  utauxx_x + vtauxy_x + wtauxz_x
+                             + utauxy_y + vtauyy_y + wtauyz_y
+                             + utauxz_z + vtauyz_z + wtauzz_z);
 }
 
 #undef NSCTPL_RHOLUT_MANUFACTURED_SOLUTION_TPDECLARATION

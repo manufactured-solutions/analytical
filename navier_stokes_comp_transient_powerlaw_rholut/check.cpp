@@ -201,6 +201,23 @@ void run_tests()
     CHECK(ms.Q_rhov (x, y, z, t),    nsctpl_rholut::test::Q_rhov);
     CHECK(ms.Q_rhow (x, y, z, t),    nsctpl_rholut::test::Q_rhow);
     CHECK(ms.Q_rhoe (x, y, z, t),    nsctpl_rholut::test::Q_rhoe);
+
+    // Test Q_conservative results: simultaneous Q_rho{,u,v,w,e} computation
+    Scalar Q_conservative_rho  = 0;
+    Scalar Q_conservative_rhou = 0;
+    Scalar Q_conservative_rhov = 0;
+    Scalar Q_conservative_rhow = 0;
+    Scalar Q_conservative_rhoe = 0;
+    ms.Q_conservative(x, y, z, t, Q_conservative_rho,
+                                  Q_conservative_rhou,
+                                  Q_conservative_rhov,
+                                  Q_conservative_rhow,
+                                  Q_conservative_rhoe);
+    CHECK(Q_conservative_rho , nsctpl_rholut::test::Q_rho);
+    CHECK(Q_conservative_rhou, nsctpl_rholut::test::Q_rhou);
+    CHECK(Q_conservative_rhov, nsctpl_rholut::test::Q_rhov);
+    CHECK(Q_conservative_rhow, nsctpl_rholut::test::Q_rhow);
+    CHECK(Q_conservative_rhoe, nsctpl_rholut::test::Q_rhoe);
 }
 
 int main(int argc, char *argv[])

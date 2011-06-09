@@ -361,6 +361,29 @@ public:
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar Q_rhoe(T1 x, T2 y, T3 z, T4 t) const;
 
+    /**
+     * A single method for simultaneously computing forcing for all five
+     * equations in a conservative formulation at a given location.  That is,
+     * computing Q_rho(), Q_rhou(), Q_rhov(), Q_rhow(), and Q_rhoe().  Faster
+     * than using those five methods separately because it eliminates redundant
+     * computations.
+     *
+     * @param[in] x X coordinate at which to evaluate forcing
+     * @param[in] y Y coordinate at which to evaluate forcing
+     * @param[in] z Z coordinate at which to evaluate forcing
+     * @param[in] y Time coordinate at which to evaluate forcing
+     * @param[out] Q_rho  Equivalent to <tt>Q_rho(x,y,z,t)</tt>
+     * @param[out] Q_rhou Equivalent to <tt>Q_rhou(x,y,z,t)</tt>
+     * @param[out] Q_rhov Equivalent to <tt>Q_rhov(x,y,z,t)</tt>
+     * @param[out] Q_rhow Equivalent to <tt>Q_rhow(x,y,z,t)</tt>
+     * @param[out] Q_rhoe Equivalent to <tt>Q_rhoe(x,y,z,t)</tt>
+     */
+    template <typename T1, typename T2, typename T3, typename T4,
+              typename Result>
+    void Q_conservative(T1 x, T2 y, T3 z, T4 t,
+                        Result& Q_rho, Result& Q_rhou,
+                        Result& Q_rhov, Result& Q_rhow, Result& Q_rhoe) const;
+
 }; // end class
 
 

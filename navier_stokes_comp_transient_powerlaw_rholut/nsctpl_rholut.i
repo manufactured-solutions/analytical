@@ -90,6 +90,8 @@ namespace nsctpl_rholut {
     %template(Q_rhow  ) Q_rhow  <double,double,double,double>;
     %template(Q_rhoe  ) Q_rhoe  <double,double,double,double>;
 
+    %template(Q_conservative) Q_conservative<double,double,double,double,double>;
+
     void dump() {
         $self->foreach_parameter(print_nonzero_values);
     }
