@@ -24,25 +24,89 @@
 // Using this file will require #include-ing <cmath>, <limits>, <sstream>, and
 // <string>.  Those headers are not #include-d here to allow #include-ing this
 // file inside any namespace, as is the consistent use of ::std instead of
-// merely std.
+// merely std.  Running Doxygen on this file will require setting
+// EXTRA_PACKAGES = "amsmath accents".
 
 #ifndef NSCTPL_RHOLUT_FWD_HPP
 #define NSCTPL_RHOLUT_FWD_HPP
 
+/** @file
+ * Provides a manufactured solution for a nondimensional compressible
+ * Navier-Stokes formulation using a reference density \f$\rho_0\f$, length
+ * \f$l_0\f$, velocity \f$u_0\f$, and temperature \f$T_0\f$.
+ */
+
+/**
+ * Provides a manufactured solution for the nondimensional compressible
+ * Navier-Stokes formulation using a reference density \f$\rho_0\f$, length
+ * \f$l_0\f$, velocity \f$u_0\f$, and temperature \f$T_0\f$.  The exact
+ * formulation used is
+ * \f{align*}{
+ *   \frac{\partial}{\partial{}t}\rho
+ * &=
+ *   - \nabla\cdot\rho{}\vec{u}
+ *   + Q_{\rho}
+ *   \\
+ *   \frac{\partial{}}{\partial{}t}\rho{}\vec{u}
+ * &=
+ *   - \nabla\cdot(\vec{u}\otimes{}\rho{}\vec{u})
+ *   - \frac{1}{\mbox{Ma}^{2}} \nabla{} p
+ *   + \frac{1}{\mbox{Re}} \nabla\cdot{} \accentset{\leftrightarrow}{\tau}
+ *   + \vec{Q}_{\rho{}u}
+ *   \\
+ *   \frac{\partial}{\partial{}t} \rho{}e
+ * &=
+ *   - \nabla\cdot{}\rho{}e\vec{u}
+ *   - \nabla\cdot{} p \vec{u}
+ *   - \nabla\cdot{} \vec{q}
+ *   + \frac{\mbox{Ma}^2}{\mbox{Re}}
+ *     \nabla\cdot{} \accentset{\leftrightarrow}{\tau} \vec{u}
+ *   + Q_{\rho{}e}
+ * \f}
+ * aided by the auxiliary relations
+ * \f{align*}{
+ *   p &=   \left(\gamma-1\right)\left(\rho{}e
+ *           - \mbox{Ma}^{2} \rho\frac{\vec{u}\cdot{}\vec{u}}{2} \right)
+ *   &
+ *   T &= \gamma\frac{p}{\rho}
+ *   \\
+ *   \mu &= T^{\beta}
+ *   &
+ *   \lambda &= \left(\alpha-\frac{2}{3}\right) \mu
+ *   \\
+ *   \accentset{\leftrightarrow}{\tau} &=
+ *        \mu \left( \nabla{}\vec{u} + {\nabla{}\vec{u}}^{\mathsf{T}} \right)
+ *      + \lambda \left( \nabla\cdot{}\vec{u} \right) I
+ *   &
+ *   \vec{q} &= - \frac{1}{\mbox{Re}\mbox{Pr}\left(\gamma-1\right)} \mu \nabla{} T
+ * \f}
+ * where the nondimensional quantities
+ * \f{align*}{
+ *   \mbox{Re} &= \frac{\rho_{0}u_{0}l_{0}}{\mu_{0}}
+ *   &
+ *   \mbox{Ma} &= \frac{u_{0}}{a_{0}}
+ *   &
+ *   \mbox{Pr} &= \frac{\mu_{0}C_{p}}{\kappa_{0}}
+ *   &
+ *   \gamma &= \frac{C_{p}}{C_{v}}
+ * \f}
+ * are the constant Reynolds number, Mach number, and Prandtl number, and ratio
+ * of specific heats, respectively.
+ */
 namespace nsctpl_rholut {
 
 /**
  * Class providing operations for evaluating an analytical solution at a
  * given location and time.  The solution is of the form
  * \verbatim
- *       a_0                                         *cos(f_0 *t + g_0 )
- *     + a_x  * cos(b_x *x + c_x )                   *cos(f_x *t + g_x )
- *     + a_xy * cos(b_xy*x + c_xy)*cos(d_xy*y + e_xy)*cos(f_xy*t + g_xy)
- *     + a_xz * cos(b_xz*x + c_xz)*cos(d_xz*z + e_xz)*cos(f_xz*t + g_xz)
- *     + a_y  * cos(b_y *y + c_y )                   *cos(f_y *t + g_y )
- *     + a_yz * cos(b_yz*y + c_yz)*cos(d_yz*z + e_yz)*cos(f_yz*t + g_yz)
- *     + a_z  * cos(b_z *z + c_z )                   *cos(f_z *t + g_z )
- * \endverbatim
+         a_0                                         *cos(f_0 *t + g_0 )
+       + a_x  * cos(b_x *x + c_x )                   *cos(f_x *t + g_x )
+       + a_xy * cos(b_xy*x + c_xy)*cos(d_xy*y + e_xy)*cos(f_xy*t + g_xy)
+       + a_xz * cos(b_xz*x + c_xz)*cos(d_xz*z + e_xz)*cos(f_xz*t + g_xz)
+       + a_y  * cos(b_y *y + c_y )                   *cos(f_y *t + g_y )
+       + a_yz * cos(b_yz*y + c_yz)*cos(d_yz*z + e_yz)*cos(f_yz*t + g_yz)
+       + a_z  * cos(b_z *z + c_z )                   *cos(f_z *t + g_z )
+   \endverbatim
  * The member method names are non-traditional but permitted by the language
  * standards and well-aligned with mathematical notation.  Location and
  * time arguments are templated to allow extended precision intermediate
@@ -61,8 +125,8 @@ public:
 
     typedef Scalar scalar_type;  //!< Scalar type employed
 
-     // X macro per http://drdobbs.com/blogs/cpp/228700289 which will
-     // apply a macro on all solution parameter prefix/suffix pairs.
+     //! X macro per http://drdobbs.com/blogs/cpp/228700289 which will
+     //! apply a macro on all solution parameter prefix/suffix pairs.
 #define NSCTPL_RHOLUT_FOR_EACH_PRIMITIVE_PARAMETER(apply)                      \
     apply(a_,0)                                                                \
     apply(a_,x) apply(a_,xy) apply(a_,xz) apply(a_,y) apply(a_,yz) apply(a_,z) \
@@ -206,7 +270,7 @@ template <typename Scalar,
           template <typename> class Primitive = primitive>
 #else
 template <typename Scalar, int IndexBase = 0>
-#endif
+#endif /* SWIG */
 class manufactured_solution {
 
 public:
@@ -217,7 +281,7 @@ public:
     typedef Primitive<Scalar> primitive_type;  //!< Primitive solution type
 #else
     typedef primitive<Scalar> primitive_type;  //!< Primitive solution type
-#endif
+#endif /* SWIG */
 
     //! Scenario parameters
     //!@{
@@ -245,7 +309,7 @@ public:
     Scalar Lz;               //!< Domain extent in z direction
     //!@}
 
-    //! Default constructor
+    /*! Default constructor */
     manufactured_solution()
         : alpha(0), beta(0), gamma(0), Ma(0), Pr(0), Re(0),
           rho("rho", Lx, Ly, Lz),
@@ -257,7 +321,8 @@ public:
     {
     }
 
-    //! Invoke the binary function f on each parameter name and its constant value.
+    /*! Invoke the binary function f on each parameter name
+     *  and its constant value. */
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) const {
         f(::std::string("alpha"), alpha);
@@ -276,7 +341,8 @@ public:
         f(::std::string("Lz"), Lz);
     }
 
-    //! Invoke the binary function f on each parameter name and its mutable value.
+    /*! Invoke the binary function f on each parameter name
+     * and its mutable value. */
     template <typename BinaryFunction>
     void foreach_parameter(BinaryFunction& f) {
         f(::std::string("alpha"), alpha);
@@ -298,66 +364,87 @@ public:
     // Analytically determined quantities
     // Note that Primitive members can be used directly.
     // For example, T(x,y,z,t) or T._xx(x,y,z,t)
+
+    /*! Compute component \c index of \f$\nabla\rho\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_rho (T1 x, T2 y, T3 z, T4 t, int index) const;
 
+    /*! Compute component \c index of \f$\nabla{}u\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_u   (T1 x, T2 y, T3 z, T4 t, int index) const;
 
+    /*! Compute component \c index of \f$\nabla{}v\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_v   (T1 x, T2 y, T3 z, T4 t, int index) const;
 
+    /*! Compute component \c index of \f$\nabla{}w\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_w   (T1 x, T2 y, T3 z, T4 t, int index) const;
 
+    /*! Compute component \c index of \f$\nabla{}T\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_T   (T1 x, T2 y, T3 z, T4 t, int index) const;
 
     // Quantities built from the analytical solutions
     // TODO Build up q_u, q_v, q_w, q_e, q_T, q_p
 
+    /*! Compute \f$e\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar e(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute \f$p\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar p(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute \f$\mu\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar mu(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute \f$\rho{}u\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar rhou(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute \f$\rho{}v\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar rhov(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute \f$\rho{}w\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar rhow(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute \f$\rho{}e\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar rhoe(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute component \c index of \f$\nabla{}e\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_e(T1 x, T2 y, T3 z, T4 t, int index) const;
 
+    /*! Compute component \c index of \f$\nabla{}p\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_p(T1 x, T2 y, T3 z, T4 t, int index) const;
 
+    /*! Compute component \c index of \f$\nabla\mu\f$. */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar grad_mu(T1 x, T2 y, T3 z, T4 t, int index) const;
 
+    /*! Compute forcing \f$Q_{\rho}\f$ */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar Q_rho(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute forcing \f$Q_{\rho{}u}\f$ */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar Q_rhou(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute forcing \f$Q_{\rho{}v}\f$ */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar Q_rhov(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute forcing \f$Q_{\rho{}w}\f$ */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar Q_rhow(T1 x, T2 y, T3 z, T4 t) const;
 
+    /*! Compute forcing \f$Q_{\rho{}e}\f$ */
     template <typename T1, typename T2, typename T3, typename T4>
     Scalar Q_rhoe(T1 x, T2 y, T3 z, T4 t) const;
 
@@ -371,7 +458,7 @@ public:
      * @param[in] x X coordinate at which to evaluate forcing
      * @param[in] y Y coordinate at which to evaluate forcing
      * @param[in] z Z coordinate at which to evaluate forcing
-     * @param[in] y Time coordinate at which to evaluate forcing
+     * @param[in] t Time coordinate at which to evaluate forcing
      * @param[out] Q_rho  Equivalent to <tt>Q_rho(x,y,z,t)</tt>
      * @param[out] Q_rhou Equivalent to <tt>Q_rhou(x,y,z,t)</tt>
      * @param[out] Q_rhov Equivalent to <tt>Q_rhov(x,y,z,t)</tt>
@@ -396,7 +483,7 @@ template <class T> void zero(T& t);
 /** Set recommended isothermal channel problem parameters per write up */
 template <class T> void isothermal_channel(T& t);
 
-/** Set recommended isothermal channel problem parameters per write up */
+/** Set recommended isothermal flat plate problem parameters per write up */
 template <class T> void isothermal_flat_plate(T& t);
 
 } // end namespace nsctpl_rholut
