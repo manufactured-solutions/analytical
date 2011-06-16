@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <typeinfo>
+#include <tr1/memory>
 
 #include "nsctpl.hpp"
 #include "test.hpp"
@@ -58,17 +59,16 @@ static const unsigned int primes[303] = {
 // Stateful functor used to set parameter values to the prime number sequence
 template<typename Scalar>
 struct prime_it {
-    std::size_t i;
-    prime_it() : i(0) {}
+
+    prime_it() : i(new std::size_t) { *i = 0; }
+
     void operator()(const std::string&, Scalar& value) {
-        assert(i < sizeof(primes)/sizeof(primes[0]));
-        value = primes[i++];
+        assert(*i < sizeof(primes)/sizeof(primes[0]));
+        value = primes[(*i)++];
     }
 
-    // Non-copyable as copying ruins the stateful behavior
 private:
-    prime_it (const prime_it &);
-    prime_it& operator=(const prime_it &);
+    std::tr1::shared_ptr<std::size_t> i; // shared_ptr so copies share state
 };
 
 // Helper evaluate results against known good value.
