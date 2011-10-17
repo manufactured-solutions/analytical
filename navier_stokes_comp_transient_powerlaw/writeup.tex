@@ -42,16 +42,17 @@ Newtonian perfect gas obeying a power law viscosity.  The solution is built
 from waveforms with adjustable phase offsets and mixed partial derivatives to
 more thoroughly exercise all the terms in the equations.  Temperature, rather
 than pressure, is selected to have a simple analytic form to aid verifying
-codes having temperature-based boundary conditions.  To mitigate the complexity
-of finding a symbolic expression for the complete forcing terms, a hybrid
-approach combining the open source symbolic manipulation library SymPy with
-floating point computations is employed.  A C++ implementation of the resulting
-manufactured solution and the forcing terms are provided.  Tests ensure the
-floating point implementation matches the solution to relative errors near
-machine epsilon.  Suggested verification tests for the isothermal channel and
-flat plate geometries are included.  This hybrid manufactured solution
-generation approach could be extended to either more complicated constitutive
-relations or multicomponent flows.
+codes having temperature-based boundary conditions.  To mitigate the
+combinatorial complexity of finding a symbolic expression for the complete
+forcing terms, a hybrid approach combining the open source symbolic
+manipulation library SymPy with floating point computations is employed.  A C++
+implementation of the resulting manufactured solution and the forcing terms are
+provided.  Tests ensure the floating point implementation matches the solution
+to relative errors near machine epsilon.  The manufactured solution was used to
+verify a new three-dimensional, pseudospectral channel code.  A verification
+test for the flat plate geometry is also included.  This hybrid manufactured
+solution generation approach could be extended to either more complicated
+constitutive relations or multicomponent flows.
 \end{abstract}
 
 \maketitle
