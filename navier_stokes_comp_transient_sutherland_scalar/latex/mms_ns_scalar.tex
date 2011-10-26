@@ -37,18 +37,18 @@
 The conservation of mass, momentum, and total energy for a compressible steady viscous fluid may be written as:
 \begin{equation}
  \label{eq:ns_01}
-\nabla \cdot \left(\rho \bv{u}\right) = 0,
+ \frac{ \D (\rho)}{\D t}+\nabla \cdot \left(\rho \bv{u}\right) = 0,
 \end{equation}
 
 \begin{equation}
  \label{eq:ns_02}
-\nabla\cdot\left(\rho\bv{u}\bv{u}\right) = -\nabla p+  \nabla \cdot (\bv{\tau} ),
+ \frac{ \D (\rho \bv{u})}{\D t} + \nabla\cdot\left(\rho\bv{u}\bv{u}\right) = -\nabla p+  \nabla \cdot (\bv{\tau} ),
 \end{equation}
 
 \begin{equation}
  \label{eq:ns_03}
 %\nabla \cdot (\rho\bv{u}e_t)+  \nabla\cdot(p  \bv{u})=0
-\nabla\cdot\left(\rho \bv{u} H\right) =-   \nabla\cdot(p  \mathbf{u}) -\nabla\cdot \mathbf{q} +  \nabla \cdot (\bv{\tau} \cdot \mathbf{u}).
+ \frac{ \D (\rho e_t)}{\D t} + \nabla\cdot\left(\rho \bv{u} H\right) =-   \nabla\cdot(p  \mathbf{u}) -\nabla\cdot \mathbf{q} +  \nabla \cdot (\bv{\tau} \cdot \mathbf{u}).
 \end{equation}
 
 Equations (\ref{eq:ns_01})--(\ref{eq:ns_03}) are known as Navier--Stokes equations and, $\rho$ is the density, $\bv{u}=(u,v,w)$ is the velocity in $x$, $y$ or $z$-direction, respectively,    and $p$ is the pressure. The total enthalpy, $H$, may be expressed in terms of the total energy per unit mass $e_t$, density, and pressure:
