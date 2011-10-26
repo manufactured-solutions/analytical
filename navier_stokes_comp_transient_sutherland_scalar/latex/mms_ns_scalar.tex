@@ -1,0 +1,101 @@
+\documentclass[10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+%\usepackage[mathcal]{euscript}
+\geometry{ top=2.5cm, bottom=2cm, left=2cm, right=2cm}
+\usepackage[authoryear]{natbib}
+\usepackage{pdflscape}
+%\geometry{papersize={216mm,330mm}, top=3cm, bottom=2.5cm, left=4cm,  right=2cm}
+
+\newcommand{\D}{\partial}
+\newcommand{\Diff}[2] {\dfrac{\partial( #1)}{\partial #2}}
+\newcommand{\diff}[2] {\dfrac{\partial #1}{\partial #2}}
+\newcommand{\bv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}% for vectors of Greek letters
+\newcommand{\grad}[1]{\gv{\nabla} #1}
+\newcommand{\Rho}{\,\mathtt{Rho}}
+\newcommand{\PP}{\,\mathtt{P}}
+\newcommand{\U}{\,\mathtt{U}}
+\newcommand{\V}{\,\mathtt{V}}
+\newcommand{\W}{\,\mathtt{W}}
+\newcommand{\Lo}{\,\mathcal{L}}
+\newcommand{\MU}{\,\mathtt{Mu}}%opening
+\title{Manufactured Solution for the Compressible Steady Navier--Stokes Equations with Sutherland Viscosity and One Passive Scalar}
+\author{Nicholas Malaya}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  Create an MMS for the 3D compressible navier stokes with a passive scalar 
+  for verification of both compDNS and Suzerain. 
+\end{abstract}
+
+\section{Mathematical Model}
+The conservation of mass, momentum, and total energy for a compressible steady viscous fluid may be written as:
+\begin{equation}
+ \label{eq:ns_01}
+\nabla \cdot \left(\rho \bv{u}\right) = 0,
+\end{equation}
+
+\begin{equation}
+ \label{eq:ns_02}
+\nabla\cdot\left(\rho\bv{u}\bv{u}\right) = -\nabla p+  \nabla \cdot (\bv{\tau} ),
+\end{equation}
+
+\begin{equation}
+ \label{eq:ns_03}
+%\nabla \cdot (\rho\bv{u}e_t)+  \nabla\cdot(p  \bv{u})=0
+\nabla\cdot\left(\rho \bv{u} H\right) =-   \nabla\cdot(p  \mathbf{u}) -\nabla\cdot \mathbf{q} +  \nabla \cdot (\bv{\tau} \cdot \mathbf{u}).
+\end{equation}
+
+Equations (\ref{eq:ns_01})--(\ref{eq:ns_03}) are known as Navier--Stokes equations and, $\rho$ is the density, $\bv{u}=(u,v,w)$ is the velocity in $x$, $y$ or $z$-direction, respectively,    and $p$ is the pressure. The total enthalpy, $H$, may be expressed in terms of the total energy per unit mass $e_t$, density, and pressure:
+$$H = e_t + \dfrac{p}{\rho}.$$
+For a calorically perfect gas, the Navier--Stokes equations are closed with two auxiliary relations for energy:
+\begin{equation}
+ \label{eq:ns_04}
+e_t= e+\dfrac{\bv{u}\cdot \bv{u}}{2},\quad\mbox{and}\quad e=\dfrac{1}{\gamma -1}RT ,
+\end{equation}
+and with the ideal gas equation of state:
+\begin{equation}
+ \label{eq:ns_05}
+p=\rho RT.
+\end{equation}
+
+The shear stress tensor is:
+\begin{equation}
+ \begin{array}{lll}
+  \tau_{xx}= \dfrac{2}{3}  \mu \left( 2 \diff{u}{x} - \diff{v}{y} -\diff{w}{z} \right),
+  &\tau_{xy}= \tau_{yx}=\mu \left( \diff{u}{y} + \diff{v}{x}\right),\\
+  \tau_{yy}= \dfrac{2}{3}  \mu \left( 2 \diff{v}{y} - \diff{u}{x} -\diff{w}{z} \right),
+  &\tau_{yz}= \tau_{zy}=\mu \left( \diff{v}{z} + \diff{w}{y}\right),\\
+  \tau_{zz}= \dfrac{2}{3}  \mu \left( 2 \diff{w}{z} - \diff{u}{x} -\diff{v}{y} \right),
+  &\tau_{xz}= \tau_{zx}=\mu \left( \diff{u}{z} + \diff{w}{x}\right),
+ \end{array}
+\end{equation}
+where $\mu$ is the absolute viscosity. The heat flux vector $\mathbf{q}=(q_x,q_y,q_z)$ is given by:
+\begin{equation}
+ %\begin{split}
+ % q_x &= - k \diff{T}{x}\\
+%q_y &= - k \diff{T}{y}
+% \end{split}
+ q_x = - k \diff{T}{x}, \quad q_y = - k \diff{T}{y}, \quad \mbox{and} \quad q_z = - k \diff{T}{z}
+ \end{equation}
+where $k$ is the thermal conductivity, which can be determined by choosing the Prandtl number:
+$$k= \dfrac{\gamma R \mu}{ (\gamma-1) \text{Pr}}.$$
+
+\subsection{Sutherland viscosity model}
+
+\citet{Sutherland1893} published a relationship between the absolute temperature of an ideal gas, $T$,  and its dynamic (absolute) viscosity, $\mu$. The model is based on the kinetic theory of ideal gases and an idealized intermolecular-force potential. The general equation is given as:
+\begin{equation}
+\label{eq:Sutherland01}
+ \mu  =\dfrac{A_\mu \, T^{\frac{3}{2}}}{T+B_\mu}
+\end{equation}
+with
+$$    A_\mu = \dfrac{\mu_\text{ref}}{T_{\text{ref}}^{\frac{3}{2}}}(T_\text{ref} + B_\mu), $$
+%
+where $B_\mu$ is the Sutherland temperature, $T_{\text{ref}}$ is a reference temperature,  and $\mu_\text{ref}$ is the viscosity at the reference temperature $T_\text{ref}$.
+
+\end{document}
