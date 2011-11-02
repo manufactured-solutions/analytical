@@ -28,20 +28,21 @@ int main(void)
   // typedef FirstDerivType ADType;
 
   // initialize the problem in MASA
-  err += masa_init("euler-example","euler_2d");
+  err += masa_init("euler-maple","euler_2d");
   
   // call the sanity check routine
   // (tests that all variables have been initialized)
   err += masa_sanity_check();
-
   err += masa_printid<double>();
 
-
+  // set up array
   NumberArray<NDIM, ADType> xy;
   xy[0] = ADType(1., xvec);
   xy[1] = ADType(1., yvec);
 
+  // evaluate source terms
   evaluate_q(xy);
+
 }
 
 // Note: ADScalar needs to be a FirstDerivType or better since we have
@@ -101,5 +102,6 @@ void evaluate_q (const NumberArray<NDIM, ADScalar>& xyz)
   NumberArray<NDIM, Scalar> Q_rho_u = raw_value(divergence(RHO*U.outerproduct(U)) + P.derivatives());
   Scalar Q_rho_e = raw_value(divergence((RHO*ET+P)*U));
   
+
 //  std::cout << f;
 }
