@@ -1,0 +1,8 @@
+(03:18:17 PM) roystgnr: svnup and take a look at pecos/utilities/dualnumber
+(03:18:43 PM) roystgnr: It's at the stage now where we ought to be able to integrate with MASA and test it.
+(03:19:07 PM) roystgnr: In particular, pde.C has what's basically the Euler2D MMS.
+(03:19:34 PM) roystgnr: I'm particularly proud that this actually compiles:
+(03:19:38 PM) roystgnr: Scalar Q_rho = raw_value(divergence(U));
+NumberArray<NDIM, Scalar> Q_rho_u = raw_value(divergence(RHO*U.outerproduct(U)) + P.derivatives());
+Scalar Q_rho_e = raw_value(divergence((RHO*ET+P)*U));
+(03:20:07 PM) roystgnr: Cartesian indices ought to be hidden from the user whereever possible.
