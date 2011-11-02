@@ -11,6 +11,8 @@ using namespace MASA;
 
 int main(void)
 {
+  int err = 0;
+
   const unsigned int NDIM = 2;
 
   const RawScalar xvecinit[] = {1., 0.};
@@ -25,9 +27,16 @@ int main(void)
   typedef SecondDerivType ADType;
   // typedef FirstDerivType ADType;
 
-  // initialize the problem
-  masa_init("euler-example","euler_2d");
+  // initialize the problem in MASA
+  err += masa_init("euler-example","euler_2d");
   
+  // call the sanity check routine
+  // (tests that all variables have been initialized)
+  err += masa_sanity_check();
+
+  err += masa_printid<double>();
+
+
   NumberArray<NDIM, ADType> xy;
   xy[0] = ADType(1., xvec);
   xy[1] = ADType(1., yvec);
