@@ -1,11 +1,13 @@
 #include "dualnumberarray.h"
 #include <iostream>
+#include <masa.h>
 
 typedef double RawScalar;
 
 template <std::size_t NDIM, typename Scalar>
 void evaluate_q (const NumberArray<NDIM, Scalar>& xyz);
 
+using namespace MASA;
 
 int main(void)
 {
@@ -23,14 +25,15 @@ int main(void)
   typedef SecondDerivType ADType;
   // typedef FirstDerivType ADType;
 
+  // initialize the problem
+  masa_init("euler-example","euler_2d");
+  
   NumberArray<NDIM, ADType> xy;
   xy[0] = ADType(1., xvec);
   xy[1] = ADType(1., yvec);
 
   evaluate_q(xy);
 }
-
-
 
 // Note: ADScalar needs to be a FirstDerivType or better since we have
 // first derivatives here.  Adding diffusion will require a
