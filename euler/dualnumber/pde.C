@@ -5,14 +5,14 @@
 typedef double RawScalar;
 
 template <std::size_t NDIM, typename Scalar>
-void evaluate_q (const NumberArray<NDIM, Scalar>& xyz);
+double evaluate_q (const NumberArray<NDIM, Scalar>& xyz, const int);
 
 using namespace MASA;
 
 int main(void)
 {
   int err = 0;
-  int N   = 100;
+  int N   = 100; // mesh pts. in x and y
 
   const unsigned int NDIM = 2;
 
@@ -55,13 +55,13 @@ int main(void)
       for (int j=0; j != N+1; ++j)
 	{
 	  xy[1] = ADType(j*h,yvec);
-	  evaluate_q(xy);
+	  // evaluate source terms
+	  evaluate_q(xy,1);
+	  evaluate_q(xy,2);
 	}
     }
 
-  // evaluate source terms
-  //evaluate_q(xy);
-
+  // steady as she goes...
   return 0;
 
 }
@@ -71,7 +71,7 @@ int main(void)
 // SecondDerivType or better
 
 template <std::size_t NDIM, typename ADScalar>
-void evaluate_q (const NumberArray<NDIM, ADScalar>& xyz)
+double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
 {
   typedef typename RawType<ADScalar>::value_type Scalar;
 
@@ -122,6 +122,19 @@ void evaluate_q (const NumberArray<NDIM, ADScalar>& xyz)
   Scalar Q_rho = raw_value(divergence(U));
   NumberArray<NDIM, Scalar> Q_rho_u = raw_value(divergence(RHO*U.outerproduct(U)) + P.derivatives());
   Scalar Q_rho_e = raw_value(divergence((RHO*ET+P)*U));
+
+  switch(ret)
+    {
+    case 1: 
+      return Q_rho;
+      break;
+    case 2:
+      return Q_rho_e;
+      break;
+    default:
+      std::cout << "something is wrong!\n";
+      exit;
+    }
   
 
 //  std::cout << f;
