@@ -12,6 +12,7 @@ using namespace MASA;
 int main(void)
 {
   int err = 0;
+  int N   = 100;
 
   const unsigned int NDIM = 2;
 
@@ -54,12 +55,14 @@ int main(void)
       for (int j=0; j != N+1; ++j)
 	{
 	  xy[1] = ADType(j*h,yvec);
-	  do_my_test(xy);
+	  evaluate_q(xy);
 	}
     }
 
   // evaluate source terms
-  evaluate_q(xy);
+  //evaluate_q(xy);
+
+  return 0;
 
 }
 
