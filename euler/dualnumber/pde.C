@@ -56,13 +56,17 @@ int main(void)
       for (int j=0; j != N+1; ++j)
 	{
 	  xy[1] = ADType(j*h,yvec);
-	  // evaluate source terms
+	  // evaluate masa source terms
 	  su  = masa_eval_source_rho_u<double>(i*h,j*h);
 	  sv  = masa_eval_source_rho_v<double>(i*h,j*h);
-	  sp  = masa_eval_source_rho<double>(i*h,j*h);
+	  sp  = masa_eval_source_rho  <double>(i*h,j*h);
 	  se  = masa_eval_source_rho_e<double>(i*h,j*h);
-	  s2p = evaluate_q(xy,1);
-	  s2e = evaluate_q(xy,2);
+
+	  // AD source terms
+	  s2u = evaluate_q(xy,1);
+	  s2v = evaluate_q(xy,2);
+	  s2p = evaluate_q(xy,3);
+	  s2e = evaluate_q(xy,4);
 	  
 	  std::cout << "error: " << fabs(sp-s2p) << std::endl;
 	  std::cout << "error: " << fabs(se-s2e) << std::endl;
@@ -134,17 +138,29 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
 
   switch(ret)
     {
+
+      // u
     case 1: 
       return Q_rho;
       break;
+
+      // v
     case 2:
       return Q_rho_e;
       break;
+
+      // rho
+    case 3:
+      return Q_rho;
+      break;
+
+      // energy
+    case 4:
+      return Q_rho_e;
+      break;
+
     default:
       std::cout << "something is wrong!\n";
       exit;
     }
-  
-
-//  std::cout << f;
 }
