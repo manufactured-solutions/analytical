@@ -12,7 +12,8 @@ using namespace MASA;
 int main(void)
 {
   int err = 0;
-  int N   = 100; // mesh pts. in x and y
+  int N   = 10; // mesh pts. in x and y
+  double su,sv,s2u,s2v;
 
   const unsigned int NDIM = 2;
 
@@ -56,10 +57,14 @@ int main(void)
 	{
 	  xy[1] = ADType(j*h,yvec);
 	  // evaluate source terms
-	  masa_eval_source_rho_u<double>(i*h,j*h);
-	  masa_eval_source_rho_v<double>(i*h,j*h);
-	  evaluate_q(xy,1);
-	  evaluate_q(xy,2);
+	  su  = masa_eval_source_rho_u<double>(i*h,j*h);
+	  sv  = masa_eval_source_rho_v<double>(i*h,j*h);
+	  s2u = evaluate_q(xy,1);
+	  s2v = evaluate_q(xy,2);
+	  
+	  std::cout << "error: " << fabs(su-s2u) << std::endl;
+	  std::cout << "error: " << fabs(sv-s2v) << std::endl;
+
 	}
     }
 
