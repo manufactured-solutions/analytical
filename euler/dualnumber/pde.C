@@ -13,7 +13,7 @@ int main(void)
 {
   int err = 0;
   int N   = 10; // mesh pts. in x and y
-  double su,sv,s2u,s2v;
+  double su,sv,s2u,s2v,sp,se,s2e,s2p;
 
   const unsigned int NDIM = 2;
 
@@ -59,11 +59,13 @@ int main(void)
 	  // evaluate source terms
 	  su  = masa_eval_source_rho_u<double>(i*h,j*h);
 	  sv  = masa_eval_source_rho_v<double>(i*h,j*h);
-	  s2u = evaluate_q(xy,1);
-	  s2v = evaluate_q(xy,2);
+	  sp  = masa_eval_source_rho<double>(i*h,j*h);
+	  se  = masa_eval_source_rho_e<double>(i*h,j*h);
+	  s2p = evaluate_q(xy,1);
+	  s2e = evaluate_q(xy,2);
 	  
-	  std::cout << "error: " << fabs(su-s2u) << std::endl;
-	  std::cout << "error: " << fabs(sv-s2v) << std::endl;
+	  std::cout << "error: " << fabs(sp-s2p) << std::endl;
+	  std::cout << "error: " << fabs(se-s2e) << std::endl;
 
 	}
     }
