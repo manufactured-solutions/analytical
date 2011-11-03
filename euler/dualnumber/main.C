@@ -66,5 +66,5 @@ int main(void)
 
   DualNumber<double, NumberArray<2, double> > f = x*x+std::pow(y,3.);
 
-//  std::cout << f;
+  std::cout << f;
 }

@@ -14,6 +14,13 @@ int main(void)
   int err = 0;
   int N   = 10; // mesh pts. in x and y
   double su,sv,s2u,s2v,sp,se,s2e,s2p;
+  double pnorm, unorm, vnorm, enorm;
+  double pnorm_max, unorm_max, vnorm_max, enorm_max;
+
+  unorm_max = 0;
+  vnorm_max = 0;
+  pnorm_max = 0;
+  enorm_max = 0;
 
   const unsigned int NDIM = 2;
 
@@ -67,12 +74,25 @@ int main(void)
 	  s2v = evaluate_q(xy,2);
 	  s2p = evaluate_q(xy,3);
 	  s2e = evaluate_q(xy,4);
-	  
-	  std::cout << "error: " << fabs(sp-s2p) << std::endl;
-	  std::cout << "error: " << fabs(se-s2e) << std::endl;
+
+	  pnorm = fabs(sp-s2p);	  
+	  enorm = fabs(se-s2e);
+
+	  if(pnorm > pnorm_max)
+	    {
+	      pnorm_max=pnorm;
+	    }
+
+	  if(enorm > enorm_max)
+	    {
+	      enorm_max=enorm;
+	    }
 
 	}
     }
+ 
+  std::cout << "max error in density: " << pnorm_max << std::endl;
+  std::cout << "max error in energy : " << enorm_max << std::endl;
 
   // steady as she goes...
   return 0;
@@ -132,7 +152,10 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
   ADScalar ET = E + .5 * U.dot(U);
 
   // Euler equation residuals
-  Scalar Q_rho = raw_value(divergence(U));
+  Scalar Q_rho = raw_value(divergence(RHO*U));
+  //Scalar Ux    = raw_value(RHO*U.outerproduct(U)+P);
+  //Scalar Uy    = raw_value(RHO*U.outerproduct(U)+P);
+
   NumberArray<NDIM, Scalar> Q_rho_u = raw_value(divergence(RHO*U.outerproduct(U)) + P.derivatives());
   Scalar Q_rho_e = raw_value(divergence((RHO*ET+P)*U));
 
@@ -141,12 +164,12 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
 
       // u
     case 1: 
-      return Q_rho;
+      //return Ux;
       break;
 
       // v
     case 2:
-      return Q_rho_e;
+      //return Uy;
       break;
 
       // rho
