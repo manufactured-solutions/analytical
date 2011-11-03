@@ -56,6 +56,8 @@ int main(void)
 	{
 	  xy[1] = ADType(j*h,yvec);
 	  // evaluate source terms
+	  masa_eval_source_rho_u<double>(i*h,j*h);
+	  masa_eval_source_rho_v<double>(i*h,j*h);
 	  evaluate_q(xy,1);
 	  evaluate_q(xy,2);
 	}
