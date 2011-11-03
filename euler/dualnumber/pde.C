@@ -35,10 +35,28 @@ int main(void)
   err += masa_sanity_check();
   err += masa_printid<double>();
 
-  // set up array
+  // we first set up the DualNumber::derivatives() terms.  
+  // When main() says "xy[0] = ADType(1., xvec);", that's saying "x = 1, and 
+  // the gradient of f(x,y)=x is the constant vector xvec={1,0}"  
+  // Likewise "xy[1] = ADType(1., yvec);" means "y = 1, and the gradient of f(x,y)=y 
+  // is the constant vector yvec={0,1}" 
   NumberArray<NDIM, ADType> xy;
   xy[0] = ADType(1., xvec);
   xy[1] = ADType(1., yvec);
+
+  // the input argument xyz is another NumberArray 
+  // a vector just like Q_rho_u, a spatial location rather 
+  // than a vector-valued forcing function.
+  double h = 1.0/N;
+  for (int i=0; i != N+1; ++i)
+    {
+      xy[0] = ADType(i*h,xvec);
+      for (int j=0; j != N+1; ++j)
+	{
+	  xy[1] = ADType(j*h,yvec);
+	  do_my_test(xy);
+	}
+    }
 
   // evaluate source terms
   evaluate_q(xy);
