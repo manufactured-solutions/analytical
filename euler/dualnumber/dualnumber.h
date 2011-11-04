@@ -832,7 +832,7 @@ struct RawType<DualNumber<T, D> >
 {
   typedef typename RawType<T>::value_type value_type;
 
-  static value_type value(const DualNumber<T, D>& a) { return a.value(); }
+  static value_type value(const DualNumber<T, D>& a) { return raw_value(a.value()); }
 };
 
 template<typename T, typename D>
