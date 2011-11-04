@@ -76,6 +76,7 @@ public:
     typename CompareTypes<T,T2>::supertype returnval;
     for (unsigned int i=0; i != size; ++i)
       returnval += _data[i] * a[i];
+    return returnval;
   }
 
   template <typename T2>
@@ -87,6 +88,8 @@ public:
     for (unsigned int i=0; i != size; ++i)
       for (unsigned int j=0; j != size; ++j)
         returnval[i][j] = _data[i] * a[j];
+
+    return returnval;
   }
 
 private:
@@ -351,7 +354,7 @@ operator<< (std::ostream& output, const NumberArray<size,T>& a)
 {
   output << '{';
   if (size)
-    output << ',' << a[0];
+    output << a[0];
   for (unsigned int i=1; i<size; ++i)
     output << ',' << a[i];
   output << '}';
