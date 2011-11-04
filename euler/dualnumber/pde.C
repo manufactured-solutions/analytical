@@ -16,6 +16,7 @@ int main(void)
   double su,sv,s2u,s2v,sp,se,s2e,s2p;
   double pnorm, unorm, vnorm, enorm;
   double pnorm_max, unorm_max, vnorm_max, enorm_max;
+  double prnorm_max = 0., urnorm_max = 0., vrnorm_max = 0., ernorm_max = 0.;
 
   unorm_max = 0;
   vnorm_max = 0;
@@ -80,25 +81,20 @@ int main(void)
 	  pnorm = fabs(sp-s2p);	  
 	  enorm = fabs(se-s2e);
 
-	  if(unorm > unorm_max)
-	    {
-	      unorm_max=unorm;
-	    }
+	  double urnorm = fabs(su-s2u)/std::max(su,s2u);	  
+	  double vrnorm = fabs(sv-s2v)/std::max(sv,s2v);
+	  double prnorm = fabs(sp-s2p)/std::max(sp,s2p);	  
+	  double ernorm = fabs(se-s2e)/std::max(se,s2e);
 
-	  if(vnorm > vnorm_max)
-	    {
-	      vnorm_max=vnorm;
-	    }
+          unorm_max = std::max(unorm, unorm_max);
+          vnorm_max = std::max(vnorm, vnorm_max);
+          pnorm_max = std::max(pnorm, pnorm_max);
+          enorm_max = std::max(enorm, enorm_max);
 
-	  if(pnorm > pnorm_max)
-	    {
-	      pnorm_max=pnorm;
-	    }
-
-	  if(enorm > enorm_max)
-	    {
-	      enorm_max=enorm;
-	    }
+          urnorm_max = std::max(urnorm, urnorm_max);
+          vrnorm_max = std::max(vrnorm, vrnorm_max);
+          prnorm_max = std::max(prnorm, prnorm_max);
+          ernorm_max = std::max(ernorm, ernorm_max);
 
 	}
     }
@@ -107,6 +103,11 @@ int main(void)
   std::cout << "max error in v      : " << vnorm_max << std::endl;
   std::cout << "max error in density: " << pnorm_max << std::endl;
   std::cout << "max error in energy : " << enorm_max << std::endl;
+
+  std::cout << "max relative error in u      : " << urnorm_max << std::endl;
+  std::cout << "max relative error in v      : " << vrnorm_max << std::endl;
+  std::cout << "max relative error in density: " << prnorm_max << std::endl;
+  std::cout << "max relative error in energy : " << ernorm_max << std::endl;
 
   // steady as she goes...
   return 0;
