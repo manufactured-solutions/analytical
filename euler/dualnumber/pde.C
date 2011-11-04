@@ -42,7 +42,7 @@ int main(void)
   // call the sanity check routine
   // (tests that all variables have been initialized)
   err += masa_sanity_check();
-  err += masa_printid<double>();
+  //err += masa_printid<double>();
 
   // we first set up the DualNumber::derivatives() terms.  
   // When main() says "xy[0] = ADType(1., xvec);", that's saying "x = 1, and 
@@ -75,8 +75,20 @@ int main(void)
 	  s2p = evaluate_q(xy,3);
 	  s2e = evaluate_q(xy,4);
 
+	  unorm = fabs(su-s2u);	  
+	  vnorm = fabs(sv-s2v);
 	  pnorm = fabs(sp-s2p);	  
 	  enorm = fabs(se-s2e);
+
+	  if(unorm > unorm_max)
+	    {
+	      unorm_max=unorm;
+	    }
+
+	  if(vnorm > vnorm_max)
+	    {
+	      vnorm_max=vnorm;
+	    }
 
 	  if(pnorm > pnorm_max)
 	    {
@@ -91,6 +103,8 @@ int main(void)
 	}
     }
  
+  std::cout << "max error in u      : " << unorm_max << std::endl;
+  std::cout << "max error in v      : " << vnorm_max << std::endl;
   std::cout << "max error in density: " << pnorm_max << std::endl;
   std::cout << "max error in energy : " << enorm_max << std::endl;
 
