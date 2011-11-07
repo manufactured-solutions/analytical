@@ -20,6 +20,9 @@ public:
 
   DualNumber(const T& val);
 
+  template <typename T2>
+  DualNumber(const T2& val);
+
   template <typename T2, typename D2>
   DualNumber(const T2& val, const D2& deriv);
 
@@ -74,6 +77,8 @@ private:
 template <typename T, typename D>
 struct DualNumberConstructor
 {
+  static T value(const DualNumber<T,D>& v) { return v.value(); }
+
   template <typename T2>
   static T value(const T2& v) { return v; }
 
@@ -93,6 +98,8 @@ struct DualNumberConstructor
 template <typename T, typename D, typename DD>
 struct DualNumberConstructor<DualNumber<T,D>, DD>
 {
+  static T value(const DualNumber<DualNumber<T,D>, DD>& v) { return v.value(); }
+
   template <typename T2>
   static DualNumber<T,D> value(const T2& v) { return v; }
 
@@ -125,6 +132,13 @@ DualNumber<T,D>::DualNumber() :
 template <typename T, typename D>
 inline
 DualNumber<T,D>::DualNumber(const T& val) :
+  _val  (DualNumberConstructor<T,D>::value(val)),
+  _deriv(DualNumberConstructor<T,D>::deriv(val)) {}
+
+template <typename T, typename D>
+template <typename T2>
+inline
+DualNumber<T,D>::DualNumber(const T2& val) :
   _val  (DualNumberConstructor<T,D>::value(val)),
   _deriv(DualNumberConstructor<T,D>::deriv(val)) {}
 
