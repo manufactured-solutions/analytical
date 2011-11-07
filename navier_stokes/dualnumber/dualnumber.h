@@ -20,7 +20,8 @@ public:
 
   DualNumber(const T& val);
 
-  DualNumber(const T& val, const D& deriv);
+  template <typename T2, typename D2>
+  DualNumber(const T2& val, const D2& deriv);
 
   template <typename T2, typename D2>
   DualNumber(const DualNumber<T2,D2>& src);
@@ -65,6 +66,53 @@ private:
   D _deriv;
 };
 
+
+
+// Helper class to handle partial specialization for DualNumber
+// constructors
+
+template <typename T, typename D>
+struct DualNumberConstructor
+{
+  template <typename T2>
+  static T value(const T2& v) { return v; }
+
+  template <typename T2, typename D2>
+  static T value(const T2& v, const D2&) { return v; }
+
+  template <typename T2>
+  static D deriv(const T2&) { return 0.; }
+
+  template <typename T2, typename D2>
+  static D deriv(const DualNumber<T2,D2>& v) { return v.derivatives(); }
+
+  template <typename T2, typename D2>
+  static D deriv(const T2&, const D2& d) { return d; }
+};
+
+template <typename T, typename D, typename DD>
+struct DualNumberConstructor<DualNumber<T,D>, DD>
+{
+  template <typename T2>
+  static DualNumber<T,D> value(const T2& v) { return v; }
+
+  template <typename T2, typename D2>
+  static DualNumber<T,D> value(const T2& v, const D2& d) { return DualNumber<T,D>(v,d); }
+
+  template <typename D2>
+  static DualNumber<T,D> value(const DualNumber<T,D>& v, const D2&) { return v; }
+
+  template <typename T2>
+  static DD deriv(const T2&) { return 0.; }
+
+  template <typename T2, typename D2>
+  static DD deriv(const DualNumber<T2,D2>& v) { return v.derivatives(); }
+
+  template <typename T2, typename D2>
+  static DD deriv(const T2&, const D2& d) { return d; }
+};
+
+
 //
 // Member function definitions
 //
@@ -77,19 +125,18 @@ DualNumber<T,D>::DualNumber() :
 template <typename T, typename D>
 inline
 DualNumber<T,D>::DualNumber(const T& val) :
-  _val(val), _deriv(0.) {}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D>::DualNumber(const T& val, 
-                            const D& deriv) :
-  _val(val), _deriv(deriv) {}
+  _val  (DualNumberConstructor<T,D>::value(val)),
+  _deriv(DualNumberConstructor<T,D>::deriv(val)) {}
 
 template <typename T, typename D>
 template <typename T2, typename D2>
 inline
-DualNumber<T,D>::DualNumber(const DualNumber<T2,D2>& src) :
-  _val(src.value()), _deriv(src.derivatives()) {}
+DualNumber<T,D>::DualNumber(const T2& val,
+                            const D2& deriv) :
+  _val  (DualNumberConstructor<T,D>::value(val,deriv)),
+  _deriv(DualNumberConstructor<T,D>::deriv(val,deriv)) {}
+
+
 
 template <typename T, typename D>
 template <typename T2, typename D2>
