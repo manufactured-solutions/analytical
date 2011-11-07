@@ -33,7 +33,7 @@ int main(void)
   // std::valarray<double> test1 = xvec + xfvec; // fails
 
   DualNumber<double, NumberArray<2, double> > u;
-  DualNumber<float, NumberArray<2, float> > uf;
+  // DualNumber<float, NumberArray<2, float> > uf;
 
   typedef DualNumber<double, NumberArray<2, double> > FirstDerivType;
   typedef DualNumber<FirstDerivType, NumberArray<2, FirstDerivType> > SecondDerivType;
@@ -54,8 +54,8 @@ int main(void)
 
   u = x + y;
   u = xf + y;
-  uf = xf + y;
-  uf = x + yf;
+  // uf = xf + y;
+  // uf = x + yf;
 
   //f1 = x + yf;
   //f1 = xf + yf;

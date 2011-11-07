@@ -12,6 +12,8 @@ struct RawType
 
 // Make the user syntax slightly nicer
 template <typename T>
-typename RawType<T>::value_type raw_value(const T& a) { return RawType<T>::value(a); }
+inline
+typename RawType<T>::value_type
+raw_value(const T& a) { return RawType<T>::value(a); }
 
 #endif // __raw_type_h__

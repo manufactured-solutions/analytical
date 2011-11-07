@@ -25,6 +25,10 @@ public:
   NumberArray(NumberArray<size, T2> src)
     { if (size) std::copy(&src[0], &src[0]+size, _data); }
 
+  template <typename T2>
+  NumberArray(const T2& val)
+    { std::fill(_data, _data+size, T(val)); }
+
   T& operator[](unsigned int i)
     { return _data[i]; }
 
@@ -39,35 +43,35 @@ public:
 
   template <typename T2>
   NumberArray<size,T>& operator+= (const NumberArray<size,T2>& a)
-    { for (unsigned int i=0; i != size; ++i) _data[i] += a[i]; }
+    { for (unsigned int i=0; i != size; ++i) _data[i] += a[i]; return *this; }
 
   template <typename T2>
   NumberArray<size,T>& operator+= (const T2& a)
-    { for (unsigned int i=0; i != size; ++i) _data[i] += a; }
+    { for (unsigned int i=0; i != size; ++i) _data[i] += a; return *this; }
 
   template <typename T2>
   NumberArray<size,T>& operator-= (const NumberArray<size,T2>& a)
-    { for (unsigned int i=0; i != size; ++i) _data[i] -= a[i]; }
+    { for (unsigned int i=0; i != size; ++i) _data[i] -= a[i]; return *this; }
 
   template <typename T2>
   NumberArray<size,T>& operator-= (const T2& a)
-    { for (unsigned int i=0; i != size; ++i) _data[i] -= a; }
+    { for (unsigned int i=0; i != size; ++i) _data[i] -= a; return *this; }
 
   template <typename T2>
   NumberArray<size,T>& operator*= (const NumberArray<size,T2>& a)
-    { for (unsigned int i=0; i != size; ++i) _data[i] *= a[i]; }
+    { for (unsigned int i=0; i != size; ++i) _data[i] *= a[i]; return *this; }
 
   template <typename T2>
   NumberArray<size,T>& operator*= (const T2& a)
-    { for (unsigned int i=0; i != size; ++i) _data[i] *= a; }
+    { for (unsigned int i=0; i != size; ++i) _data[i] *= a; return *this; }
 
   template <typename T2>
   NumberArray<size,T>& operator/= (const NumberArray<size,T2>& a)
-    { for (unsigned int i=0; i != size; ++i) _data[i] /= a[i]; }
+    { for (unsigned int i=0; i != size; ++i) _data[i] /= a[i]; return *this; }
 
   template <typename T2>
   NumberArray<size,T>& operator/= (const T2& a)
-    { for (unsigned int i=0; i != size; ++i) _data[i] /= a; }
+    { for (unsigned int i=0; i != size; ++i) _data[i] /= a; return *this; }
 
   template <typename T2>
   typename CompareTypes<T,T2>::supertype
@@ -96,11 +100,46 @@ private:
   T _data[size];
 };
 
+// A helper class for producing identity matrices
+
+template <std::size_t size, typename T>
+struct NumberArrayIdentity
+{
+  static NumberArray<size, NumberArray<size, T> > identity()
+  {
+    NumberArray<size, NumberArray<size, T> > returnval;
+  
+    for (unsigned int i=0; i != size; ++i)
+      returnval[i][i] = 1;
+
+    return returnval;
+  }
+};
+
+
+
 //
 // Non-member functions
 //
 
+template <std::size_t size, typename T>
+inline
+NumberArray<size, NumberArray<size, T> >
+transpose(const NumberArray<size, NumberArray<size, T> >& a)
+{
+  NumberArray<size, NumberArray<size, T> > returnval = a;
+
+  for (unsigned int i=0; i != size; ++i)
+    for (unsigned int j=i+1; j != size; ++j)
+      std::swap(returnval[i][j], returnval[j][i]);
+
+  return returnval;
+}
+
+
+
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator+ (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
 {
@@ -111,6 +150,7 @@ operator+ (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator+ (const T& a, const NumberArray<size,T2>& b)
 {
@@ -121,6 +161,7 @@ operator+ (const T& a, const NumberArray<size,T2>& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator+ (const NumberArray<size,T>& a, const T2& b)
 {
@@ -131,6 +172,7 @@ operator+ (const NumberArray<size,T>& a, const T2& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator- (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
 {
@@ -141,6 +183,7 @@ operator- (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator- (const T& a, const NumberArray<size,T2>& b)
 {
@@ -151,6 +194,7 @@ operator- (const T& a, const NumberArray<size,T2>& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator- (const NumberArray<size,T>& a, const T2& b)
 {
@@ -161,6 +205,7 @@ operator- (const NumberArray<size,T>& a, const T2& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator* (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
 {
@@ -171,6 +216,7 @@ operator* (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator* (const T& a, const NumberArray<size,T2>& b)
 {
@@ -181,6 +227,7 @@ operator* (const T& a, const NumberArray<size,T2>& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator* (const NumberArray<size,T>& a, const T2& b)
 {
@@ -191,6 +238,7 @@ operator* (const NumberArray<size,T>& a, const T2& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator/ (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
 {
@@ -201,6 +249,7 @@ operator/ (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator/ (const T& a, const NumberArray<size,T2>& b)
 {
@@ -211,6 +260,7 @@ operator/ (const T& a, const NumberArray<size,T2>& b)
 }
 
 template <std::size_t size, typename T, typename T2>
+inline
 NumberArray<size, typename CompareTypes<T,T2>::supertype>
 operator/ (const NumberArray<size,T>& a, const T2& b)
 {
@@ -226,6 +276,7 @@ namespace std {
 
 #define NumberArray_std_unary(funcname) \
 template <std::size_t size, typename T> \
+inline \
 NumberArray<size, T> \
 funcname (const NumberArray<size, T>& a) \
 { \
@@ -240,6 +291,7 @@ funcname (const NumberArray<size, T>& a) \
 
 #define NumberArray_std_binary_abab(funcname, atype, btype, aarg, barg) \
 template <std::size_t size, typename T, typename T2> \
+inline \
 NumberArray<size, typename CompareTypes<T,T2>::supertype> \
 funcname (const atype& a, const btype& b) \
 { \
@@ -278,7 +330,6 @@ NumberArray_std_binary(min)
 NumberArray_std_unary(ceil)
 NumberArray_std_unary(floor)
 NumberArray_std_binary(fmod)
-
 
 
 template <std::size_t size, typename T>
@@ -325,6 +376,7 @@ public:
 
 #define NumberArray_operator_binary_abab(opname, atype, btype, aarg, barg) \
 template <std::size_t size, typename T, typename T2> \
+inline \
 NumberArray<size, bool> \
 operator opname (const atype& a, const btype& b) \
 { \
@@ -349,6 +401,7 @@ NumberArray_operator_binary(==)
 NumberArray_operator_binary(!=)
 
 template <std::size_t size, typename T>
+inline
 std::ostream&      
 operator<< (std::ostream& output, const NumberArray<size,T>& a)
 {
@@ -376,7 +429,18 @@ struct CompareTypes<NumberArray<size,T>, NumberArray<size,T2> > {
 };
 
 
-template <>
+template<std::size_t size, typename T, typename T2>
+struct CompareTypes<NumberArray<size, T>, T2> {
+  typedef NumberArray<size, typename CompareTypes<T, T2>::supertype> supertype;
+};
+
+template<std::size_t size, typename T, typename T2>
+struct CompareTypes<T, NumberArray<size, T2> > {
+  typedef NumberArray<size, typename CompareTypes<T, T2>::supertype> supertype;
+};
+
+
+
 template <std::size_t size, typename T>
 struct RawType<NumberArray<size, T> >
 {

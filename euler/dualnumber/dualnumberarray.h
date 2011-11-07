@@ -21,6 +21,7 @@ struct DivergenceType<NumberArray<size, T> >
 // For a vector of values a[i] each of which has a defined gradient,
 // the divergence is the sum of derivative_wrt_xi(a[i])
 template <std::size_t size, typename T>
+inline
 typename DivergenceType<T>::divergence_type
 divergence(const NumberArray<size, T>& a)
 {
@@ -37,6 +38,7 @@ divergence(const NumberArray<size, T>& a)
 // data structure support, not every other combination.
 
 template <std::size_t size, typename T>
+inline
 NumberArray<size, typename DivergenceType<T>::divergence_type>
 divergence(const NumberArray<size, NumberArray<size, T> >& a)
 {
@@ -44,6 +46,20 @@ divergence(const NumberArray<size, NumberArray<size, T> >& a)
 
   for (unsigned int i=0; i != size; ++i)
     returnval[i] = divergence(a[i]);
+
+  return returnval;
+}
+
+// For a vector of values, the gradient is going to be a tensor
+template <std::size_t size, typename T>
+inline
+NumberArray<size, typename T::derivatives_type>
+gradient(const NumberArray<size, T>& a)
+{
+  NumberArray<size, typename T::derivatives_type> returnval;
+
+  for (unsigned int i=0; i != size; ++i)
+    returnval[i] = a[i].derivatives();
 
   return returnval;
 }
