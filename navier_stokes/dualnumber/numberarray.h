@@ -422,12 +422,10 @@ struct CompareTypes<NumberArray<size,T>, NumberArray<size,T> > {
   typedef NumberArray<size, T> supertype;
 };
 
-
 template<std::size_t size, typename T, typename T2>
 struct CompareTypes<NumberArray<size,T>, NumberArray<size,T2> > {
   typedef NumberArray<size, typename CompareTypes<T, T2>::supertype> supertype;
 };
-
 
 template<std::size_t size, typename T, typename T2>
 struct CompareTypes<NumberArray<size, T>, T2> {

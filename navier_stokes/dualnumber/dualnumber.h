@@ -26,9 +26,6 @@ public:
   template <typename T2, typename D2>
   DualNumber(const T2& val, const D2& deriv);
 
-  template <typename T2, typename D2>
-  DualNumber(const DualNumber<T2,D2>& src);
-
   T& value() { return _val; }
 
   const T& value() const { return _val; }
@@ -84,6 +81,9 @@ struct DualNumberConstructor
 
   template <typename T2, typename D2>
   static T value(const T2& v, const D2&) { return v; }
+
+  template <typename T2, typename D2>
+  static T value(const DualNumber<T2,D2>& v) { return v.value(); }
 
   template <typename T2>
   static D deriv(const T2&) { return 0.; }
@@ -150,246 +150,83 @@ DualNumber<T,D>::DualNumber(const T2& val,
   _val  (DualNumberConstructor<T,D>::value(val,deriv)),
   _deriv(DualNumberConstructor<T,D>::deriv(val,deriv)) {}
 
-
-
-template <typename T, typename D>
-template <typename T2, typename D2>
-inline
-DualNumber<T,D>&
-DualNumber<T,D>::operator+= (const DualNumber<T2,D2>& a)
-{
-  this->value() += a.value();
-  this->derivatives() += a.derivatives();
-  return *this;
+#define DualNumber_op(opname, simplecalc, dualcalc) \
+template <typename T, typename D> \
+template <typename T2> \
+inline \
+DualNumber<T,D>& \
+DualNumber<T,D>::operator opname##= (const T2& in) \
+{ \
+  simplecalc; \
+  this->value() opname##= in; \
+  return *this; \
+} \
+ \
+template <typename T, typename D> \
+template <typename T2, typename D2> \
+inline \
+DualNumber<T,D>& \
+DualNumber<T,D>::operator opname##= (const DualNumber<T2,D2>& in) \
+{ \
+  dualcalc; \
+  this->value() opname##= in.value(); \
+  return *this; \
+} \
+ \
+template <typename T, typename D, typename T2, typename D2> \
+inline \
+DualNumber<typename CompareTypes<T,T2>::supertype,  \
+           typename CompareTypes<D,D2>::supertype>  \
+operator opname (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b) \
+{ \
+  typedef typename CompareTypes<T,T2>::supertype TS; \
+  typedef typename CompareTypes<D,D2>::supertype DS; \
+  DualNumber<TS,DS> returnval = a; \
+  returnval opname##= b; \
+  return returnval; \
+} \
+ \
+template <typename T, typename T2, typename D> \
+inline \
+typename boostcopy::enable_if_c<ScalarTraits<T>::value, \
+DualNumber<typename CompareTypes<T,T2>::supertype, D> \
+>::type \
+operator opname (const T& a, const DualNumber<T2,D>& b) \
+{ \
+  typedef typename CompareTypes<T,T2>::supertype TS; \
+  DualNumber<TS,D> returnval = a; \
+  returnval opname##= b; \
+  return returnval; \
+} \
+ \
+template <typename T, typename D, typename T2> \
+inline \
+typename boostcopy::enable_if_c<ScalarTraits<T2>::value, \
+DualNumber<typename CompareTypes<T,T2>::supertype, D> \
+>::type \
+operator opname (const DualNumber<T,D>& a, const T2& b) \
+{ \
+  typedef typename CompareTypes<T,T2>::supertype TS; \
+  DualNumber<TS,D> returnval = a; \
+  returnval opname##= b; \
+  return returnval; \
 }
 
-template <typename T, typename D>
-template <typename T2, typename D2>
-inline
-DualNumber<T,D>&
-DualNumber<T,D>::operator-= (const DualNumber<T2,D2>& a)
-{
-  this->value() -= a.value();
-  this->derivatives() -= a.derivatives();
-  return *this;
-}
 
-template <typename T, typename D>
-template <typename T2, typename D2>
-inline
-DualNumber<T,D>&
-DualNumber<T,D>::operator*= (const DualNumber<T2,D2>& a)
-{
-  this->derivatives() *= a.value();
-  this->derivatives() += this->value() * a.derivatives();
-  this->value() *= a.value();
-  return *this;
-}
 
-template <typename T, typename D>
-template <typename T2, typename D2>
-inline
-DualNumber<T,D>&
-DualNumber<T,D>::operator/= (const DualNumber<T2,D2>& a)
-{
-  T inva_val = 1. / a.value();
-  T this_over_a = this->value() * inva_val;
+DualNumber_op(+, , this->derivatives() += in.derivatives())
 
-  this->derivatives() *= inva_val;
-  this->derivatives() -= this_over_a * a.derivatives() * inva_val;
-  this->value() = this_over_a;
-  return *this;
-}
+DualNumber_op(-, , this->derivatives() -= in.derivatives())
 
-template <typename T, typename D>
-template <typename T2>
-inline
-DualNumber<T,D>&
-DualNumber<T,D>::operator+= (const T2& a)
-{
-  this->value() += a;
-  return *this;
-}
+DualNumber_op(*, this->derivatives() *= in,
+  this->derivatives() *= in.value();
+  this->derivatives() += this->value() * in.derivatives();)
 
-template <typename T, typename D>
-template <typename T2>
-inline
-DualNumber<T,D>&
-DualNumber<T,D>::operator-= (const T2& a)
-{
-  this->value() -= a;
-  return *this;
-}
+DualNumber_op(/, this->derivatives() /= in,
+  this->derivatives() /= in.value();
+  this->derivatives() -= this->value()/(in.value()*in.value()) * in.derivatives();
+)
 
-template <typename T, typename D>
-template <typename T2>
-inline
-DualNumber<T,D>&
-DualNumber<T,D>::operator*= (const T2& a)
-{
-  this->derivatives() *= a;
-  this->value() *= a;
-  return *this;
-}
-
-template <typename T, typename D>
-template <typename T2>
-inline
-DualNumber<T,D>&
-DualNumber<T,D>::operator/= (const T2& a)
-{
-  T inva_val = 1. / a;
-
-  this->derivatives() *= inva_val;
-  this->value() *= inva_val;
-  return *this;
-}
-
-//
-// Non-member functions
-//
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, 
-           typename CompareTypes<D,D2>::supertype> 
-operator+ (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  typedef typename CompareTypes<D,D2>::supertype DS;
-  return DualNumber<TS,DS> 
-    (a.value() + b.value(), a.derivatives() + b.derivatives());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, D2>
-operator+ (const T& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  return DualNumber<TS,D2>(a + b.value(), b.derivatives());
-}
-
-template <typename T, typename D, typename T2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
-operator+ (const DualNumber<T,D>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  return DualNumber<TS,D>(a.value() + b, a.derivatives());
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, 
-           typename CompareTypes<D,D2>::supertype> 
-operator- (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  typedef typename CompareTypes<D,D2>::supertype DS;
-  return DualNumber<TS,DS> 
-    (a.value() - b.value(), a.derivatives() - b.derivatives());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, D2>
-operator- (const T& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  return DualNumber<TS,D2>(a - b.value(), -b.derivatives());
-}
-
-template <typename T, typename D, typename T2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
-operator- (const DualNumber<T,D>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  return DualNumber<TS,D>(a.value() - b, a.derivatives());
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, 
-           typename CompareTypes<D,D2>::supertype> 
-operator* (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  typedef typename CompareTypes<D,D2>::supertype DS;
-  return DualNumber<TS,DS> 
-    (a.value() * b.value(), a.value() * b.derivatives() + b.value() * a.derivatives());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D2>
->::type
-operator* (const T& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  return DualNumber<TS,D2>
-    (a * b.value(), a * b.derivatives());
-}
-
-template <typename T, typename D, typename T2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
->::type
-operator* (const DualNumber<T,D>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  return DualNumber<TS,D>
-    (a.value() * b, b * a.derivatives());
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, 
-           typename CompareTypes<D,D2>::supertype> 
-operator/ (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  typedef typename CompareTypes<D,D2>::supertype DS;
-
-  T2 invb_val = 1. / b.value();
-  TS a_over_b = a.value() * invb_val;
-
-  return DualNumber<TS,DS> 
-    (a_over_b, a.derivatives() * invb_val - a_over_b * b.derivatives() * invb_val);
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D2>
->::type
-operator/ (const T& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-
-  T2 invb_val = 1. / b.value();
-  TS a_over_b = a * invb_val;
-
-  return DualNumber<TS,D2> 
-    (a_over_b, - a_over_b * b.derivatives() * invb_val);
-}
-
-template <typename T, typename D, typename T2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
-operator/ (const DualNumber<T,D>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-
-  T2 invb_val = 1. / b;
-  TS a_over_b = a.value() * invb_val;
-
-  return DualNumber<TS,D>
-    (a_over_b, a.derivatives() * invb_val);
-}
 
 
 namespace std {
@@ -397,330 +234,88 @@ namespace std {
 // Some forward declarations necessary for recursive DualNumbers
 
 template <typename T, typename D>
-DualNumber<T,D> log   (const DualNumber<T,D>& a);
+inline DualNumber<T,D> cos   (const DualNumber<T,D>& a);
 
 template <typename T, typename D>
-DualNumber<T,D> cos   (const DualNumber<T,D>& a);
-
-template <typename T, typename D>
-DualNumber<T,D> sqrt  (const DualNumber<T,D>& a);
-
-template <typename T, typename D>
-DualNumber<T,D> cosh  (const DualNumber<T,D>& a);
+inline DualNumber<T,D> cosh  (const DualNumber<T,D>& a);
 
 // Now just combined declaration/definitions
 
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, 
-           typename CompareTypes<D,D2>::supertype> 
-pow (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  typedef typename CompareTypes<D,D2>::supertype DS;
-
-  TS a_to_the_b = std::pow(a.value(), b.value());
-  return DualNumber<TS,DS>(a_to_the_b,
-                           a_to_the_b * (b.value() * a.derivatives() / a.value() +
-                                         b.derivatives * log(a.value())));
+#define DualNumber_std_unary(funcname, derivative, precalc) \
+template <typename T, typename D> \
+inline \
+DualNumber<T,D> funcname   (const DualNumber<T,D>& in) \
+{ \
+  T funcval = std::funcname(in.value()); \
+  precalc; \
+  return DualNumber<T,D>(funcval, (derivative) * in.derivatives()); \
 }
 
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D2>
->::type
-pow (const T& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
+DualNumber_std_unary(sqrt, 1 / (2 * funcval),)
+DualNumber_std_unary(exp, funcval,)
+DualNumber_std_unary(log, 1 / in.value(),)
+DualNumber_std_unary(log10, 1 / in.value() * (1/std::log(T(10.))),)
+DualNumber_std_unary(sin, std::cos(in.value()),)
+DualNumber_std_unary(cos, -std::sin(in.value()),)
+DualNumber_std_unary(tan, sec_in * sec_in, T sec_in = 1 / std::cos(in.value()))
+DualNumber_std_unary(asin, 1 / std::sqrt(1 - in.value()*in.value()),)
+DualNumber_std_unary(acos, -1 / std::sqrt(1 - in.value()*in.value()),)
+DualNumber_std_unary(atan, 1 / (1 + in.value()*in.value()),)
+DualNumber_std_unary(sinh, std::cosh(in.value()),)
+DualNumber_std_unary(cosh, std::sinh(in.value()),)
+DualNumber_std_unary(tanh, sech_in * sech_in, T sech_in = 1 / std::cos(in.value()))
+DualNumber_std_unary(abs, (in.value() > 0) - (in.value() < 0),) // std < and > return 0 or 1
+DualNumber_std_unary(ceil, 0,)
+DualNumber_std_unary(floor, 0,)
 
-  TS a_to_the_b = std::pow(a, b.value());
-
-  return DualNumber<TS,D2>(a_to_the_b,
-                           a_to_the_b * b.derivatives * log(a));
+#define DualNumber_std_binary(funcname, derivative) \
+template <typename T, typename D, typename T2, typename D2> \
+inline \
+DualNumber<typename CompareTypes<T,T2>::supertype, \
+           typename CompareTypes<D,D2>::supertype> \
+funcname (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b) \
+{ \
+  typedef typename CompareTypes<T,T2>::supertype TS; \
+  typedef typename CompareTypes<D,D2>::supertype DS; \
+ \
+  TS funcval = std::funcname(a.value(), b.value()); \
+  return DualNumber<TS,DS>(funcval, derivative); \
+} \
+ \
+template <typename T, typename T2, typename D> \
+inline \
+typename boostcopy::enable_if_c<ScalarTraits<T>::value, \
+DualNumber<typename CompareTypes<T,T2>::supertype, D> \
+>::type \
+funcname (const T& a, const DualNumber<T2,D>& b) \
+{ \
+  typedef typename CompareTypes<T,T2>::supertype TS; \
+  DualNumber<TS, D> newa(a); \
+  return std::funcname(newa, b); \
+} \
+ \
+template <typename T, typename T2, typename D> \
+inline \
+typename boostcopy::enable_if_c<ScalarTraits<T2>::value, \
+DualNumber<typename CompareTypes<T,T2>::supertype, D> \
+>::type \
+funcname (const DualNumber<T,D>& a, const T2& b) \
+{ \
+  typedef typename CompareTypes<T,T2>::supertype TS; \
+  DualNumber<TS, D> newb(b); \
+  return std::funcname(a, newb); \
 }
 
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
->::type
-pow (const DualNumber<T,D>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-
-  TS a_to_the_b = std::pow(a.value(), b);
-
-  return DualNumber<TS,D>(a_to_the_b,
-                          a_to_the_b * (b * a.derivatives() / a.value()));
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> exp   (const DualNumber<T,D>& a)
-{
-  T expa = std::exp(a.value());
-  return DualNumber<T,D>(expa, expa * a.derivatives());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> log   (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::log(a.value()), a.derivatives() / a.value());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> log10 (const DualNumber<T,D>& a)
-{
-  const static T inv_log_of_10 = 1./std::log(T(10.)); // Require T precision
-
-  return DualNumber<T,D>(std::log10(a.value()), a.derivatives() * inv_log_of_10 / a.value());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> sin   (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::sin(a.value()), std::cos(a.value()) * a.derivatives());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> cos   (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::cos(a.value()), -std::sin(a.value()) * a.derivatives());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> tan   (const DualNumber<T,D>& a)
-{
-  T sec_a = 1. / std::cos(a);
-  return DualNumber<T,D>(std::tan(a.value()), sec_a * sec_a * a.derivatives());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> asin  (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::asin(a.value()),
-                         a.derivatives() / std::sqrt(1 - a.value()*a.value()));
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> acos  (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::acos(a.value()),
-                         -a.derivatives() / std::sqrt(1 - a.value()*a.value()));
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> atan  (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::atan(a.value()),
-                         a.derivatives() /(1 + a.value()*a.value()));
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, 
-           typename CompareTypes<D,D2>::supertype> 
-atan2 (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  typedef typename CompareTypes<D,D2>::supertype DS;
-
-  return DualNumber<TS,DS>(std::atan2(a.value(), b.value()),
-                           (b.value() * a.derivatives() - a.value() * b.derivatives()) /
-                           (b.value() * b.value() + a.value() * a.value()));
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D2>
->::type
-atan2 (const T& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-
-  return DualNumber<TS,D2>(std::atan2(a, b.value()),
-                           (-a * b.derivatives()) /
-                           (b.value() * b.value() + a * a));
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
->::type
-atan2 (const DualNumber<T,D>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-
-  return DualNumber<TS,D>(std::atan2(a.value(), b),
-                          b * a.derivatives() /
-                          (b * b + a.value() * a.value()));
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> sinh  (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::sinh(a.value()), std::cosh(a.value()) * a.derivatives());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> cosh  (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::cosh(a.value()), std::sinh(a.value()) * a.derivatives());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> tanh  (const DualNumber<T,D>& a)
-{
-  T sech_a = 1./std::cosh(a.value());
-  return DualNumber<T,D>(std::tanh(a.value()), sech_a * sech_a * a.derivatives());
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> sqrt  (const DualNumber<T,D>& a)
-{
-  T sqrt_a = std::sqrt(a.value());
-
-  return DualNumber<T,D>(sqrt_a,
-                         a.derivatives() / (2 * sqrt_a));
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> abs  (const DualNumber<T,D>& a)
-{
-  T sign_a = (a.value() > 0.) - (a.value() < 0.);  // Std < and > return 0 or 1
-
-  return DualNumber<T,D>(std::abs(a.value()),
-                         a.derivatives() * sign_a);
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, 
-           typename CompareTypes<D,D2>::supertype> 
-max (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  bool a_greater = (a.value() > b.value());
-  return a_greater ? a : b;
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D2>
->::type
-max (const T& a, const DualNumber<T2,D2>& b)
-{
-  bool a_greater = (a > b.value());
-  return a_greater ? a : b;
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
->::type
-max (const DualNumber<T,D>& a, const T2& b)
-{
-  bool a_greater = (a.value() > b);
-  return a_greater ? a : b;
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, 
-           typename CompareTypes<D,D2>::supertype> 
-min (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  bool a_greater = (a.value() > b.value());
-  return a_greater ? b : a;
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D2>
->::type
-min (const T& a, const DualNumber<T2,D2>& b)
-{
-  bool a_greater = (a > b.value());
-  return a_greater ? b : a;
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
->::type
-min (const DualNumber<T,D>& a, const T2& b)
-{
-  bool a_greater = (a.value() > b);
-  return a_greater ? b : a;
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> ceil (const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::ceil(a.value()), 0.);
-}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D> floor(const DualNumber<T,D>& a)
-{
-  return DualNumber<T,D>(std::floor(a.value()), 0.);
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
-fmod (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-
-  return DualNumber<TS,D>(std::fmod(a.value(), b.value()), a.derivatives());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-typename CompareTypes<T,T2>::supertype
->::type
-fmod (const T& a, const DualNumber<T2,D2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-
-  return std::fmod(a, b.value());
-}
-
-template <typename T, typename D, typename T2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-DualNumber<typename CompareTypes<T,T2>::supertype, D>
->::type
-fmod (const DualNumber<T,D>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-
-  return DualNumber<TS,D>(std::fmod(a.value(), b.value()), a.derivatives());
-}
-
+DualNumber_std_binary(pow, 
+  funcval * (b.value() * a.derivatives() / a.value() + b.derivatives() * std::log(a.value())))
+DualNumber_std_binary(atan2,
+  (b.value() * a.derivatives() - a.value() * b.derivatives()) /
+  (b.value() * b.value() + a.value() * a.value()));
+DualNumber_std_binary(max,
+  (a.value() > b.value()) ?  a : b);
+DualNumber_std_binary(min,
+  (a.value() > b.value()) ?  b : a);
+DualNumber_std_binary(fmod, a.derivatives());
 
 
 template <typename T, typename D>
@@ -765,173 +360,41 @@ public:
 
 } // namespace std
 
-template <typename T, typename D, typename T2, typename D2>
-inline
-bool
-operator<  (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  return (a.value() < b.value());
+#define DualNumber_compare(opname) \
+template <typename T, typename D, typename T2, typename D2> \
+inline \
+bool \
+operator opname  (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b) \
+{ \
+  return (a.value() opname b.value()); \
+} \
+ \
+template <typename T, typename T2, typename D2> \
+inline \
+typename boostcopy::enable_if_c<ScalarTraits<T>::value, \
+bool \
+>::type \
+operator opname  (const T& a, const DualNumber<T2,D2>& b) \
+{ \
+  return (a opname b.value()); \
+} \
+ \
+template <typename T, typename T2, typename D> \
+inline \
+typename boostcopy::enable_if_c<ScalarTraits<T2>::value, \
+bool \
+>::type \
+operator opname  (const DualNumber<T,D>& a, const T2& b) \
+{ \
+  return (a.value() opname b.value()); \
 }
 
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-bool
->::type
-operator<  (const T& a, const DualNumber<T2,D2>& b)
-{
-  return (a < b.value());
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-bool
->::type
-operator<  (const DualNumber<T,D>& a, const T2& b)
-{
-  return (a.value() < b.value());
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-bool
-operator<=  (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  return (a.value() <= b.value());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-bool
->::type
-operator<=  (const T& a, const DualNumber<T2,D2>& b)
-{
-  return (a <= b.value());
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-bool
->::type
-operator<=  (const DualNumber<T,D>& a, const T2& b)
-{
-  return (a.value() <= b.value());
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-bool
-operator>  (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  return (a.value() > b.value());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-bool
->::type
-operator>  (const T& a, const DualNumber<T2,D2>& b)
-{
-  return (a > b.value());
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-bool
->::type
-operator>  (const DualNumber<T,D>& a, const T2& b)
-{
-  return (a.value() > b.value());
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-bool
-operator>=  (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  return (a.value() >= b.value());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-bool
->::type
-operator>=  (const T& a, const DualNumber<T2,D2>& b)
-{
-  return (a >= b.value());
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-bool
->::type
-operator>=  (const DualNumber<T,D>& a, const T2& b)
-{
-  return (a.value() >= b.value());
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-bool
-operator==  (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  return (a.value() == b.value());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-bool
->::type
-operator==  (const T& a, const DualNumber<T2,D2>& b)
-{
-  return (a == b.value());
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-bool
->::type
-operator==  (const DualNumber<T,D>& a, const T2& b)
-{
-  return (a.value() == b.value());
-}
-
-template <typename T, typename D, typename T2, typename D2>
-inline
-bool
-operator!=  (const DualNumber<T,D>& a, const DualNumber<T2,D2>& b)
-{
-  return (a.value() != b.value());
-}
-
-template <typename T, typename T2, typename D2>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T>::value,
-bool
->::type
-operator!=  (const T& a, const DualNumber<T2,D2>& b)
-{
-  return (a != b.value());
-}
-
-template <typename T, typename T2, typename D>
-inline
-typename boostcopy::enable_if_c<ScalarTraits<T2>::value,
-bool
->::type
-operator!=  (const DualNumber<T,D>& a, const T2& b)
-{
-  return (a.value() != b.value());
-}
+DualNumber_compare(>)
+DualNumber_compare(>=)
+DualNumber_compare(<)
+DualNumber_compare(<=)
+DualNumber_compare(==)
+DualNumber_compare(!=)
 
 template <typename T, typename D>
 inline
@@ -947,7 +410,7 @@ operator<< (std::ostream& output, const DualNumber<T,D>& a)
 template <typename T, typename D>
 struct ScalarTraits<DualNumber<T, D> >
 {
-  static const bool value = true;
+  static const bool value = ScalarTraits<T>::value;
 };
 
 template <typename T, typename D>

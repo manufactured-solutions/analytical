@@ -52,8 +52,9 @@ int main(void)
 
   x / 1.;
 
+  u = xf;
   u = x + y;
-  u = xf + y;
+  // u = xf + y;
   // uf = xf + y; - this fails, but I'm okay with not silently dropping precision
   // uf = x + yf;
 
@@ -64,6 +65,8 @@ int main(void)
 
   NumberArray<2, double> nd = 3. * xvec;
 
+  DualNumber<double, NumberArray<2, double> > f1 = x*x;
+  DualNumber<double, NumberArray<2, double> > f2 = std::pow(y,3.);
   DualNumber<double, NumberArray<2, double> > f = x*x+std::pow(y,3.);
 
   std::cout << f;
