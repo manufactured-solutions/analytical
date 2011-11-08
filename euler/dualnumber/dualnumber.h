@@ -18,8 +18,6 @@ public:
 
   DualNumber();
 
-  DualNumber(const T& val);
-
   template <typename T2>
   DualNumber(const T2& val);
 
@@ -128,12 +126,6 @@ template <typename T, typename D>
 inline
 DualNumber<T,D>::DualNumber() :
   _val(0.), _deriv(0.) {}
-
-template <typename T, typename D>
-inline
-DualNumber<T,D>::DualNumber(const T& val) :
-  _val  (DualNumberConstructor<T,D>::value(val)),
-  _deriv(DualNumberConstructor<T,D>::deriv(val)) {}
 
 template <typename T, typename D>
 template <typename T2>
