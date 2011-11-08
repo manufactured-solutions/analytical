@@ -225,7 +225,7 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
     raw_value(divergence(RHO*U.outerproduct(U)) + P.derivatives() - divergence(Tau));
 
   // energy equation
-  Scalar Q_rho_e = raw_value(divergence((RHO*ET+P)*U + q) - divergence(Tau.dot(U)));
+  Scalar Q_rho_e = raw_value(divergence((RHO*ET+P)*U + q - Tau.dot(U)));
 
   switch(ret)
     {
