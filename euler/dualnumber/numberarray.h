@@ -138,141 +138,31 @@ transpose(const NumberArray<size, NumberArray<size, T> >& a)
 
 
 
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator+ (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval += b;
-  return returnval;
+#define NumberArray_op_ab(opname, atype, btype) \
+template <std::size_t size, typename T, typename T2> \
+inline \
+NumberArray<size, typename CompareTypes<T,T2>::supertype> \
+operator opname (const atype& a, const btype& b) \
+{ \
+  typedef typename CompareTypes<T,T2>::supertype TS; \
+  NumberArray<size, TS> returnval(a); \
+  returnval opname##= b; \
+  return returnval; \
 }
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator+ (const T& a, const NumberArray<size,T2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval += b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator+ (const NumberArray<size,T>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval += b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator- (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval -= b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator- (const T& a, const NumberArray<size,T2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval -= b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator- (const NumberArray<size,T>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval -= b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator* (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval *= b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator* (const T& a, const NumberArray<size,T2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval *= b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator* (const NumberArray<size,T>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval *= b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator/ (const NumberArray<size,T>& a, const NumberArray<size,T2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval /= b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator/ (const T& a, const NumberArray<size,T2>& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval /= b;
-  return returnval;
-}
-
-template <std::size_t size, typename T, typename T2>
-inline
-NumberArray<size, typename CompareTypes<T,T2>::supertype>
-operator/ (const NumberArray<size,T>& a, const T2& b)
-{
-  typedef typename CompareTypes<T,T2>::supertype TS;
-  NumberArray<size, TS> returnval(a);
-  returnval /= b;
-  return returnval;
-}
-
-namespace std {
 
 #define MacroComma ,
+
+#define NumberArray_op(opname) \
+NumberArray_op_ab(opname, NumberArray<size MacroComma T>, NumberArray<size MacroComma T2>) \
+NumberArray_op_ab(opname,                             T , NumberArray<size MacroComma T2>) \
+NumberArray_op_ab(opname, NumberArray<size MacroComma T>,                             T2 )
+
+NumberArray_op(+)
+NumberArray_op(-)
+NumberArray_op(*)
+NumberArray_op(/)
+
+namespace std {
 
 #define NumberArray_std_unary(funcname) \
 template <std::size_t size, typename T> \
