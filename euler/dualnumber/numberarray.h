@@ -3,6 +3,8 @@
 #define __numberarray_h__
 
 #include <algorithm>
+#include <limits> // for numeric_limits
+#include <ostream>
 
 #include "compare_types.h"
 #include "raw_type.h"
