@@ -3,7 +3,6 @@
 #define __shadownumber_h__
 
 #include <algorithm>
-#include <limits> // for numeric_limits
 #include <iostream>
 
 #include "compare_types.h"
@@ -202,46 +201,9 @@ ShadowNumber_std_unary(ceil)
 ShadowNumber_std_unary(floor)
 ShadowNumber_std_binary(fmod)
 
-
 template <typename T, typename S>
-class numeric_limits<ShadowNumber<T, S> >
-{
-public:
-  static const bool is_specialized = true;
-  static T min() throw() { return ShadowNumber<T,S>(numeric_limits<T>::min()); }
-  static T max() throw() { return ShadowNumber<T,S>(numeric_limits<T>::max()); }
-  static const int  digits = numeric_limits<T>::digits;
-  static const int  digits10 = numeric_limits<T>::digits10;
-  static const bool is_signed = numeric_limits<T>::is_signed;
-  static const bool is_integer = numeric_limits<T>::is_integer;
-  static const bool is_exact = numeric_limits<T>::is_exact;
-  static const int radix = numeric_limits<T>::radix;
-  static T epsilon() throw() {return ShadowNumber<T,S>(numeric_limits<T>::epsilon()); }
-  static T round_error() throw() {return ShadowNumber<T,S>(numeric_limits<T>::round_error()); }
-
-  static const int  min_exponent = numeric_limits<T>::min_exponent;
-  static const int  min_exponent10 = numeric_limits<T>::min_exponent10;
-  static const int  max_exponent = numeric_limits<T>::max_exponent;
-  static const int  max_exponent10 = numeric_limits<T>::max_exponent10;
-
-  static const bool has_infinity = numeric_limits<T>::has_infinity;
-  static const bool has_quiet_NaN = numeric_limits<T>::has_quiet_NaN;
-  static const bool has_signaling_NaN = numeric_limits<T>::has_signaling_NaN;
-  static const float_denorm_style has_denorm = numeric_limits<T>::has_denorm;
-  static const bool has_denorm_loss = numeric_limits<T>::has_denorm_loss;
-  static T infinity() throw() {return ShadowNumber<T,S>(numeric_limits<T>::infinity()); }
-  static T quiet_NaN() throw() {return ShadowNumber<T,S>(numeric_limits<T>::quiet_NaN()); }
-  static T signaling_NaN() throw() {return ShadowNumber<T,S>(numeric_limits<T>::signaling_NaN()); }
-  static T denorm_min() throw() {return ShadowNumber<T,S>(numeric_limits<T>::denorm_min()); }
-
-  static const bool is_iec559 = numeric_limits<T>::is_iec559;
-  static const bool is_bounded = numeric_limits<T>::is_bounded;
-  static const bool is_modulo = numeric_limits<T>::is_modulo;
-
-  static const bool traps = numeric_limits<T>::traps;
-  static const bool tinyness_before = numeric_limits<T>::tinyness_before;
-  static const float_round_style round_style = numeric_limits<T>::round_style;
-};
+class numeric_limits<ShadowNumber<T, S> > :
+  public raw_numeric_limits<ShadowNumber<T, S>, T> {};
 
 } // namespace std
 

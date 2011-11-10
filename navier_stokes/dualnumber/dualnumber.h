@@ -2,7 +2,6 @@
 #ifndef __dualnumber_h__
 #define __dualnumber_h__
 
-#include <limits> // for numeric_limits
 #include <ostream>
 
 #include "compare_types.h"
@@ -309,46 +308,9 @@ DualNumber_std_binary(min,
   (a.value() > b.value()) ?  b : a);
 DualNumber_std_binary(fmod, a.derivatives());
 
-
 template <typename T, typename D>
-class numeric_limits<DualNumber<T, D> >
-{
-public:
-  static const bool is_specialized = true;
-  static T min() throw() { return DualNumber<T,D>(numeric_limits<T>::min()); }
-  static T max() throw() { return DualNumber<T,D>(numeric_limits<T>::max()); }
-  static const int  digits = numeric_limits<T>::digits;
-  static const int  digits10 = numeric_limits<T>::digits10;
-  static const bool is_signed = numeric_limits<T>::is_signed;
-  static const bool is_integer = numeric_limits<T>::is_integer;
-  static const bool is_exact = numeric_limits<T>::is_exact;
-  static const int radix = numeric_limits<T>::radix;
-  static T epsilon() throw() {return DualNumber<T,D>(numeric_limits<T>::epsilon()); }
-  static T round_error() throw() {return DualNumber<T,D>(numeric_limits<T>::round_error()); }
-
-  static const int  min_exponent = numeric_limits<T>::min_exponent;
-  static const int  min_exponent10 = numeric_limits<T>::min_exponent10;
-  static const int  max_exponent = numeric_limits<T>::max_exponent;
-  static const int  max_exponent10 = numeric_limits<T>::max_exponent10;
-
-  static const bool has_infinity = numeric_limits<T>::has_infinity;
-  static const bool has_quiet_NaN = numeric_limits<T>::has_quiet_NaN;
-  static const bool has_signaling_NaN = numeric_limits<T>::has_signaling_NaN;
-  static const float_denorm_style has_denorm = numeric_limits<T>::has_denorm;
-  static const bool has_denorm_loss = numeric_limits<T>::has_denorm_loss;
-  static T infinity() throw() {return DualNumber<T,D>(numeric_limits<T>::infinity()); }
-  static T quiet_NaN() throw() {return DualNumber<T,D>(numeric_limits<T>::quiet_NaN()); }
-  static T signaling_NaN() throw() {return DualNumber<T,D>(numeric_limits<T>::signaling_NaN()); }
-  static T denorm_min() throw() {return DualNumber<T,D>(numeric_limits<T>::denorm_min()); }
-
-  static const bool is_iec559 = numeric_limits<T>::is_iec559;
-  static const bool is_bounded = numeric_limits<T>::is_bounded;
-  static const bool is_modulo = numeric_limits<T>::is_modulo;
-
-  static const bool traps = numeric_limits<T>::traps;
-  static const bool tinyness_before = numeric_limits<T>::tinyness_before;
-  static const float_round_style round_style = numeric_limits<T>::round_style;
-};
+class numeric_limits<DualNumber<T, D> > : 
+  public raw_numeric_limits<DualNumber<T, D>, T> {};
 
 } // namespace std
 
@@ -428,7 +390,7 @@ struct CompareTypes<DualNumber<T, D>, T2> {
 template<typename T, typename D, typename T2, typename D2>
 struct CompareTypes<DualNumber<T, D>, DualNumber<T2, D2> > {
   typedef DualNumber<typename CompareTypes<T, T2>::supertype,
-                     typename CompareTypes<D, T2>::supertype> supertype;
+                     typename CompareTypes<D, D2>::supertype> supertype;
 };
 
 template<typename T, typename D>
