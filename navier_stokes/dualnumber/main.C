@@ -1,5 +1,4 @@
-#include "dualnumber.h"
-#include "numberarray.h"
+#include "dualshadowarray.h"
 #include <iostream>
 #include <valarray>
 
@@ -35,14 +34,26 @@ int main(void)
   DualNumber<double, NumberArray<2, double> > u;
 //  DualNumber<float, NumberArray<2, float> > uf;
 
-  typedef DualNumber<double, NumberArray<2, double> > FirstDerivType;
+  // typedef DualNumber<double, NumberArray<2, double> > FirstDerivType;
+  typedef DualNumber<ShadowNumber<float,double>, NumberArray<2, ShadowNumber<float,double> > > FirstDerivType;
+
   typedef DualNumber<FirstDerivType, NumberArray<2, FirstDerivType> > SecondDerivType;
 
   FirstDerivType test1;
   SecondDerivType test2;
 
-  test1 + 1.;
-  test2 + 1.;
+  test1 += ShadowNumber<float,double>(1.);
+
+  ShadowNumber<float,double> testS;
+
+  testS += 1.;
+
+  DualNumber<ShadowNumber<float,double>, ShadowNumber<float,double> > testD;
+
+  testD += 1.;
+
+//  test1 += 1.;
+//  test2 + 1.;
 
   NumberArray<2, DualNumber<double, NumberArray<2, double> > > n, n2;
 

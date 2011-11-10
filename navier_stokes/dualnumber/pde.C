@@ -1,8 +1,17 @@
-#include "dualnumberarray.h"
+#include "dualshadowarray.h"
 #include <iostream>
 #include <masa.h>
 
-typedef double RawScalar;
+// typedef double RawScalar;
+typedef ShadowNumber<double, long double> RawScalar;
+
+const unsigned int NDIM = 2;
+
+typedef DualNumber<RawScalar, NumberArray<NDIM, RawScalar> > FirstDerivType;
+typedef DualNumber<FirstDerivType, NumberArray<NDIM, FirstDerivType> > SecondDerivType;
+
+typedef SecondDerivType ADType;
+// typedef FirstDerivType ADType;
 
 template <std::size_t NDIM, typename Scalar>
 double evaluate_q (const NumberArray<NDIM, Scalar>& xyz, const int);
@@ -23,19 +32,11 @@ int main(void)
   pnorm_max = 0;
   enorm_max = 0;
 
-  const unsigned int NDIM = 2;
-
   const RawScalar xvecinit[] = {1., 0.};
   const RawScalar yvecinit[] = {0., 1.};
 
   const NumberArray<NDIM, RawScalar> xvec(xvecinit);
   const NumberArray<NDIM, RawScalar> yvec(yvecinit);
-
-  typedef DualNumber<RawScalar, NumberArray<NDIM, RawScalar> > FirstDerivType;
-  typedef DualNumber<FirstDerivType, NumberArray<NDIM, FirstDerivType> > SecondDerivType;
-
-  typedef SecondDerivType ADType;
-  // typedef FirstDerivType ADType;
 
   // initialize the problem in MASA
   err += masa_init("ns-maple","navierstokes_2d_compressible");
