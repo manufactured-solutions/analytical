@@ -5,8 +5,8 @@
 
 int main(void)
 {
-  const double xvecinit[] = {1., 0.};
-  const double yvecinit[] = {0., 1.};
+  const double xvecinit[]  = {1., 0.};
+  const double yvecinit[]  = {0., 1.};
   const float  xfvecinit[] = {1., 0.};
   const float  yfvecinit[] = {0., 1.};
 
@@ -27,8 +27,8 @@ int main(void)
 
   DualNumber<double, NumberArray<2, double> > x(1., xvec);
   DualNumber<double, NumberArray<2, double> > y(1., yvec);
-  DualNumber<float, NumberArray<2, float> > xf(1., xfvec);
-  DualNumber<float, NumberArray<2, float> > yf(1., yfvec);
+  DualNumber<float, NumberArray <2, float> > xf(1., xfvec);
+  DualNumber<float, NumberArray <2, float> > yf(1., yfvec);
 
   // std::valarray<double> test1 = xvec + xfvec; // fails
 
