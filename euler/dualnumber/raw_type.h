@@ -3,7 +3,6 @@
 
 #include <limits>
 
-
 template <typename T>
 struct RawType
 {
