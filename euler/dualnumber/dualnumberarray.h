@@ -1,7 +1,6 @@
 #ifndef __dualnumberarray_h__
 #define __dualnumberarray_h__
 
-
 #include "dualnumber.h"
 #include "numberarray.h"
 

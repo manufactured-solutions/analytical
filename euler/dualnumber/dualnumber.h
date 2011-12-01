@@ -5,7 +5,6 @@
 #include <ostream>
 
 #include "compare_types.h"
-#include "raw_type.h"
 
 template <typename T, typename D=T>
 class DualNumber
