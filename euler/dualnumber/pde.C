@@ -1,4 +1,5 @@
-#include "dualnumberarray.h"
+#include "ad_masa.h"
+
 #include <iostream>
 #include <masa.h>
 
