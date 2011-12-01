@@ -6,6 +6,7 @@
 #include <ostream>
 
 #include "compare_types.h"
+#include "raw_type.h"
 
 template <std::size_t size, typename T>
 class NumberArray

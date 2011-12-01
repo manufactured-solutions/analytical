@@ -5,6 +5,7 @@
 #include <ostream>
 
 #include "compare_types.h"
+#include "raw_type.h"
 
 template <typename T, typename D=T>
 class DualNumber
@@ -300,12 +301,12 @@ DualNumber_std_binary(pow,
   funcval * (b.value() * a.derivatives() / a.value() + b.derivatives() * std::log(a.value())))
 DualNumber_std_binary(atan2,
   (b.value() * a.derivatives() - a.value() * b.derivatives()) /
-  (b.value() * b.value() + a.value() * a.value()));
+  (b.value() * b.value() + a.value() * a.value()))
 DualNumber_std_binary(max,
-  (a.value() > b.value()) ?  a : b);
+  (a.value() > b.value()) ?  a : b)
 DualNumber_std_binary(min,
-  (a.value() > b.value()) ?  b : a);
-DualNumber_std_binary(fmod, a.derivatives());
+  (a.value() > b.value()) ?  b : a)
+DualNumber_std_binary(fmod, a.derivatives())
 
 template <typename T, typename D>
 class numeric_limits<DualNumber<T, D> > : 

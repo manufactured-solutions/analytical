@@ -1,13 +1,16 @@
 #ifndef __dualnumberarray_h__
 #define __dualnumberarray_h__
 
+
+#include "dualnumber.h"
+#include "numberarray.h"
+
 template <typename T>
 struct DivergenceType
 {
   typedef typename T::derivatives_type::value_type divergence_type;
 };
 
-template <>
 template <std::size_t size, typename T>
 struct DivergenceType<NumberArray<size, T> >
 {
