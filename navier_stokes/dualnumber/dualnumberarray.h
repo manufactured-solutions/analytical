@@ -11,7 +11,6 @@ struct DivergenceType
   typedef typename T::derivatives_type::value_type divergence_type;
 };
 
-template <>
 template <std::size_t size, typename T>
 struct DivergenceType<NumberArray<size, T> >
 {
