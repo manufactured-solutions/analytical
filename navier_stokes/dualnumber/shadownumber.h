@@ -286,9 +286,12 @@ struct RawType<ShadowNumber<T, S> >
   typedef typename RawType<T>::value_type value_type;
 
   static value_type value(const ShadowNumber<T, S>& a) {
-    std::cout << "Shadow relative error = " << 
-      (a.value() - a.shadow()) / std::max(S(a.value()), a.shadow()) <<
-      std::endl;
+    const S max_value = std::max(S(a.value()), a.shadow());
+    if (max_value) {
+      const S relative_error = (a.value() - a.shadow()) / max_value;
+      if (relative_error > 10*std::numeric_limits<T>::epsilon())
+        std::cerr << "Shadow relative error = " << relative_error << std::endl;
+    }
     return a.value();
   }
 };
