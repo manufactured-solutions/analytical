@@ -223,7 +223,7 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
   // Euler equation residuals
   Scalar Q_rho = raw_value(divergence(RHO*U));
   NumberArray<NDIM, Scalar> Q_rho_u = 
-    raw_value(divergence(RHO*U.outerproduct(U)) + P.derivatives() - divergence(Tau));
+    raw_value(divergence(RHO*U.outerproduct(U) - Tau) + P.derivatives());
 
   // energy equation
   Scalar Q_rho_e = raw_value(divergence((RHO*ET+P)*U + q - Tau.dot(U)));
