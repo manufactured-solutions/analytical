@@ -21,7 +21,7 @@ using namespace MASA;
 int main(void)
 {
   int err = 0;
-  int N   = 10; // mesh pts. in x and y
+  int N   = 2; // mesh pts. in x and y
   double su,sv,s2u,s2v,sp,se,s2e,s2p;
   double pnorm, unorm, vnorm, enorm;
   double pnorm_max, unorm_max, vnorm_max, enorm_max;
@@ -97,20 +97,17 @@ int main(void)
       for (int j=0; j != N+1; ++j)
 	{
           xy[1] = ADType(j*h, yvec);
+	  std::cout << "at: " << xy[0] << " " << xy[1] << std::endl;
 
           // Under the hood:
           // xy[1] = ADType(FirstDerivType(j*h, yvec), yvec);
 
 	  // evaluate masa source terms
-	  su  = masa_eval_source_rho_u<double>(i*h,j*h);
 	  sv  = masa_eval_source_rho_v<double>(i*h,j*h);
-	  sp  = masa_eval_source_rho  <double>(i*h,j*h);
 	  se  = masa_eval_source_rho_e<double>(i*h,j*h);
 
 	  // AD source terms
-	  s2u = evaluate_q(xy,1);
 	  s2v = evaluate_q(xy,2);
-	  s2p = evaluate_q(xy,3);
 	  s2e = evaluate_q(xy,4);
 
 	  unorm = fabs(su-s2u);	  
@@ -118,37 +115,33 @@ int main(void)
 	  pnorm = fabs(sp-s2p);	  
 	  enorm = fabs(se-s2e);
 
-	  double urnorm = fabs(su-s2u)/std::max(su,s2u);	  
 	  double vrnorm = fabs(sv-s2v)/std::max(sv,s2v);
-	  double prnorm = fabs(sp-s2p)/std::max(sp,s2p);	  
 	  double ernorm = fabs(se-s2e)/std::max(se,s2e);
 
-          unorm_max = std::max(unorm, unorm_max);
           vnorm_max = std::max(vnorm, vnorm_max);
-          pnorm_max = std::max(pnorm, pnorm_max);
           enorm_max = std::max(enorm, enorm_max);
 
-          urnorm_max = std::max(urnorm, urnorm_max);
           vrnorm_max = std::max(vrnorm, vrnorm_max);
-          prnorm_max = std::max(prnorm, prnorm_max);
           ernorm_max = std::max(ernorm, ernorm_max);
 
 	  std::cout << "step: " << i << " " << j << std::endl;
 	  std::cout << "max error in v      : " << vnorm_max << std::endl;
-	  std::cout << "max error in energy : " << enorm_max << std::endl;
+	  std::cout << "max error in energy : " << enorm_max << std::endl << std::endl;
 
 	}
     }
  
-  std::cout << "max error in u      : " << unorm_max << std::endl;
   std::cout << "max error in v      : " << vnorm_max << std::endl;
-  std::cout << "max error in density: " << pnorm_max << std::endl;
   std::cout << "max error in energy : " << enorm_max << std::endl;
 
-  std::cout << "max relative error in u      : " << urnorm_max << std::endl;
   std::cout << "max relative error in v      : " << vrnorm_max << std::endl;
-  std::cout << "max relative error in density: " << prnorm_max << std::endl;
   std::cout << "max relative error in energy : " << ernorm_max << std::endl;
+
+
+  // test:
+  //s2v = evaluate_q(xy,2);
+  //s2e = evaluate_q(xy,4);
+  //std::cout << " final test: " << s2v << " " << s2e << std::endl;
 
   // steady as she goes...
   return 0;

@@ -21,7 +21,7 @@ using namespace MASA;
 int main(void)
 {
   int err = 0;
-  int N   = 10; // mesh pts. in x and y
+  int N   = 10000; // mesh pts. in x and y
   double su,sv,s2u,s2v,sp,se,s2e,s2p;
   double pnorm, unorm, vnorm, enorm;
   double pnorm_max, unorm_max, vnorm_max, enorm_max;
