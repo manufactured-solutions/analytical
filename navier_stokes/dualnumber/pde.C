@@ -21,7 +21,7 @@ using namespace MASA;
 int main(void)
 {
   int err = 0;
-  int N   = 10000; // mesh pts. in x and y
+  int N   = 10; // mesh pts. in x and y
   double su,sv,s2u,s2v,sp,se,s2e,s2p;
   double pnorm, unorm, vnorm, enorm;
   double pnorm_max, unorm_max, vnorm_max, enorm_max;
@@ -209,6 +209,8 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
 
   // The shear strain tensor
   NumberArray<NDIM, typename ADScalar::derivatives_type> GradU = gradient(U);
+  std::cout  << " grad:  " << GradU[0] << std::endl;
+  std::cout  << " grad1: " << GradU[1] << std::endl;
 
   // The identity tensor I
   NumberArray<NDIM, NumberArray<NDIM, Scalar> > Identity = 

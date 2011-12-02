@@ -9,7 +9,7 @@ pde: pde.C dualnumberarray.h dualnumber.h numberarray.h compare_types.h raw_type
 	$(CXX) $(CXXFLAGS) -O0 -Wall -o pde pde.C -I$(MASA_INC) -L$(MASA_LIB) -lmasa
 
 pde_debug: pde_debug.C dualnumberarray.h dualnumber.h numberarray.h compare_types.h raw_type.h shadownumber.h dualshadowarray.h
-	$(CXX) $(CXXFLAGS) -O0 -Wall -o pde_debug pde_debug.C -I$(MASA_INC) -L$(MASA_LIB) -lmasa
+	$(CXX) $(CXXFLAGS) -O0 -o pde_debug pde_debug.C -I$(MASA_INC) -L$(MASA_LIB) -lmasa
 
 clean: 
 	rm pde pde_debug main

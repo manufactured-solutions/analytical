@@ -21,7 +21,7 @@ using namespace MASA;
 int main(void)
 {
   int err = 0;
-  int N   = 2; // mesh pts. in x and y
+  int N   = 10; // mesh pts. in x and y
   double su,sv,s2u,s2v,sp,se,s2e,s2p;
   double pnorm, unorm, vnorm, enorm;
   double pnorm_max, unorm_max, vnorm_max, enorm_max;
@@ -97,7 +97,7 @@ int main(void)
       for (int j=0; j != N+1; ++j)
 	{
           xy[1] = ADType(j*h, yvec);
-	  std::cout << "at: " << xy[0] << " " << xy[1] << std::endl;
+	  //std::cout << "at: " << xy[0] << " " << xy[1] << std::endl;
 
           // Under the hood:
           // xy[1] = ADType(FirstDerivType(j*h, yvec), yvec);
@@ -197,6 +197,9 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
   ADScalar RHO = rho_0 + rho_x * std::sin(a_rhox * PI * x / L) + rho_y * std::cos(a_rhoy * PI * y / L);
   ADScalar P = p_0 + p_x * std::cos(a_px * PI * x / L) + p_y * std::sin(a_py * PI * y / L);
 
+  //std::cout << "v is: " << U[1] << std::endl;
+  //std::cout << "p is: " << P << std::endl;
+
   // Temperature
   ADScalar T = P / RHO / R;
 
@@ -204,8 +207,12 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
   ADScalar E = 1./(Gamma-1.)*P/RHO;
   ADScalar ET = E + .5 * U.dot(U);
 
+  // bug is here! 
   // The shear strain tensor
-  NumberArray<NDIM, typename ADScalar::derivatives_type> GradU = gradient(U);
+  NumberArray<NDIM, typename ADScalar::derivatives_type> GradU;
+  GradU = gradient(U);
+  std::cout  << " grad:  " << GradU[0] << std::endl;
+  std::cout  << " grad1: " << GradU[1] << std::endl;
 
   // The identity tensor I
   NumberArray<NDIM, NumberArray<NDIM, Scalar> > Identity = 
@@ -245,7 +252,7 @@ double evaluate_q (const NumberArray<NDIM, ADScalar>& xyz, const int ret)
 
       // energy
     case 4:
-      return Q_rho_e;
+      return Q_rho_e; 
       break;
 
     default:
