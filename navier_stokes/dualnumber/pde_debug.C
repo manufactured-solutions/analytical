@@ -133,6 +133,10 @@ int main(void)
           prnorm_max = std::max(prnorm, prnorm_max);
           ernorm_max = std::max(ernorm, ernorm_max);
 
+	  std::cout << "step: " << i << " " << j << std::endl;
+	  std::cout << "max error in v      : " << vnorm_max << std::endl;
+	  std::cout << "max error in energy : " << enorm_max << std::endl;
+
 	}
     }
  
