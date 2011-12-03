@@ -6,10 +6,10 @@ main: main.C dualnumber.h numberarray.h shadownumber.h dualshadowarray.h compare
 	$(CXX) $(CXXFLAGS) -Wall -o main main.C 
 
 pde: pde.C dualnumberarray.h dualnumber.h numberarray.h compare_types.h raw_type.h shadownumber.h dualshadowarray.h
-	$(CXX) $(CXXFLAGS) -O0 -Wall -o pde pde.C -I$(MASA_INC) -L$(MASA_LIB) -lmasa
+	$(CXX) $(CXXFLAGS) -g -O0 -Wall -o pde pde.C -I$(MASA_INC) -L$(MASA_LIB) -lmasa
 
 pde_debug: pde_debug.C dualnumberarray.h dualnumber.h numberarray.h compare_types.h raw_type.h shadownumber.h dualshadowarray.h
-	$(CXX) $(CXXFLAGS) -O0 -o pde_debug pde_debug.C -I$(MASA_INC) -L$(MASA_LIB) -lmasa
+	$(CXX) $(CXXFLAGS) -g -O0 -o pde_debug pde_debug.C -I$(MASA_INC) -L$(MASA_LIB) -lmasa
 
 clean: 
 	rm -f pde pde_debug main
