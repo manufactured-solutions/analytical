@@ -12,4 +12,4 @@ pde_debug: pde_debug.C dualnumberarray.h dualnumber.h numberarray.h compare_type
 	$(CXX) $(CXXFLAGS) -O0 -o pde_debug pde_debug.C -I$(MASA_INC) -L$(MASA_LIB) -lmasa
 
 clean: 
-	rm pde pde_debug main
+	rm -f pde pde_debug main
