@@ -371,6 +371,11 @@ Q_{\tu_\text{viscous}} &=-\dfrac{1}{147} \dfrac{r_T(\gamma-1) \,  \mu_t  \, M_{\
 &-\dfrac{r_T \, (\gamma-1) \,  \mu_t \, M_{\infty}^2 \, T_{\infty} \,  (y^{+})^2 \,  u_{\tau}^2 \, \U \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 y^2 \Nu \Rho \T} \left(\Dueqplusyplus\right)^2  \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2+\\
 %
 &+\dfrac{1}{42} \dfrac{  r_T(\gamma-1) \,  \mu_t  \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau} \U \V \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 x y \Nu \Rho \T} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[43 y^{+} \, \Dueqplusyplus-2 u_{eq}^{+}\right]+\\
+% new part begin ----- 
+&+ \dfrac{\, \mu_t \, u_{\tau} \, y^{+}(2 \alpha y-\kappa \, u_{\tau} \, ) (4 \Nu \Rho-3 \, \mu_t \, )}{y \Nu^2 \Rho} \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}} \right)+\\
+&-\dfrac{1}{147}\dfrac{ \kappa \, \mu_t \, y \, u_{\tau}^2 \, (4 \Nu \Rho-3 \, \mu_t \, ) }{x^2 \Nu^2 \Rho} \cos\left(\dfrac{A u_{eq}}{u_{\infty}} \right)\left[y^{+} \Dueqplusyplus+u_{eq}^{+}\right]+\\
+&-\dfrac{1}{42} \dfrac{\, \mu_t \, (90 \alpha y-43 \kappa \, u_{\tau} \, ) \V(4 \Nu \Rho-3 \, \mu_t \, ) }{x \Nu^2 \Rho}+\\
+% new part end ----- 
 %
 &-(2 \mu + 2 \mu_t) \left(\dfrac{2}{3} \diff{^2 \U}{x^2}+\dfrac{1}{2}  \diff{^2 \U}{y^2} +\dfrac{1}{6} \diff{^2 \V}{xy}\right)
  \end{split}
@@ -416,6 +421,12 @@ Q_{\tv_\text{convection}} &= -\dfrac{1}{14} \dfrac{r_T \, (\gamma-1) M_{\infty}^
 Q_{\tv_\text{viscous}} &= \dfrac{1}{42}  \dfrac{ r_T  (\gamma-1)\mu_t \, M_{\infty}^2 \, T_{\infty} \, u_{\tau}^2 \, y^{+} \, \U (4 \Nu \Rho-3 \mu_t )}{u_{\infty}^2 \, x y \Nu \Rho  \T} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2 \Dueqplusyplus\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+}\right]+\\
  &-\dfrac{4}{3}  \dfrac{r_T (\gamma-1)\mu_t \, M_{\infty}^2 \, T_{\infty} \, u_{\tau} \, y^{+} \, \U \V (4 \Nu \Rho-3 \mu_t ) }{u_{\infty}^2 \, y^2 \Nu \Rho  \T} \Dueqplusyplus\cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right) +\\
  &-\dfrac{15}{196}  \dfrac{ r_T (\gamma-1)\mu_t \, M_{\infty}^2 \, T_{\infty} \, u_{\tau} \, \U \V (4 \Nu \Rho-3 \mu_t \, )}{u_{\infty}^2 \, x^2 \Nu \Rho  \T} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+}\right]+\\
+% new part begin ----- 
+&+ \dfrac{1}{14}\dfrac{ \kappa \, \mu_t \, u_{\tau}^2 \, y^{+}(4 \Nu \Rho-3 \, \mu_t \, ) }{x \Nu^2 \Rho}\Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}} \right)+\\
+&+\dfrac{1}{21}\dfrac{ \, \mu_t \, u_{\tau} \, (2 \alpha y-\kappa \, u_{\tau} \, ) (4 \Nu \Rho-3 \, \mu_t \, ) }{x \Nu^2 \Rho}\cos\left(\dfrac{A u_{eq}}{u_{\infty}} \right) \left[y^{+} \Dueqplusyplus+u_{eq}^{+}\right]+\\
+&-\dfrac{15}{196}\dfrac{ \kappa \, \mu_t \, y \, u_{\tau} \, \V(4 \Nu \Rho-3 \, \mu_t \, )}{x^2 \Nu^2 \Rho}+\\
+&+\dfrac{4}{3} \dfrac{\, \mu_t \, (2 \alpha y-\kappa \, u_{\tau} \, ) \V(4 \Nu \Rho-3 \, \mu_t \, ) }{y \Nu^2 \Rho}+\\	
+% new part end ----- 
  &-(2 \mu + 2 \mu_t) \left(\dfrac{1}{6} \diff{^2 \U}{xy}+\dfrac{1}{2}  \diff{^2 \V}{x^2}+\dfrac{2}{3} \diff{^2 \V}{y^2}\right) ,
  \end{split}	
 \end{equation}
@@ -463,20 +474,20 @@ Q_{\tE_\text{heat flux}} &= \dfrac{ c_p \,  r_T^2 (\gamma-1)^2\mu_t \, M_{\infty
 \begin{equation*}
  \begin{split}
 %
-Q_{\tE_\text{work}}&=\dfrac{ r_T(\gamma-1) \,  \mu_t \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau}^2 \, (y^{+})^2 \,  \U^2 \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 y^2 \Nu \Rho \T}    \left(\Dueqplusyplus\right)^2  \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2+\\
-  &-\dfrac{1}{42} \dfrac{ r_T(\gamma-1) \,  \mu_t  \, M_{\infty}^2 \, T_{\infty} \,   y^{+} \, \U \V \, (4 \Nu \Rho-3 \mu_t) \, }{u_{\infty}^2 x y \Nu \Rho \T}  \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2 \left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]+\\&
-  +\dfrac{4}{3}\dfrac{ r_T \, (\gamma-1) \,  \mu_t \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau} \, y^{+} \, \U \V^2 \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 y^2 \Nu \Rho \T}  \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)+\\
-  &+\dfrac{1}{147} \dfrac{r_T \,  (\gamma-1) \,  \mu_t  \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau}^2 \, \U^2 \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 x^2 \Nu \Rho \T} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]^2+\\
-  &-\dfrac{1}{42} \dfrac{ r_T \,  (\gamma-1)\mu_t \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau} \U^2 \V\, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 x y \Nu \Rho \T} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[43 y^{+} \, \Dueqplusyplus-2 u_{eq}^{+}\right]  /()+\\
-  &+\dfrac{15}{196} \dfrac{r_T \, (\gamma-1)\mu_t \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau} \U \V^2 \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 x^2 \Nu \Rho \T}  \left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right] \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)+\\
-  &+\dfrac{\mu_t \, \kappa \,   u_{\tau}^2 \, y^{+} \, \, \U \,\, (4 \Nu \Rho-3 \mu_t) \,}{y \Nu^2 \Rho} \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)+\\
-  &-\dfrac{2  \alpha \mu_t \,  u_{\tau} \,  y^{+} \, \U \, (4 \Nu \Rho-3 \mu_t) \,}{\Nu^2 \Rho} \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)+\\
-  &-\dfrac{1}{42} \dfrac{\mu_t \, \kappa \,  u_{\tau}^2 \, \V \, (4 \Nu \Rho-3 \mu_t) \,}{x \Nu^2 \Rho} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[y^{+} \, \Dueqplusyplus-2 u_{eq}^{+}\right] +\\
-  &+\dfrac{1}{147} \dfrac{   \mu_t \, \kappa \,  u_{\tau}^2 \, y \U \, (4 \Nu \Rho-3 \mu_t) \,}{x^2 \Nu^2 \Rho}\cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]+\\
-  &-\dfrac{2}{21} \dfrac{ \alpha \mu_t \, u_{\tau} y \V \, (4 \Nu \Rho-3 \mu_t) \,}{x \Nu^2 \Rho} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]+\\
-  &-\dfrac{8}{3} \dfrac{ \alpha \mu_t \, \V^2\, (4 \Nu \Rho-3 \mu_t) \,}{\Nu^2 \Rho}+\\
-  &+\dfrac{1}{588} \dfrac{  \mu_t \, \kappa \,  u_{\tau}  (784 x^2+45 y^2)\V^2\, (4 \Nu \Rho-3 \mu_t) \,}{x^2 y \Nu^2 \Rho}+\\
-  &+\dfrac{1}{42}  \dfrac{ \mu_t(-43 \kappa \,  u_{\tau}+90 \alpha y) \U \V  \, (4 \Nu \Rho-3 \mu_t) \,}{x \Nu^2 \Rho}+\\
+Q_{\tE_\text{work}}&=-\dfrac{ r_T(\gamma-1) \,  \mu_t \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau}^2 \, (y^{+})^2 \,  \U^2 \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 y^2 \Nu \Rho \T}    \left(\Dueqplusyplus\right)^2  \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2+\\
+  &+\dfrac{1}{42} \dfrac{ r_T(\gamma-1) \,  \mu_t  \, M_{\infty}^2 \, T_{\infty} \,   y^{+} \, \U \V \, (4 \Nu \Rho-3 \mu_t) \, }{u_{\infty}^2 x y \Nu \Rho \T}  \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2 \left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]+\\
+  &-\dfrac{4}{3}\dfrac{ r_T \, (\gamma-1) \,  \mu_t \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau} \, y^{+} \, \U \V^2 \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 y^2 \Nu \Rho \T}  \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)+\\
+  &-\dfrac{1}{147} \dfrac{r_T \,  (\gamma-1) \,  \mu_t  \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau}^2 \, \U^2 \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 x^2 \Nu \Rho \T} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]^2+\\
+  &+\dfrac{1}{42} \dfrac{ r_T \,  (\gamma-1)\mu_t \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau} \U^2 \V\, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 x y \Nu \Rho \T} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[43 y^{+} \, \Dueqplusyplus-2 u_{eq}^{+}\right]+\\
+  &-\dfrac{15}{196} \dfrac{r_T \, (\gamma-1)\mu_t \, M_{\infty}^2 \, T_{\infty} \,  u_{\tau} \U \V^2 \, (4 \Nu \Rho-3 \mu_t) \,}{u_{\infty}^2 x^2 \Nu \Rho \T}  \left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right] \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)+\\
+  &-\dfrac{\mu_t \, \kappa \,   u_{\tau}^2 \, y^{+} \, \, \U \,\, (4 \Nu \Rho-3 \mu_t) \,}{y \Nu^2 \Rho} \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)+\\
+  &+\dfrac{2  \alpha \mu_t \,  u_{\tau} \,  y^{+} \, \U \, (4 \Nu \Rho-3 \mu_t) \,}{\Nu^2 \Rho} \Dueqplusyplus \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)+\\
+  &+\dfrac{1}{42} \dfrac{\mu_t \, \kappa \,  u_{\tau}^2 \, \V \, (4 \Nu \Rho-3 \mu_t) \,}{x \Nu^2 \Rho} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[y^{+} \, \Dueqplusyplus-2 u_{eq}^{+}\right] +\\
+  &-\dfrac{1}{147} \dfrac{   \mu_t \, \kappa \,  u_{\tau}^2 \, y \U \, (4 \Nu \Rho-3 \mu_t) \,}{x^2 \Nu^2 \Rho}\cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]+\\
+  &+\dfrac{2}{21} \dfrac{ \alpha \mu_t \, u_{\tau} y \V \, (4 \Nu \Rho-3 \mu_t) \,}{x \Nu^2 \Rho} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]+\\
+  &+\dfrac{8}{3} \dfrac{ \alpha \mu_t \, \V^2\, (4 \Nu \Rho-3 \mu_t) \,}{\Nu^2 \Rho}+\\
+  &-\dfrac{1}{588} \dfrac{  \mu_t \, \kappa \,  u_{\tau}  (784 x^2+45 y^2)\V^2\, (4 \Nu \Rho-3 \mu_t) \,}{x^2 y \Nu^2 \Rho}+\\
+  &-\dfrac{1}{42}  \dfrac{ \mu_t(-43 \kappa \,  u_{\tau}+90 \alpha y) \U \V  \, (4 \Nu \Rho-3 \mu_t) \,}{x \Nu^2 \Rho}+\\
  % 
 %
 &- (2 \mu+2 \mu_t) \left\{\dfrac{1}{2}  \dfrac{u_{\tau}^2 \, (y^{+})^2 \,  }{y^2} \left(\Dueqplusyplus\right)^2 \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2\,\, +\,\,\dfrac{1}{294}\dfrac{u_{\tau}^2 \, }{x^2} \cos\left(\dfrac{A u_{eq}}{u_{\infty}}\right)^2\left[y^{+} \, \Dueqplusyplus+u_{eq}^{+} \right]^2  +\right.\\
