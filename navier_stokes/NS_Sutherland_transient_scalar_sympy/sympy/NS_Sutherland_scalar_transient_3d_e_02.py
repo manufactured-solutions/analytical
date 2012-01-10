@@ -159,3 +159,5 @@ Q_et_time = Q5n
 Res=Q_et_new-(Q_et_convection+Q_et_gradp+Q_et_viscous+Q_et_heatflux+Q_et_time)
 Res==0 #true
 
+# Q_et -----------------------------------------------------------------------------------
+Q_et=Q_et_convection+Q_et_gradp+Q_et_viscous+Q_et_heatflux+Q_et_time

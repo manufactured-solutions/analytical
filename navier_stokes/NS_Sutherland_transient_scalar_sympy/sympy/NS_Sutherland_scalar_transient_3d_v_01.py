@@ -48,7 +48,7 @@ tau_yx = tau_xy;
 tau_zx = tau_xz;
 tau_zy = tau_yz;
 
-# Velocity-u equation, writen as differential operator:
+# Velocity-v equation, writen as differential operator:
 Lo = diff(rho*v,t) + diff(rho*u*v,x) + diff(rho*v*v,y) + diff(rho*v*w,z) + diff(p, y)-( diff(tau_yx, x) + diff(tau_yy, y) + diff(tau_yz, z) );
 
 L1 = + diff(rho*u*v,x) + diff(rho*v*v,y) + diff(rho*v*w,z);
@@ -108,7 +108,7 @@ Q4=Q4.subs(p,p_an)
 
 
 #--------------------------------------------------------------------------
-# Source tem for the velocity-u equation
-Qu=Q1+Q2+Q3+Q4
+# Source tem for the velocity-v equation
+Qv=Q1+Q2+Q3+Q4
 
 

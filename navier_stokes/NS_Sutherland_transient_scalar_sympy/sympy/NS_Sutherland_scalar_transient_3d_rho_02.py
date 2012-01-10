@@ -51,14 +51,28 @@ Res1=expand(Qrho-Q)
 Res1==0 #true
 
 
-
+Results=Res1
 #--------------------------------------------------------------------------
 # Writing to C codes
-if Res1 == 0:
-  print 'Successfull factorization: Q_rho'
-  print 'Writing C code for Q_rho -> ../C_codes/NS_Sutherland_scalar_transient_3d_rho.c'
-  execfile("NS_Sutherland_scalar_transient_3d_rho_codes.py")  
-  print 'Done.'
-else:
-  print 'ERROR: Possible problems in the factorization.'
-  
+# Saving to C files ---------------------------------------------------------------------
+# Asking for futher numerical tests------------------------------------------------------
+var('y,Y')
+name = input("Save results to C files? [y/n]:") 
+if name == y or name==Y:
+  if Results == 0:
+    #execfile("NS_Sutherland_scalar_transient_3d_viscosity.py") #calculating the derivatives of mu
+    print 'Successfull factorization: Q_rho'
+    print 'Writing C code for Q_rho  -> ../C_codes/NS_Sutherland_scalar_transient_3d_rho.c'
+    execfile("NS_Sutherland_scalar_transient_3d_rho_codes.py")  
+    print 'Done.'
+  else:
+    print 'ERROR: Possible problems in the factorization!'
+    
+print '\n'
+
+numerical_tests  = input("Perform numerical test to address correctness in the mapinulations? [y/n]:") 
+
+if numerical_tests == y or numerical_tests == Y:
+ execfile("NS_Sutherland_scalar_transient_3d_rho_check_numerically.py")
+ print 'Done.'
+

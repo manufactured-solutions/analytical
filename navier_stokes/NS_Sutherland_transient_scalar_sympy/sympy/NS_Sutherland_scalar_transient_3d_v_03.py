@@ -50,18 +50,33 @@ Res4==0 #true
 
 Q_v_time=Q4n
 
-
+# Q_v -----------------------------------------------------------------------------------
+Q_v=Q_v_convection+Q_v_gradp+Q_v_viscous+Q_v_time
+#print(Q_v)
 
 # Saving to C files ---------------------------------------------------------------------
 Results=Res1+Res2+Res3+Res4
 
-if Results == 0:
-  execfile("NS_Sutherland_scalar_transient_3d_viscosity.py") #calculating the derivatives of mu
-  print 'Successfull factorization: Q_v'
-  print 'Writing C code for Q_v  -> ../C_codes/NS_Sutherland_scalar_transient_3d_v.c'
-  execfile("NS_Sutherland_scalar_transient_3d_v_codes.py")  
-  print 'Done.'
-else:
-  print 'ERROR: Possible problems in the factorization!'
-  
+# Saving to C files ---------------------------------------------------------------------
+# Asking for futher numerical tests------------------------------------------------------
+var('y,Y')
+name = input("Save results to C files? [y/n]:") 
+if name == y or name==Y:
+  if Results == 0:
+    execfile("NS_Sutherland_scalar_transient_3d_viscosity.py") #calculating the derivatives of mu
+    print 'Successfull factorization: Q_v'
+    print 'Writing C code for Q_v  -> ../C_codes/NS_Sutherland_scalar_transient_3d_v.c'
+    execfile("NS_Sutherland_scalar_transient_3d_v_codes.py")  
+    print 'Done.'
+  else:
+    print 'ERROR: Possible problems in the factorization!'
+    
+print '\n'
+
+numerical_tests  = input("Perform numerical test to address correctness in the mapinulations? [y/n]:") 
+
+if numerical_tests == y or numerical_tests == Y:
+ execfile("NS_Sutherland_scalar_transient_3d_v_check_numerically.py")
+ print 'Done.'
+
 

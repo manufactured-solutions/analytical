@@ -87,7 +87,6 @@ Dmu_Dz=sympify(Dmu_Dz)
 
 
 
-
 # Writing Q_g into a latex file ------------------------------------------
 
 
