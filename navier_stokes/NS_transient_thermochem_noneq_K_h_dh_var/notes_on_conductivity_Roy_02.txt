@@ -1,0 +1,117 @@
+(09:12:21 AM) Kemelli Estacio-Hiroms: Hey, Roy
+(09:12:36 AM) Kemelli Estacio-Hiroms: Did you see the email that I sent to you and Paul, and his answer?
+(09:13:13 AM) Kemelli Estacio-Hiroms: I partially disagree with him and would like to talk to someone - preferable you - about it.
+(09:13:29 AM) Kemelli Estacio-Hiroms: I can't get my work going without clarification
+(09:22:58 AM) Roy Stogner: Sorry, was in meeting
+(09:22:59 AM) Roy Stogner: done now
+(09:23:08 AM) Roy Stogner: I saw that email; have an answer half-composed...
+(09:23:16 AM) Roy Stogner: but it looks like you never saw my last email, from the context
+(09:24:40 AM) Roy Stogner: There were two possible _k_mix interpretations there; the one you reiterated in your latest email which is more consistent in the way it treats different subcomponents of k, and another which is more consistent with the one-temperature model in the way it behaves in thermal equilibrium.
+(09:24:58 AM) Roy Stogner: I was hoping Ben would have some comments on the difference between them, but no such luck yet.
+(10:18:41 AM) Kemelli Estacio-Hiroms: Yeah
+(10:19:10 AM) Kemelli Estacio-Hiroms: I guess the problem is that the documentation is not complete and I have to dig in the code
+(10:19:32 AM) Kemelli Estacio-Hiroms: If you can only reply to my email of yesterday, I will stop bothering you and Paul
+(10:20:36 AM) Kemelli Estacio-Hiroms: I understand that the kev and ktr have been claculated in different procedures and that is not a issue
+(10:21:36 AM) Kemelli Estacio-Hiroms: but there is still the problem that in one case, Ben calculate Wilke_Mixing(ktr) and in the other case, he does Wilke_Mixing(k_el) + Wilke_Mixing(k_vib)
+(10:22:00 AM) Kemelli Estacio-Hiroms: which is not consistent with each other
+(10:22:14 AM) Roy Stogner: What does "consistent with each other" mean?
+(10:22:18 AM) Roy Stogner: It's not the same as each other, sure
+(10:22:26 AM) Roy Stogner: But there's no conservation equation being violated here
+(10:22:53 AM) Roy Stogner: It's just that, in the regime where thermal nonequilibrium is significant, wilke mixing is no longer a good model.
+(10:23:43 AM) Kemelli Estacio-Hiroms: well
+(10:23:55 AM) Roy Stogner: k_vib could be considered as a sum of k_vib_mode_v over multiple vibrational modes v, for instance.
+(10:24:07 AM) Roy Stogner: Does that mean that Wilke_Mixing(k_vib) is then inconsistent and wrong?
+(10:24:11 AM) Kemelli Estacio-Hiroms: no
+(10:24:14 AM) Kemelli Estacio-Hiroms: wait
+(10:24:28 AM) Roy Stogner: Or that it will become wrong if we try to move to a six temperature model?
+(10:24:40 AM) Kemelli Estacio-Hiroms: 
+Because Wilke mixing rule is not linear,
+Wilke_mixing(k_trans) + Wilke_mixing(k_rot) !=  Wilke_mixing(k_trans+k_rot)
+(10:25:28 AM) Kemelli Estacio-Hiroms: for the k_tr, Ben uses Wilke_mixing(k_trans+k_rot), and that result he will multiply by dT/dx for the heat flux q
+(10:26:08 AM) Roy Stogner: Hmm... just a minute; Wilke isn't linear in c_s, M_s, or mu_s, but it does look to be linear in all the k's.
+(10:26:08 AM) Kemelli Estacio-Hiroms: but for the other part of the heat flux, he does  Wilke_mixing(k_vib) + Wilke_mixing(k_elec)
+(10:26:09 AM) Roy Stogner: Am I wrong?
+(10:26:22 AM) Kemelli Estacio-Hiroms: yes
+(10:26:36 AM) Kemelli Estacio-Hiroms: I can send you the Maple sheet showing that
+(10:26:41 AM) Roy Stogner: Does χ depend on k?
+(10:28:20 AM) Kemelli Estacio-Hiroms: no, it doesn´t, but the  Equation 5.43 would be diferent
+(10:29:13 AM) Roy Stogner: How so?  Does φ or μ depend on k?
+
+(10:29:56 AM) Kemelli Estacio-Hiroms: I will show you
+(10:30:55 AM) Kemelli Estacio-Hiroms: I am very frustrated because the model document is not complete and I need to dig into the code and I can't get straight answers
+(10:31:19 AM) Kemelli Estacio-Hiroms: I will put together a maple worksheet and you correct me if I am wrong.
+(10:31:43 AM) Roy Stogner: Wait, if you want straight answers, forget the Maple sheet and give me one: does phi or mu depend on k?
+(10:32:19 AM) Kemelli Estacio-Hiroms: no, they don't and I already answered that
+(10:32:45 AM) Roy Stogner: 12:29:13 PM) Roy Stogner: How so?  Does φ or μ depend on k?
+
+(12:29:57 PM) Kemelli Estacio: I will show you
+(10:33:01 AM) Roy Stogner: "I will show you" is not an answer.   "phi does, mu does not" would have been.
+(10:33:15 AM) Roy Stogner: I understand you're frustrated, but do you have to take it out on me?
+(10:33:24 AM) Kemelli Estacio-Hiroms: I am not taking on you
+(10:34:01 AM) Kemelli Estacio-Hiroms: this last issue that I talked to you about last Friday, I also emaield you, Paul and Ben about two weeks ago
+(10:34:26 AM) Kemelli Estacio-Hiroms: and I couldn't get a good answer. I am just trying to be proactive here.
+(10:34:55 AM) Kemelli Estacio-Hiroms: I need to get the formula rights, otherwise the manufactured solutions won't work
+(10:36:05 AM) Kemelli Estacio-Hiroms: and unless I programed the WilkeMixing wrong, I still believe it is not linear and because you are the person that is willing to help. I asked you to look into my Maple code
+(10:36:49 AM) Roy Stogner: You emailed me and Paul; I saw that Paul had emailed you back clarifying the code; you didn't reply back to Paul (or didn't Cc: me), and so I figured you were fine.
+(10:37:58 AM) Kemelli Estacio-Hiroms: he clarified part of the question about k_tr been calculated in one part of the code and k_ev in the other, but not about the k_mix or the issue with the wilke mixing
+(10:38:22 AM) Kemelli Estacio-Hiroms: it totally sucks that I am not there, but believe, I am doing the best that I can
+(10:38:51 AM) Roy Stogner: Sorry; I saw that he'd replied to you and I had assumed it answered your questions, so I didn't notice that he'd only answered the latter
+(10:39:38 AM) Roy Stogner: So let's figure it out now.  Send me your maple sheet, then; if you can't answer which of phi and/or mu you think are k dependent then I'll try and reverse-engineer it.
+(10:39:44 AM) Kemelli Estacio-Hiroms: in order to turn Maple on, I need to vpn UT and that breaks all the rest of my interned conection. If you give me sometime to organize the maple worksheet, I will come back online in  a few menites, OK?
+(10:39:54 AM) Roy Stogner: okay
+(11:03:41 AM) Kemelli Estacio-Hiroms: Guess what
+(11:03:47 AM) Kemelli Estacio-Hiroms: I suck and you are right
+ 
+
+
+
+
+(11:05:37 AM) Kemelli Estacio-Hiroms: did you get my last message
+(11:05:46 AM) Kemelli Estacio-Hiroms: I said that I suck and you are right
+(11:06:01 AM) Roy Stogner: No, no messages since 12:39
+(11:06:11 AM) Kemelli Estacio-Hiroms: I had a stupid if in there that was screwing up my results
+(11:06:19 AM) Kemelli Estacio-Hiroms: into the Wilke Mixing
+(11:06:23 AM) Kemelli Estacio-Hiroms: sorry for that
+(11:06:34 AM) Roy Stogner: No worries.
+(11:06:39 AM) Kemelli Estacio-Hiroms: That is why I realy liking working with you
+(11:07:01 AM) Roy Stogner: If I had a nickel for every stupid code mistake I've made... well, let's just say that Friday afternoon would have paid for Carolyn's college.
+(11:07:13 AM) Kemelli Estacio-Hiroms: :)
+(11:07:15 AM) Kemelli Estacio-Hiroms: I still have some questions, mainly about which mode put inside k_mix
+(11:07:43 AM) Kemelli Estacio-Hiroms: so we decided to only use k_tr_mix and cp_tr in the calculation of Le and Ds, right?
+(11:08:04 AM) Kemelli Estacio-Hiroms: ans that is still true for the term that involves Ds in the total energy equation?
+(11:08:08 AM) Kemelli Estacio-Hiroms: *and
+(11:08:27 AM) Roy Stogner: Yeah, the definition of _k_mix in the code is incredibly confusing and misleading.  It's *really* k_mix for the equilbrium case, but it's just k_tr for the non-equilibrium case.  We ought to change that eventually.
+(11:08:44 AM) Kemelli Estacio-Hiroms: OK
+(11:09:18 AM) Kemelli Estacio-Hiroms: and for the heat flux q in the total energy equation, q= k_tr_mix * dT/dx + k_ev_mix dTv/dx, right?
+(11:09:46 AM) Kemelli Estacio-Hiroms: whereas qv= k_ev_mix dTv/dx
+(11:09:58 AM) Kemelli Estacio-Hiroms: (I forgot putting the negative signs)
+(11:10:10 AM) Roy Stogner: The plan is to only use k_tr_mix and cp_tr in the Le and Ds calculations, and that should be true for every use of Ds, right.
+(11:10:32 AM) Roy Stogner: That's *not* what's in the code right now, but I intend to fix that once I tag our current FSS version shortly.
+(11:10:50 AM) Roy Stogner: And yes, up to a factor of -1, those are the correct definitions of q and qv.
+(11:10:57 AM) Kemelli Estacio-Hiroms: the last question I have for you is how to calculate cp_tr
+(11:12:12 AM) Kemelli Estacio-Hiroms: there are a few definitions for cp_tr inside the code, but Paul told me to use: 
+(11:12:15 AM) Kemelli Estacio-Hiroms: cp_tr = _calorically_perfect_cp
+(11:12:28 AM) Kemelli Estacio-Hiroms: _calorically_perfect_cp    = _calorically_perfect_gamma*_calorically_perfect_cv
+
+(11:12:32 AM) Kemelli Estacio-Hiroms: which gives:
+(11:13:50 AM) Roy Stogner: Should only be one definition for cp_tr inside the code currently... the one for SpeciesThermodynamics::cp_tr()... although we'll need to add a second definition for MixtureThermodynamics.
+(11:13:59 AM) Kemelli Estacio-Hiroms: cp_tr = gamma * cv_tr
+(11:14:14 AM) Kemelli Estacio-Hiroms: and cv_tr is given in equation 5.15 of the document
+(11:14:41 AM) Kemelli Estacio-Hiroms: hum, maybe I got lost inside the code again
+(11:14:55 AM) Kemelli Estacio-Hiroms: but do you agree with the formula:  cp_tr = gamma * cv_tr ?
+(11:15:14 AM) Roy Stogner: Yes, but I think it's even simpler than that; one sec
+(11:15:59 AM) Roy Stogner: So cv_tr is _R * n_tr_dofs
+(11:16:30 AM) Roy Stogner: And cp_tr is (1 + 1/n_tr_dofs) * cv_tr = _R * (n_tr_dofs + 1)?
+(11:16:52 AM) Kemelli Estacio-Hiroms: yes, same as in equation 5.15, 
+(11:17:05 AM) Kemelli Estacio-Hiroms: n_tr_dofs is either 3/2 or 5/2
+(11:17:29 AM) Kemelli Estacio-Hiroms: something like that
+(11:17:40 AM) Kemelli Estacio-Hiroms: I will look very careful into that
+(11:17:53 AM) Kemelli Estacio-Hiroms: and then I promise I will leave you alone for a change
+(11:17:58 AM) Roy Stogner: No worries
+(11:19:07 AM) Kemelli Estacio-Hiroms: it would all be better if the document was a little clearer.... sorry for my ignorance, but at least know we know that there is some room for improvement there ;)
+(11:19:21 AM) Kemelli Estacio-Hiroms: *now we know
+(11:19:22 AM) Roy Stogner: Looks like you're right; 3/2 for atoms, 5/2 for diatomic molecules.  It's a constant 6/2 for all the triatomic molecules and higher in Ben's data table, but I don't think that's necessarily right... but then we don't care for N/N2 purposes.
+(11:20:26 AM) Kemelli Estacio-Hiroms: great, if you don't mind I will save this chat for future references on the n_tr_dofs
+(11:21:01 AM) Kemelli Estacio-Hiroms: going back to my work on maple 
+(11:21:10 AM) Kemelli Estacio-Hiroms: thanks Roy!
+(11:21:52 AM) Roy Stogner: You're welcome

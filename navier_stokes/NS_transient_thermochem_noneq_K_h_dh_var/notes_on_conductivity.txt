@@ -1,0 +1,73 @@
+
+10:42:01 AM) Paul Bauman: OK
+(10:42:21 AM) Paul Bauman: k_el = \mu * c_v^{el}
+(10:43:23 AM) Kemelli Estacio-Hiroms: I don't recall what cv^el is. Is it anywhere in the documentation?
+(10:43:46 AM) Kemelli Estacio-Hiroms: and I have looked in the code, unsucessfully :(
+(10:44:33 AM) Paul Bauman: just got to know where to look. ;-)
+(10:44:40 AM) Paul Bauman: (physics/properties/transport.C
+(10:44:41 AM) Paul Bauman: )
+(10:46:12 AM) Paul Bauman: Here we go:
+(10:46:13 AM) Paul Bauman: C^{elec}_{v,s} \equiv \frac{\partial e^{elec}_s}{\partial T_V}
+(10:46:52 AM) Kemelli Estacio-Hiroms: hum
+(10:47:15 AM) Kemelli Estacio-Hiroms: I see something like that in the doc, but for C^{vib}_{v,s}
+(10:47:24 AM) Kemelli Estacio-Hiroms: I might be out of date
+(10:47:31 AM) Paul Bauman: and e^{elec}_s is equaiton 5.17 in the model document
+(10:47:41 AM) Paul Bauman: looks like it's not explicitly written out
+(10:48:20 AM) Kemelli Estacio-Hiroms: ok, great
+(10:48:24 AM) Kemelli Estacio-Hiroms: thanks for now
+(10:48:48 AM) Paul Bauman: np
+ 
+
+08:51:27 AM) Kemelli Estacio-Hiroms: Hi Paul, can I ask something else
+(08:51:52 AM) Paul Bauman: sure, what's up
+(08:52:33 AM) Kemelli Estacio-Hiroms: I need to calculate the diffusivity coefficient D.
+From the assumption of constant Lewis number, we have: D = Le *k_mix/(rho*Cp)
+(08:52:43 AM) Kemelli Estacio-Hiroms: which Cp is that?
+(08:53:25 AM) Paul Bauman: cp^tr
+(08:53:26 AM) Kemelli Estacio-Hiroms: in the doumentation, it only says that Cp is the Cp_tr = is the translational/rotational specific heat at constant pressure
+
+(08:53:29 AM) Kemelli Estacio-Hiroms: yes
+(08:53:31 AM) Paul Bauman: the translationr
+(08:53:37 AM) Kemelli Estacio-Hiroms: but I don't have a formula for it
+(08:54:02 AM) Kemelli Estacio-Hiroms: and in the code, I found the one frm NASA fit
+(08:54:19 AM) Kemelli Estacio-Hiroms: and also the one from R=cp-cv
+(08:55:14 AM) Kemelli Estacio-Hiroms: and I do need the expression to plug into the manufactured solutions
+(08:56:02 AM) Paul Bauman: _calorically_perfect_gamma (1. + 1./_species_chemistry.n_tr_dofs()),
+        _calorically_perfect_cv    (_R*_species_chemistry.n_tr_dofs()),
+        _calorically_perfect_cp    (_calorically_perfect_gamma*_calorically_perfect_cv),  
+
+(08:56:17 AM) Paul Bauman: cp_tr = _calorically_perfect_cp
+(08:56:25 AM) Kemelli Estacio-Hiroms: cool
+(08:56:35 AM) Kemelli Estacio-Hiroms: that gives the NASA one 
+(08:56:40 AM) Paul Bauman: I have to run to a meeting, but that should at least get you started
+(08:57:04 AM) Kemelli Estacio-Hiroms: ok thanks
+ 
+
+02:11:06 PM) Kemelli Estacio-Hiroms: So it was just a matter of code re-use? 
+and k is in fact the sum of the three modes?
+(02:11:12 PM) Kemelli Estacio-Hiroms: four modes?
+(02:11:22 PM) Paul Bauman: for the total energy equation - yes
+(02:11:37 PM) Paul Bauman: for the vibrational energy equation it's the sum of k_v and k_el
+(02:11:52 PM) Kemelli Estacio-Hiroms: how about for the mass conservation equation?
+(02:12:02 PM) Kemelli Estacio-Hiroms: there's a D there as well
+(02:12:12 PM) Paul Bauman: I dont' understand your quesiton
+(02:12:57 PM) Kemelli Estacio-Hiroms: in the mass conservation equation there is a term: div (rho Ds nabla cs)
+(02:13:04 PM) Paul Bauman: I understand
+(02:13:09 PM) Paul Bauman: What's your question about D
+(02:13:10 PM) Paul Bauman: ?
+(02:13:12 PM) Kemelli Estacio-Hiroms: Ds  is the diffusivity coeff
+(02:13:53 PM) Kemelli Estacio-Hiroms: D= (Le * k )/ (rho * c_tr_p)
+(02:14:27 PM) Kemelli Estacio-Hiroms: which modes of k are inside that k in the expression for D?
+(02:14:50 PM) Kemelli Estacio-Hiroms: look Eq. 5.55 of the documentation
+(02:15:23 PM) Paul Bauman: the same k as for total energy equation
+(02:15:34 PM) Kemelli Estacio-Hiroms: alright
+(02:15:43 PM) Kemelli Estacio-Hiroms: that answer my question :)
+(02:15:53 PM) Kemelli Estacio-Hiroms: thanks a bunch, Paul!
+(02:16:26 PM) Kemelli Estacio-Hiroms: maybr we should include this in the documentation. 
+(02:16:45 PM) Kemelli Estacio-Hiroms: one extra line there would have save lots of time ;)
+(02:16:52 PM) Kemelli Estacio-Hiroms: for you and me - at least
+(02:16:55 PM) Kemelli Estacio-Hiroms: ;)
+
+(02:17:19 PM) Paul Bauman: yeah, it should probably go in there. one of these days...
+(02:23:50 PM) Kemelli Estacio-Hiroms: I can do most of the work - as long as somebody reads afterwards to check the English ;)
+ 

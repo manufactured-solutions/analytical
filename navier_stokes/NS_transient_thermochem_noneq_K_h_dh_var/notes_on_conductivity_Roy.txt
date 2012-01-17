@@ -1,0 +1,110 @@
+(10:15:19 AM) pecos@conference.ices.utexas.edu/roystgnr: Online would be good
+(10:15:25 AM) pecos@conference.ices.utexas.edu/roystgnr: Easier for me to chew lunch and type at the same time.  ;-)
+(10:15:43 AM) Kemelli Estacio-Hiroms: OK
+(10:16:25 AM) Kemelli Estacio-Hiroms: I am still working on Navier-Stokes with Botnner and Eucken
+(10:16:41 AM) Kemelli Estacio-Hiroms: and I have questions about the conductivity used in each equation
+(10:16:57 AM) Kemelli Estacio-Hiroms: its Nitrogen dissociation
+(10:18:13 AM) Kemelli Estacio-Hiroms: For the continuity equation, we need to calculate the species diffusion flux, Ds, that comes from assumption of constant Lewis number: 
+Ds= Le * k_mix/(rho*Cp)
+(10:19:00 AM) Kemelli Estacio-Hiroms: where k_mix is the conductivity of the mixture calculated using Wilke mixing rule
+(10:20:25 AM) Kemelli Estacio-Hiroms: page 23 of the model documentation gives 3 of the four modes of conductivity: k_trans, k_rot and k_vib
+(10:20:39 AM) Kemelli Estacio-Hiroms: and Paul has helped me to find out k_el
+(10:21:24 AM) Kemelli Estacio-Hiroms: and we concluded that k = k_trans + k_rot + k_vib +k_el
+(10:21:44 AM) Kemelli Estacio-Hiroms: here is the problem:
+(10:22:06 AM) pecos@conference.ices.utexas.edu/roystgnr: Hmm... we really need to update p23
+(10:22:27 AM) pecos@conference.ices.utexas.edu/roystgnr: Not just to include k_s^el, but also to specify *which* of those two k_s^vib options we're using.
+(10:22:40 AM) Kemelli Estacio-Hiroms: yes
+(10:22:46 AM) Kemelli Estacio-Hiroms: but there is something else:
+(10:22:56 AM) Kemelli Estacio-Hiroms: Ben only uses k_mix = k_trans + k_rot in the code
+(10:23:26 AM) Kemelli Estacio-Hiroms: let me find the lines for you
+(10:24:23 AM) Kemelli Estacio-Hiroms: /physics/properties/transport.C lines 486 and 519
+(10:26:09 AM) Kemelli Estacio-Hiroms: so, basically, k_mix = wilke_mixing(k_tr_s)
+(10:27:18 AM) Kemelli Estacio-Hiroms: he does calculate kv_mix  = wilke_mixing (_kv) and kel_mix = wilke_mixing (_kel), but if I understood right, that is because he will call:
+(10:27:30 AM) Kemelli Estacio-Hiroms:    * @returns the vibrational/electronic thermal conductivity of the mixture.
+    */
+      Real k_ve () const { libmesh_assert(this->_control.Physics__Chemistry__n_energies == 2); 
+	                   return (_kv_mix + _kel_mix); }
+(10:27:56 AM) pecos@conference.ices.utexas.edu/roystgnr: Hmm... what we ought to be doing in thermal nonequilibrium is adding everything in to k for the total energy equation, but then only using k_vib+k_el for the e_v equation
+(10:29:42 AM) Kemelli Estacio-Hiroms: I see that, because of Equation 5.5 (page 17 of documentation); q= k nabla T + k_V nabla T_V
+(10:30:25 AM) pecos@conference.ices.utexas.edu/roystgnr: Yeah, it's looking like the documentation is right and the code is wrong.
+(10:30:54 AM) pecos@conference.ices.utexas.edu/roystgnr: but wait, let me look at some things
+(10:31:02 AM) Kemelli Estacio-Hiroms: sure :)
+(10:32:52 AM) pecos@conference.ices.utexas.edu/roystgnr: Effectively k in the documentation and in the code is what I would have referred to as k_tr, but it is consistent between the two.  The question is whether it's what we want to be using in equation 5.55, and I believe the answer to that is "no".
+(10:34:19 AM) Kemelli Estacio-Hiroms: so, wait
+(10:34:43 AM) Kemelli Estacio-Hiroms: did you finish your lunch?
+(10:34:49 AM) Kemelli Estacio-Hiroms: I coudl used a call now
+(10:34:56 AM) pecos@conference.ices.utexas.edu/roystgnr: Didn't even get started
+(10:34:58 AM) pecos@conference.ices.utexas.edu/roystgnr: go ahead and call
+(10:44:43 AM) Kemelli Estacio-Hiroms: Roy, can I create a ticket about that, so we don't forget it and I receive the updates, when they happen?
+(10:45:08 AM) pecos@conference.ices.utexas.edu/roystgnr: Yes, I was just about to do that; go right ahead
+(10:45:55 AM) pecos@conference.ices.utexas.edu/roystgnr: It looks like a one-line fix, though: just add k_vib_s+k_el_s to the push_back on transport.C:497
+(10:46:10 AM) pecos@conference.ices.utexas.edu/roystgnr: Just need to confirm with Ben that that's the right fix.
+(10:46:36 AM) Kemelli Estacio-Hiroms: yes :)
+(10:47:24 AM) Kemelli Estacio-Hiroms: I still want to create it ;) it makes me feel that my work is worth it :D
+(10:48:54 AM) pecos@conference.ices.utexas.edu/roystgnr: Please do
+(10:51:17 AM) pecos@conference.ices.utexas.edu/roystgnr: Damn, wait, that can't be the right fix.  If we do that, we'll be multiplying the wrong gradients in the thermal conductivity fluxes.
+(10:51:23 AM) Kemelli Estacio-Hiroms: you, Ben and or Paul may need to also include a k_tr_mix, in or
+(10:51:24 AM) Kemelli Estacio-Hiroms: yes
+(10:51:30 AM) Kemelli Estacio-Hiroms: that's what I was going to say
+(10:51:39 AM) Kemelli Estacio-Hiroms: for the heat flux
+(10:51:49 AM) Kemelli Estacio-Hiroms: I will add it there as well
+(10:51:50 AM) pecos@conference.ices.utexas.edu/roystgnr: So yeah, I think a k_tr_mix is the way to go.
+(11:06:59 AM) Kemelli Estacio-Hiroms: Roy, I did it, but it was on the MASA one...
+(11:07:12 AM) Kemelli Estacio-Hiroms: I guess I don't have access to FINS project :(
+
+(11:07:47 AM) Kemelli Estacio-Hiroms: if that isn't good enough, go ahead and create the right ticket
+(11:09:25 AM) pecos@conference.ices.utexas.edu/roystgnr: It got CC'ed to Ben, which is the important thing.
+(11:10:02 AM) Kemelli Estacio-Hiroms: thanks Roy!
+
+-----------
+from	Roy Stogner roystgnr@ices.utexas.edu
+to	Benjamin Kirk <benjamin.kirk@nasa.gov>
+cc	"Kemelli C. Estacio-Hiroms" <kemelliestacio@gmail.com>,
+Paul Bauman <pbauman@ices.utexas.edu>
+date	Fri, Aug 19, 2011 at 11:22 AM
+subject	Re: URGENT: missing vib/el terms in k?
+On Fri, 19 Aug 2011, Roy Stogner wrote:
+
+    In transport.C:497, we add only the translational/rotational terms to
+    k, and save the vibrational/electronic terms for kv and kel.  But then
+    elsewhere in the code we're assuming that k includes the entire suite
+    of thermal conductivities!  Kemelli noticed the problem when reading
+    through the CONSTANT_LEWIS_NUMBER code: because _k_mix is "really"
+    _k_tr_mix, the mass diffusivity coefficients in the thermal
+    nonequilibrium case will be too small.
+
+
+This still looks like a problem to me.
+
+
+    We've also got a related
+    problem throughout fluxes.C: the total energy flux really ought to
+    include *both* the k_tr*dT/dx term that's already in there *and* the
+    k_ve*dTv/dx term that is currently only going in to the e_ve flux.
+
+
+This isn't a problem, just a false alarm.  Paul pointed out the code I
+was missing that does add the k_ve flux in properly.
+
+
+    I think the solution is to add a real k_tr to SpeciesViscosity,
+    _k_tr_mix to MixtureTransport, etc, and then use those as appropriate
+    for the diffusivity and flux calculations.
+
+
+This is no longer the most obvious way to do things in the short term;
+I'm now thinking that merely doing an "if (NE==2)" quick fix in the
+CONSTANT_LEWIS_NUMBER code would be the best way to incorporate k_ve
+if appropriate.
+---
+Roy
+----------
+
+(11:31:15 AM) Kemelli Estacio-Hiroms: Hey Roy
+(11:31:50 AM) Kemelli Estacio-Hiroms: Can you show me where  k_ve is added?
+
+(11:38:12 AM) Roy Stogner: fluxes.C, lines 991, 1099-1100, 1221-1223
+(11:39:17 AM) Kemelli Estacio-Hiroms: :)
+(11:39:26 AM) Roy Stogner: Basically Ben gets sneaky in order to save like 1 FLOP per node.  :-P
+(11:40:03 AM) Kemelli Estacio-Hiroms: I don't know how much I should know about it, but it is better more than less, I guess ;)
+ 

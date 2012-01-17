@@ -1,0 +1,2065 @@
+\documentclass[10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath,amsfonts}
+\usepackage{geometry}
+\geometry{ top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage[authoryear]{natbib}
+\usepackage{pdflscape}
+%\geometry{papersize={216mm,330mm}, top=3cm, bottom=2.5cm, left=4cm, right=2cm}
+
+\newcommand{\D}{\partial}
+\newcommand{\Diff}[2] {\dfrac{\partial( #1)}{\partial #2}}
+\newcommand{\diff}[2] {\dfrac{\partial #1 }{\partial #2}}
+
+\newcommand{\gv}[1]{\ensure math{\box{\boldmath$ #1 $}}}% for vectors of Greek letters
+\newcommand{\grad}[1]{\gv{\nabla} #1}
+\newcommand{\bv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\bt}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\Lo}{\,\mathcal{L}}
+\newcommand{\Rho}{\,\mathtt{Rho}}
+\newcommand{\T}{\,\mathtt{T}}
+\newcommand{\U}{\,\mathtt{U}}
+\newcommand{\TV}{\,\mathtt{T_V}}
+\newcommand{\N}{\text{N}}
+\newcommand{\elec}{\text{elec}}
+\newcommand{\vib}{\text{vib}}
+\newcommand{\E}{\text{E}}
+\newcommand{\Mu}{\, \mathtt{Mu}}
+\newcommand{\mix}{\text{mix}\,}
+\newcommand{\DKappaDx}{\diff{\kappa_{\mix}}{x}\,}
+\newcommand{\DKappaevDx}{\diff{\kappa^{ev}_{\mix}}{x}\,}
+\newcommand{\DKappatrDx}{\diff{\kappa^{tr}_{\mix}}{x}\,}
+\newcommand{\DCpDx}{\diff{C_p}{x}\,}
+\newcommand{\DMuDx}{\diff{\Mu_{\mix}}{x}\,}
+
+\newcommand{\DeVDx}{\diff{e_V}{x}}
+\newcommand{\DeVNDx}{\diff{e_{V \N}}{x}}
+\newcommand{\DeVNNDx}{\diff{e_{V \N_2}}{x}}
+
+\newcommand{\convection}{\,\text{convection}}
+\newcommand{\production}{\,\text{production}}
+\newcommand{\diffusion}{\,\text{diffusion}}
+\newcommand{\gradp}{\,\text{grad}p}
+\newcommand{\work}{\,\text{work}}
+\newcommand{\heatflux}{\,\text{heat flux}}
+\newcommand{\eelecNden}{\,\sum_{i=0}^{nel_{\N}}   \, g_{\N,i}   \exp \left( -\theta^{\elec}_{\N,i} / \TV  \right) }
+\newcommand{\eelecNdoisden}{\,\sum_{i=0}^{nel_{\N_2}}  \, g_{\N_2,i}   \exp \left( -\theta^{\elec}_{\N_2,i} /  \TV \right)}
+
+
+%opening
+\title{Manufactured Solution for 1D Transient Navier-Stokes Equations for Hypersonic Flows with Nitrogen Dissociation in Thermal Nonequilibrium\footnote{Work based on \citet*{Kirk2011}.}}
+\author{Kemelli C. Estacio-Hiroms}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\begin{abstract}
+The Method of Manufactured Solutions is a valuable approach for code verification, providing means to verify how accurately the numerical method solves the equations of interest. The method generates a related set of governing equations that has known analytical (manufactured) solution. Then, the modified set of equations may be discretized and solved numerically, and the numerical solution may be compared to the manufactured analytical solution  chosen \textit{a priori}.
+
+A choice of analytical solutions for the flow variables of the 1D transient Navier-Stokes equations for chemically reacting hypersonic flows in thermal nonequilibrium\footnote{The equilibrium constant ($K=K(T)$), the enthalpies of Nitrogen atom and molecule ($h_{\N}=h_{\N}(T)$ and $h_{\N_2}=h_{\N_2}(T)$),  and their respective derivatives $\Big(\diff{h_{\N}}{x}$ and $\diff{h_{\N_2}}{x}\Big)$ remain as to-be-defined functions of temperature $T$.}  and their respective source terms are presented in this document.
+\end{abstract}
+
+
+
+
+
+\section{Mathematical Model}
+Using the two-temperature model, the conservation of mass, momentum, and energy for a viscid compressible fluid composed of a  mixture of gases N and N$_2$ in thermochemical nonequilibrium may be written as:
+\begin{align}
+%\begin{array}{ccc}
+\label{eq:ns:rhoN}
+&\diff{\rho_{\N}}{t} + \nabla \cdot \left(\rho_{\text{N}} \bv{u}\right) = \nabla\cdot\left(\rho \mathcal{D}_{\N} \nabla c_{\N} \right) + \dot{\omega}_{\text{N}},\vspace{5pt} \\
+ \label{eq:ns:rhoN2}
+&\diff{\rho_{\N_2}}{t} + \nabla \cdot \left(\rho_{\text{N}_2}\bv{u}\right) =\nabla\cdot\left(\rho \mathcal{D}_{\N_2} \nabla c_{\N_2} \right) + \dot{\omega}_{\text{N}_2},\vspace{5pt}\\
+\label{eq:ns:u}
+&\diff{\rho \bv{u}}{t} + \nabla\cdot\left(\rho\bv{u}\bv{u}\right) = -\nabla p + \nabla \cdot \bv{\tau},\vspace{5pt} \\
+\label{eq:ns:E}
+&\diff{\rho E}{t} + \nabla\cdot\left(\rho \bv{u} H\right) = -\nabla \cdot\bv{q} +\nabla\cdot\left(\rho \sum_{s=1}^{ns} h_s \mathcal{D}_s \nabla c_s\right)+ \nabla \cdot (\bv{\tau u}),\vspace{5pt} \\
+\label{eq:ns:eV}
+&\diff{\rho e_V}{t} +\nabla\cdot (\rho e_V \bv{u})= -\nabla \cdot \bv{q}_V + \nabla\cdot\left(\rho \sum_{s=1}^{ns} e_{Vs} \mathcal{D}_s \nabla{c_s}\right) + \dot{\omega}_V ,
+%\end{array}
+\end{align}
+%
+where $\rho=\sum_s \rho_s$ is the mixture density, $\rho_s$ is the density of species $s$ (N or N$_2$), $c_s=\left(\rho_s/\rho\right)$ is the mass fraction of species $s$, $ \bv{u} $ is the mixture velocity and $e_V$ is  the vibrational/electronic energy. %The total enthalpy, $H$, may be expressed in terms of the total energy, $E$, density, and pressure $p$:
+%$$H = E + \dfrac{p}{\rho}.$$ 
+%
+ The total enthalpy, $H$, may be expressed in terms of the total energy, density, and pressure: $H = E + P/\rho$.  The viscous stress tensor $\bt{\tau}$ is defined as: %and the heat flux vector $\bv{q}$ are defined as
+$$  \label{eq:stress_tensor}
+ \bv{\tau} = \mu\left(\nabla{\bv{u}} + \nabla^{T}{\bv{u}}\right) -\frac{2}{3}\mu \left(\nabla{}\cdot\bv{u}\right)\bt{I} ,
+$$
+where $\mu$ is the dynamic viscosity and $\bt{I}$ denotes the identity matrix.  
+
+In the two-temperature model, $T$ is the temperature that governs translational/rotational energy and $T_V$ is the temperature that governs vibrational/electronic energy. Therefore, the total and the vibrational heat flux vectors are given by, respectively:
+\begin{align}
+\label{eq:k}
+ & \bv{q} = -\kappa\nabla{T}  \,,\\
+\label{eq:kv}
+ & \bv{q}_V = - \kappa_V\nabla{T_V} \,,
+\end{align}
+where $\kappa$ is the total thermal conductivity, and $\kappa_V$ is the vibrational/electronic conductivity. % (see Section \ref{sec:conductivity} for details).
+
+
+\subsection{Thermodynamics}
+The total energy, $E$, is composed of internal and kinetic components: $$E = e^{\text{int}} + \dfrac{ u^2 }{2},$$ 
+and the total internal energy, $e^{\text{int}}$, has contributions from each of the distinct energy \emph{modes}:% - translational, rotational, vibrational and electronic. Specifically
+\begin{equation}
+ \begin{split}
+e^{\text{int}} &= e^{\text{trans}} + e^{\text{rot}} + e^{\text{vib}} + e^{\elec} + h^0 \\
+ &= \sum_{s=1}^{ns} c_s e^{\text{trans}}_s + \sum_{s=mol} c_s e^{\text{rot}}_s + \sum_{s=mol} c_s e^{\text{vib}}_s + \sum_{s=1}^{ns} c_s e^{\elec}_s + \sum_{s=1}^{ns} c_s h^0_s ,
+\label{eq:energy_partition}  
+ \end{split}
+\end{equation}
+where $c_s=\left(\rho_s/\rho\right)$ is the mass fraction of species $s$.
+
+The first four terms on the right of Equation~\eqref{eq:energy_partition} represent the energy due to molecular/atomic translation, molecular rotation, molecular vibration, and electronic excitation. The final term is the heat of formation of the mixture and accounts for the energy stored in chemical bonds \citep{Ait1996,Kirk2011}. In the two-temperature model, the translational and rotational modes may be modeled with a single translational/rotational temperature $T\equiv T_t = T_r$, while the vibrational and electronic energy are governed by a separate temperature $T_V \equiv T_v=T_e$. 
+ 
+Under the approximation that the translational and rotational states of the may be assumed fully populated, translational/rotational energy for each species may be expressed as:
+\begin{equation}
+ \label{eq:e_tr_combined}
+ e^{\text{trans}}_s + e^{\text{rot}}_s = e^{\text{tr}}_s = C^{\text{tr}}_{v,s}\, T ,
+\end{equation}
+where the translational/rotational specific heat, $C^{\text{tr}}_{v,s}$ is given by
+\begin{equation*}
+ C^{\text{tr}}_{v,s} =
+ \begin{cases}
+ \frac{5}{2} R_s & \text{for molecules}, \\
+ \frac{3}{2} R_s & \text{for atoms},
+ \end{cases}
+\end{equation*}
+where $R_s$ is the species gas constant, and $R_s = R/M_s$ where $R$ is the universal gas constant and $M_s$ is the species molar mass. The combined term $e^{\text{tr}}_s$ in Equation~\eqref{eq:e_tr_combined} represents the energy due to random thermal translational/rotational motion of a given species.
+%---------------
+
+In contrast to the translational/rotational states, the vibrational energy states are typically not fully populated. One approach for modeling the molecular vibrational energy is through analogy to a harmonic oscillator.  In this approach the energy potential between molecular nuclei is modeled as a quadratic function of separation distance.  Under this assumption, the vibrational energy for each molecular species can be modeled as
+\begin{equation}
+  \label{eq:species_vibrational_energy}
+  e^{\text{vib}}_s = 
+  \begin{cases}    
+    0 & \text{for atoms}, \\
+    \frac{R_s\theta^{\vib}_{s}}{\exp\left(\theta^{\vib}_{s}/T_v\right) - 1} & \text{for diatomic molecules}, \\
+    \sum_i \frac{R_s\theta^{\vib}_{s,i}}{\exp\left(\theta^{\vib}_{s,i}/T_v\right) - 1} & \text{for general molecules}
+  \end{cases}
+\end{equation}
+where $\theta^{\vib}_{s}$ is the species characteristic temperature of vibration and $T_v$ is the mixture vibrational temperature.
+
+%Recall that in the case of thermal equilibrium $T_r=T_t=T_v=T_e\equiv T$.%, therefore Equation (\ref{eq:species_vibrational_energy}) is simplified to:
+% \begin{equation}
+%   \label{eq:species_vibrational_energy2}
+%   e^{\text{vib}}_s = 
+%   \begin{cases}    
+%     \frac{R_s\theta^{\vib}_{s}}{\exp\left(\theta^{\vib}_{s}/T \right) - 1} & \text{for molecules}, \\
+%     0 & \text{for atoms.}
+%   \end{cases}
+% \end{equation}
+
+The energy contained in the excited electronic states for a given species, $e^{\elec}_s$, can be obtained from the assumption that they are in a Boltzmann distribution governed by the electronic excitation temperature $T_e$~\citep{candler_thesis} as:
+\begin{equation}
+  \label{eq:elec_excitation}
+  e^{\elec}_s = R_s \dfrac{\sum_{i=1}^\infty \theta^{\elec}_{s,i} g_{s,i} \exp\left(-\theta^{\elec}_{s,i}/T_e\right)}{ \sum_{i=1}^\infty g_{s,i} \exp\left(-\theta^{\elec}_{s,i}/T_e\right)}.
+\end{equation}
+where $g_{s,i}$ is the degeneracy of the electronic level $i$ of species $s$, and  $\theta^{\elec}_{s,i}$ is its characteristic temperature. In practice, a simple cut off criteria is applied to select the number of electronic energy levels in the calculation of the series. The number of electronic energy levels for N is 3 and number of electronic energy levels for N$_2$ is 15 \citep{Kirk2011}.
+
+Recalling that  in the two-temperature mode adopted in this work $T_e=T_v= T_V$, Equations (\ref{eq:species_vibrational_energy}) and (\ref{eq:elec_excitation}) may be simplified to:
+\begin{equation*}
+  e^{\text{vib}}_s = 
+  \begin{cases}    
+    0 & \text{for atoms}, \\
+    \frac{R_s\theta^{\vib}_{s}}{\exp\left(\theta^{\vib}_{s}/T_V\right) - 1} & \text{for diatomic molecules}, \\
+    \sum_{i=1}^{nvib_s} \frac{R_s\theta^{\vib}_{s,i}}{\exp\left(\theta^{\vib}_{s,i}/T_V\right) - 1} & \text{for general molecules}
+  \end{cases}
+\quad
+e^{\elec}_s = R_s \dfrac{\sum_{i=1}^{nel_s} \theta^{\elec}_{s,i} g_{s,i} \exp\left(-\theta^{\elec}_{s,i}/T_V\right)}{ \sum_{i=1}^{nel_s} g_{s,i} \exp\left(-\theta^{\elec}_{s,i}/T_V\right)}.
+\end{equation*}
+where $nel_s$ is the number of electronic energy levels of species $s$, and $nvib_s$ is the number of vibrational energy levels of species $s$, in case of $s$ having more than two atoms (general molecules). See Appendix \ref{Appendix:01} for N and N$_2$ data.
+
+Therefore, 
+\begin{equation}
+  \label{eq:rev-Tv-relationship}
+  \rho e_V\left(T_V\right) = \sum_{s=mol} \rho_s e^{\text{vib}}_s\left(T_V\right) + \sum_{s=1}^{ns} \rho_s e^{\text{elec}}_s\left(T_V\right).
+\end{equation}
+
+Regardless of the thermal state of the mixture, once the translational/rotational temperature $T$ is determined the thermodynamic pressure of the mixture is readily obtained from Dalton's law of partial pressures:
+\begin{equation}
+ p = \sum_{s=1}^{ns} p_s = \sum_{s=1}^{ns} \rho_s R_s T .
+ \label{eq:p_eq_state}
+\end{equation}
+
+
+Because of the nonlinearity of vibrational and electronic energies,
+the corresponding specific heats in these cases are not constant, but
+are defined only through derivatives of the above energy equations:
+\begin{align*}
+C^{\text{vib}}_{v,s} &= \diff{e^{\text{vib}}_{v,s}}{T_V} \\
+C^{\text{elec}}_{v,s} &= \diff{e^{\text{elec}}_{v,s}}{T_V}
+\end{align*}
+with the vibrational energy $e^{\text{vib}}_{v,s}$ from
+Equation~\eqref{eq:species_vibrational_energy} and the 
+electronic energy $e^{\text{elec}}_{v,s}$ given by
+Equation~\eqref{eq:elec_excitation}; and the subscript $v$ refers to `constant volume'. 
+%
+Combined terms $C^{\text{ve}}_{v,s}$ or $C_{v,s}$ can be defined as
+\begin{align*}
+  C^{\text{ve}}_{v,s} &= C^{\text{vib}}_{v,s} + C^{\text{elec}}_{v,s} \\
+  C_{v,s} &= C^{\text{tr}}_{v,s} + C^{\text{ve}}_{v,s}
+\end{align*}
+%
+and mixture specific heats are given as
+\begin{equation}
+\begin{split}\label{eq:Cv}
+  C^{\text{vib}}_{v} &= \sum_s c_s     C^{\text{vib}}_{v,s} \\
+  C^{\text{elec}}_{v} &= \sum_s c_s    C^{\text{elec}}_{v,s} \\
+  C^{\text{ve}}_{v} &=  \sum_s c_s    C^{\text{ve}}_{v,s} \\
+  C^{\text{tr}}_{v} &= \sum_s c_s    C^{\text{tr}}_{v,s} \\
+  C_{v} &= \sum_s c_s    C_{v,s}
+\end{split}
+\end{equation}
+
+These are specific heats at constant volume; specific heat at constant
+pressure is given as
+\begin{equation}\label{eq:Cp}
+C_p = C_v + R
+\end{equation}
+
+\subsection{Transport Properties}
+\subsubsection{Species Transport Properties}\label{sec:conductivity}
+The viscosity for each species in the mixture can be computed using curve fits obtained by Blottner, which are of the form
+\begin{equation}\label{eq:viscosity}
+  \mu_s\left(T\right) = 0.1 \exp\left[\left(A_s \ln T + B_s\right) \ln T + C_s\right] \;\;\; %\left(\unitfrac{kg}{m\cdot sec}\right)
+\end{equation}
+where the constants $A_s$, $B_s$, and $C_s$ are species dependent parameters~(\citet{blottner_viscous,wright_thesis} \textit{apud} \citet{Kirk2011}). These curve fits are valid for temperatures below 10,000$K$, %\unit[10,000]{K}, 
+which generally speaking is sufficient for the cases considered later. At higher temperatures, or for species for which Blottner data are not available, the species transport properties can be computed using kinetic theory~ (\citet{vincenti_kruger} \textit{apud} \citet{Kirk2011}).
+
+The thermal conductivities for the translational, rotational, and vibrational energy modes can be determined from an Eucken relation~(\citet{vincenti_kruger} \textit{apud} \citet{Kirk2011}). Under the assumption that the transport of translational energy is correlated to the velocity of the species (but that the transport of internal energies is not similarly correlated) the relevant thermal conductivities are
+\begin{align*}
+  \kappa^{\text{trans}}_s &= \frac{5}{2} \mu_s C^{\text{trans}}_{v,s} \\
+  \kappa^{\text{rot}}_s   &= \mu_s C^{\text{rot}}_{v,s} \\
+  \kappa^{\text{vib}}_s   &= \mu_s C^{\text{vib}}_{v,s} \\
+  \kappa^{\text{elec}}_s   &= \mu_s C^{\text{elec}}_{v,s}
+\end{align*}
+%
+Thermal conductivities may be ``lumped'' together under various
+equilibrium assumptions, to give a translational-rotational thermal
+conductivity $\kappa^{\text{tr}}$, a vibrational-electronic conductivity
+$\kappa^{\text{ve}}$,
+or a total thermal conductivity~$\kappa$:
+\begin{align}
+  \label{eq:thermal_subconductivity_start}
+  \kappa^{\text{tr}} &= \kappa^{\text{trans}} + \kappa^{\text{rot}} \\
+  \kappa^{\text{ve}} &= \kappa^{\text{vib}} + \kappa^{\text{elec}} \\
+  \kappa &= \kappa^{\text{tr}} + \kappa^{\text{ve}}
+  \label{eq:thermal_subconductivity_end}
+\end{align}
+which are used in the definition of total and vibrational/electronic heat flux given in Equations (\ref{eq:k}) and (\ref{eq:kv}). Note that:
+$$\kappa_V\stackrel{\text{def}}{=}  \kappa^{\text{ve}} .$$
+%
+% Candler~\cite{Candler2010} (and references therein) suggests that 
+% %
+% \begin{equation}
+% k^{\text{vib}}_s   = 1.2 \mu_s C^{\text{vib}}_{v,s}
+% \end{equation}
+% %
+% where the factor of $1.2$ is obtained from kinetic theory, but this is
+% not done in \texttt{FIN-S}.
+
+\subsubsection{Species Diffusion Coefficients}\label{sec:diffusion_coeff}
+% %Recall from Equation~\eqref{eq:species_velocities} that the species
+% diffusion velocities are related to the species concentration
+% gradients through Fick's law.  In order to use this model the
+% individual species diffusion coefficients, $\mathcal{D}_s$, must be
+% determined.  
+
+The multicomponent nature of the diffusion coefficients  $\mathcal{D}_s$
+could be implemented directly, which would yield separate diffusion
+coefficients for each species.  This approach is desired for species
+with disparate molecular weights, e.g.  oxygen and hydrogen.  However,
+for the case when the constituents have similar molecular weights, it
+is convenient to assume a single diffusion coefficient $\mathcal{D}$
+which comes from the assumption of constant Lewis number:
+\begin{equation}
+  \label{eq:lewis_equilibrium}
+  Le = \mathcal{D}\frac{\rho C_p}{\kappa}
+\end{equation}
+where $C_p$ is entire specific heat at constant pressure, given by Eq. (\ref{eq:Cp}), and $\kappa$ is the entire thermal diffusivity, given by Eq.(\ref{eq:thermal_subconductivity_end}).  For air the Lewis number $Le$ is usually taken
+as $Le=1.4$.
+
+
+
+
+\subsubsection{Mixture Transport Properties}
+With the species viscosity and thermal conductivities computed using the above relationships, the mixture properties may be computed using Wilke's mixing rule as follows:
+\begin{align}
+  \label{eq:mixture_viscosity}
+  \mu = \sum_{s=1}^{ns} \mu_s\frac{\chi_s}{\phi_s} \\
+  \label{eq:mixture_conductivity}
+  \kappa   = \sum_{s=1}^{ns}   \kappa_s\frac{\chi_s}{\phi_s} 
+\end{align}
+where $\chi_s$ is as defined in Equation~\eqref{eq:chi_definition} and
+\begin{equation}\label{eq:phi}
+  \phi_s = \sum_{r=1}^{ns} \frac{\chi_r \left[1+\sqrt{\frac{\mu_s}{\mu_r}} \sqrt[4]{\frac{M_r}{M_s}}\;\right]^2}{\sqrt{8\left(1+\frac{M_s}{M_r}\right)}}
+\end{equation}
+
+\subsection{Chemical Kinetics}
+The rate of production/destruction of the individual species $s$, $\dot{\omega}_s$, is required to close the species continuity equations. For the dissociating Nitrogen flow ($  \text{N}_2 \rightleftharpoons 2 \text{N}$) case, let us consider the chemical reactions which occur among the five principal components of dissociating air -- $\text{N}_2,\text{O}_2,\text{NO},\text{N},\text{O}$ -- but neglecting three species in order to perform this 2--species problem. For this mixture, the single chemical reaction that occur is:
+\begin{align*}
+ \text{N}_2 + \mathcal{M} &\rightleftharpoons 2\text{N} + \mathcal{M} .
+\end{align*}
+
+This reaction can occur in either the forward or backward direction, as denoted by the bidirectional arrow. The reaction is presented such that they are endothermic in the forward direction, and $\mathcal{M}$ denotes a generic collision partner, which may be any of the species present in the flow, and  is unaltered by the reaction~\citep{Kirk2011}.
+The rate of each reaction is therefore a sum of the forward and backward rates,  $k_{f}$ and $k_{b}$:
+\begin{equation*}
+ \begin{split}
+\mathcal{R}_r &=  \mathcal{R}_{br} - \mathcal{R}_{fr} \\
+                &= k_{br} \prod_{s=1}^{ns} \left(\frac{\rho_s}{M_s}\right)^{\beta_{sr}} - k_{fr} \prod_{s=1}^{ns} \left(\frac{\rho_s}{M_s}\right)^{\alpha_{sr}}
+ \end{split}
+\end{equation*}
+where $\alpha_{sr}$ and $\beta_{sr}$ are the stoichiometric coefficients for reactants and products of species $s$.
+For the Nitrogen dissociation,
+\begin{equation}
+\begin{split}             	                
+\label{eq:reaction1}
+ \mathcal{R}_1 &= \sum_{m\in\mathcal{M}}\left(k_{b_1 m} \frac{\rho_{\text{N}}}{M_{\text{N}}}\frac{\rho_{\text{N}}}{M_{\text{N}}}\frac{\rho_{\text{m}}}{M_{\text{m}}} - k_{f_1 m}\frac{\rho_{\text{N}_2}}{M_{\text{N}_2}}\frac{\rho_{\text{m}}}{M_{\text{m}}} \right) \\
+%
+&= k_{b_1 \text{N}} \dfrac{\rho_{\text{N}}^3}{M_\text{N}^3} -
+k_{f_1 \text{N}}   \dfrac{\rho_{\text{N}_2} \rho_{\text{N}}}{2  M_\text{N}^2}+
+k_{b_1 \text{N}_2} \dfrac{\rho_\text{N}^2 \rho_{\text{N}_2}}{2M_\text{N}^3 }-
+k_{f_1 \text{N}_2} \dfrac{\rho_{\text{N}_2}^2}{4 M_\text{N}^2},
+\end{split}
+\end{equation}
+recalling that $M_{\text{N}_2}=2 M_\text{N}.$
+
+
+The species source terms $\dot{\omega}_s = M_s \sum_{r=1}^{nr}\left(\alpha_{sr}-\beta_{sr}\right)\left(\mathcal{R}_{br} - \mathcal{R}_{fr}\right)$ 
+% \begin{equation}
+%   \dot{\omega}_s = M_s \sum_{r=1}^{nr}\left(\alpha_{sr}-\beta_{sr}\right)\left(\mathcal{R}_{br} - \mathcal{R}_{fr}\right)
+% \end{equation}
+ where $nr$ is the number of reactions can now be expressed in terms of the individual reaction rates as follows:
+\begin{align*}
+ \dot{\omega}_{\text{N}_2} &= M_{\text{N}_2}\left(\mathcal{R}_1\right)= 2 M_\text{N} \mathcal{R}_1 ,\\
+ \dot{\omega}_{\text{N}} &= M_{\text{N}}\left(-2\mathcal{R}_1 \right)=-2 M_\text{N} \mathcal{R}_1. 
+\end{align*}
+Note that these source terms sum identically to zero, as required by conservation of mass \citep{Kessler2004}.
+
+
+
+The forward rate coefficients  $k_{fr}$  can then be expressed in a modified Arrhenius form as
+\begin{equation}\label{eq:equilibrium_constant}
+  k_{fr}\left(\bar{T}\right) = C_{fr} \bar{T}^{\eta_r} \exp \left(-E_{ar}/R\bar{T}\right)
+\end{equation}
+where $C_{fr}$ is the reaction rate constant, $\eta_r$ is the so-called pre-exponential factor, $E_{ar}$ is the activation energy.  These three constants are determined from curve fits to experimental data (e.g. see \cite{Ait1996}). The effective temperature, $\bar{T}$, is a function of the translational/rotational and vibrational temperatures, and in this work it is taken as:
+\begin{equation}
+	\label{eq:Tbar}
+\bar{T}=T^{q} \, T_V^{1-q}, \quad 0\leq q\leq 1 .
+\end{equation}
+
+
+The corresponding backward rate coefficient   $k_{br}$  can be found using the principle of detailed balance, which states
+\begin{equation}
+  K_{eq} = \frac{k_{fr}\left(\bar{T}\right)}{k_{br}\left(\bar{T}\right)}
+\end{equation}
+where $K_{eq}$ is the equilibrium constant and may be obtained either by curve fits or through Gibbs' free energy techniques\footnote{Examples of curve fits for calculating the equilibrium constant may be found in \citet{Park1990}, whereas Gibbs' free energy techniques are employed in \citet{Nasa_chemistry}. }. 
+In this work, $K_{eq}=K(T)$.
+
+
+Therefore:
+\begin{equation}
+ \begin{split}
+\label{eq:forward_rates1}
+k_{f_1 \text{N}} &= C_{f_1 \text{N}} \bar{T}^{\eta_{f_1 \text{N}}} \exp\left(\frac{-E_{a\text{N}}}{R \bar{T}}\right) \qquad \,\mbox{and}\quad k_{b_1 \text{N}} = \dfrac{k_{f_1 \text{N}}}{K(T)},\\
+%
+k_{f_1 \text{N}_2} &= C_{f_1 \text{N}_2} \bar{T}^{\eta_{f_1 \text{N}_2}} \exp\left(\dfrac{-E_{a\text{N}_2}}{R \bar{T}}\right) \quad \mbox{and}\quad k_{b_1 \text{N}_2} = \dfrac{k_{f_1 \text{N}_2}}{K(T)},
+%
+%k_{b_1 \text{N}} &= \dfrac{k_{f_1 \text{N}}}{K(T)}\\
+%k_{b_1 \text{N}_2} &= \dfrac{k_{f_1 \text{N}_2}}{K(T)}
+ \end{split}
+\end{equation}
+are the forward and backward rates for Nitrogen atom and Nitrogen molecule, respectively.
+
+
+\subsection{Vibrational/Electronic Energy Production \& Vibrational Relaxation}\label{sec:omega_v}
+
+For the case of thermal nonequilibrium it remains to define the vibrational/electronic energy source term, $\dot{\omega}_V$, which appears in Equation (\ref{eq:ns:eV}).  This term represents the production/destruction of vibrational/electronic energy in the gas, and is due to both the creation of molecules with some vibrational/electronic energy and the transfer of energy between the various modes in the gas:
+\begin{equation}
+  \dot{\omega}_v = \dot{Q}_{v} + \dot{Q}_{\text{transfer}}.
+\end{equation}
+
+When molecular species are created in the gas at rate $\dot{\omega}_s$, they contribute vibrational/electronic energy at the rate: 
+\begin{equation*}
+  \dot{Q}_{vs}=\dot{\omega}_s\left(e^{\text{vib}}_{s} + e^{\text{elec}}_{s}\right),
+\end{equation*}
+so the net vibrational energy production rate is then simply:
+\begin{equation}
+  \label{eq:vibrational_energy_production}
+  \dot{Q}_{v} = \sum_{s=1}^{ns} \dot{\omega}_s\left(e^{\text{vib}}_{s} + e^{\text{elec}}_{s}\right).
+\end{equation}
+
+There is also energy transfer among the various energy modes in the gas.  Strictly speaking, one such energy transfer is vibration-vibration coupling between the various molecules in the gas.  However, implicit in the use of a single vibrational energy equation is the assumption that the molecular vibrational energies equilibrate very rapidly and thus are adequately characterized with a single vibrational temperature $T_V$.  There is also energy transfer between translational and vibrational modes as well as rotational and vibrational modes \citep{Kirk2011}.  These latter two exchanges are grouped together and represented as a single vibrational energy transfer rate~$\dot{Q}^{\text{tr-vib}}$.  
+In this work we adopt the Landau-Teller model for the vibrational energy transfer for a given species\footnote{The molar-averaged Landau-Teller relaxation time, $\tau_s$ and the inter-species Landau-Teller relaxation time, $\tau_sr$ are determined for diatomic molecules, and therefore, $\theta_{s}^\vib$ in Equation \ref{eq:tau_vib_sr} refers to $\theta_{s,1}^\vib$ (first level of the )}:
+\begin{equation}
+  \label{eq:landau_teller_energy_exchange}
+  \dot{Q}^{\text{tr-vib}}_s = \rho_s \frac{\hat{e}^{\text{vib}}_{s} - e^{\text{vib}}_s}{\tau^{\text{vib}}_s},
+\end{equation}
+where $\hat{e}^{\text{vib}}_{s}$ is the species equilibrium vibrational energy (Equation~\eqref{eq:species_vibrational_energy} evaluated at temperature $T$) and the vibrational relaxation time $\tau^{\text{vib}}_s$ is given by:
+\begin{equation}
+  \tau^{\text{vib}}_s = \frac{\sum_{r=1}^{ns} \chi_r}{\sum_{r=1}^{ns} \chi_r/\tau^{\text{vib}}_{sr}}
+\end{equation}
+where $\chi_r$ is given by
+\begin{equation}
+  \label{eq:chi_definition}
+  \chi_r = c_r\frac{M}{M_r},\quad \mbox{with}\quad M=\left(\sum_{s=1}^{ns}\frac{c_s}{M_s}\right)^{-1}
+\end{equation}
+and
+\begin{align}
+  \label{eq:tau_vib_sr}
+  \tau^{\text{vib}}_{sr} &=  \frac{1}{P} \exp\left[A_{sr}\left(T^{-1/3} - 0.015 \mu^{1/4}_{sr}\right) - 18.42\right] ,\\
+          A_{sr} &= 1.16\times 10^{-3} \mu^{1/2}_{sr}(\theta_{s}^\vib)^{4/3} ,\\
+        \mu_{sr} &= \frac{M_s M_r}{M_s + M_r}.
+\end{align}
+%where the pressure in Equation~\eqref{eq:tau_vib_sr} is in units of atmospheres. 
+
+
+Combining~\eqref{eq:landau_teller_energy_exchange} and~\eqref{eq:vibrational_energy_production} yields the desired net vibrational energy source term
+\begin{equation}
+  \dot{\omega}_V = \sum_{s=1}^{ns} \dot{Q}^{\text{tr-vib}}_s + \sum_{s=1}^{ns} \dot{\omega}_s\left(e^{\text{vib}}_{s} + e^{\text{elec}}_{s}\right).
+\end{equation}
+
+\section{Manufactured Solutions}
+
+\citet{Roy2002} propose the general form of the primitive solution variables to be a function of sines and cosines:
+\begin{equation}
+ \label{eq:manufactured01}
+ \phi (x,t) = \phi_0+ \phi_x f_s\left(\frac{a_{\phi x} \pi x}{L}\right) + \phi_t f_s\left(\frac{a_{\phi t} \pi t}{L_t}\right),
+\end{equation}
+where $\phi=\rho_{\text{N}},\rho_{\text{N}_2}, u, T$ or $T_V$, and $f_s(\cdot)$ functions denote either sine or cosine function. Note that in this case, $\phi_x$ and $\phi_t$  are constant and the subscripts do not denote differentiation. Different choices of the constants used in the manufactured solutions for the 2D supersonic and subsonic cases of Navier-Stokes and Navier-Stokes may be found in \citet{Roy2002}.
+
+Therefore, the manufactured analytical solution for each one of the variables in Navier-Stokes equations are:
+\begin{equation}
+\begin{split}
+\label{eq:manufactured02}
+\rho_{\text{N}}(x,t) &= \rho_{\text{N}0} + \rho_{\text{N}x} \sin\left(\frac{a_{  \rho \text{N} x }\pi x}{L}\right)+\rho_{\text{N}t} \cos\left( \dfrac{ a_{ \rho \text{N} t}  \pi t}{L_t}\right),\\
+\rho_{\text{N}_2}(x,t) &= \rho_{\text{N}_2 0}+ \rho_{\text{N}_2 x} \cos\left(\frac{a_{ \rho \text{N}_2 x } \pi x}{L}\right)+\rho_{\text{N}_2 t} \sin\left( \dfrac{ a_{ \rho \text{N}_2 t}\pi t}{L_t}\right),\\
+u(x,t) &=  u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right)+ u_t \cos\left( \dfrac{ a_{ut}\pi t}{L_t}\right),\\
+T(x,t) &=T_{0}+T_{x} \cos\left(\frac{a_{T x} \pi x}{L}\right)+ T_t \cos\left( \dfrac{ a_{Tt} \pi t}{L_t}\right),\\
+T_V(x,t) &= T_{V0}+T_{Vx} \cos\left(\frac{a_{T_V x} \pi x}{L}\right)+T_{Vt}\sin\left(\frac{a_{T_V t} \pi t}{L_t}\right),\\
+\end{split}
+\end{equation}
+
+Recalling that $\rho=\sum_s \rho_s$, the manufactured analytical solution for the density of the mixture  is:
+\begin{equation}
+\label{eq:manufactured03}
+\begin{split}
+\rho(x,t) &= \rho_{\text{N}}+\rho_{\text{N}_2}\\
+                     &= \rho_{\text{N}0} + \rho_{\text{N}_2 0} +
+\rho_{\text{N}x} \sin\left(\frac{a_{  \rho \text{N} x }\pi x}{L}\right) + \rho_{\text{N}_2 x} \cos\left(\frac{a_{ \rho \text{N}_2 x } \pi x}{L}\right)+\rho_{\text{N}t} \cos\left( \dfrac{ a_{ \rho \text{N} t}  \pi t}{L_t}\right)+\rho_{\text{N}_2 t} \sin\left( \dfrac{ a_{ \rho \text{N}_2 t}\pi t}{L_t}\right) .
+\end{split}
+\end{equation}
+
+
+
+%The governing equations (\ref{eq:ns2d_01}) -- (\ref{eq:ns2d_07}) are applied to the solutions in {\ref{eq:manufactured02}} using Maple and the resulting analytical source term are presented in the following sections.
+
+\subsection{1D Transient Navier-Stokes Equations in Thermochemical Nonequilibrium}
+
+The MMS applied to 1D transient Navier-Stokes equations for a chemically reacting mixture of  N and N$_{2}$ in thermal nonequilibrium consists in modifying  Equations~(\ref{eq:ns:rhoN})--(\ref{eq:ns:eV}) by adding a source term to the right-hand side of each equation:
+\begin{equation}
+ \label{eq:ns_mod_2d}
+\begin{split}
+&\Diff{\rho_{\N}}{t} +\Diff{\rho_{\N} u}{x} -\diff{ \left(\rho \mathcal{D}_{\N} \nabla c_{\N} \right)}{x} - \dot{\omega}_{\text{N}}= Q_{\rho_{\N}},\\
+&\Diff{\rho_{\N_2}}{t} +\Diff{\rho_{\N_2} u}{x} -\diff{ \left(\rho \mathcal{D}_{\N_2} \nabla c_{\N_2} \right)}{x} - \dot{\omega}_{\text{N}_2}= Q_{\rho_{\N_2}},\\
+&\Diff{\rho u}{t} + \Diff{\rho u^2 }{x}+ \Diff{p}{x} -\Diff{\tau_{xx}}{x}= Q_u,\\
+&\Diff{\rho E}{t} +\Diff{\rho uE}{x}+ \Diff{pu}{x}+ \Diff{q_x}{x}-\diff{ }{x}\left(\rho \sum_{s=1}^{ns} h_s \mathcal{D}_s \nabla c_s\right)-\Diff{u\tau_{xx}}{x} = Q_{E},\\
+& \Diff{\rho e_V}{t}+ \Diff{\rho e_V u }{x}+ \Diff{q_{Vx}}{x}-\diff{ }{x}\left(\rho \sum_{s=1}^{ns} e_{Vs} \mathcal{D}_s \nabla{c_s}\right)-\dot{\omega}_V =Q_{e_V},
+\end{split}
+\end{equation}
+%
+so the modified set of Equations (\ref{eq:ns_mod_2d}) conveniently has the analytical solutions given in Equations (\ref{eq:manufactured02}) and~(\ref{eq:manufactured03}). Recall that, according to Section \ref{sec:diffusion_coeff}, $$\mathcal{D}_{\N_2} =\mathcal{D}_{\N} =\mathcal{D}.$$
+%
+
+Source terms $ Q_{\rho_{\text{N}}}$, $ Q_{\rho_{\text{N}_2}}$, $Q_u$,  $Q_{E}$ and $Q_{e_V}$ are obtained by symbolic manipulations of equations above using Maple and are presented in the following sections. The following auxiliary variables have been included in order to improve readability and computational efficiency:
+\begin{equation}
+ \begin{split}
+\label{eq:aux_01}
+\Rho_{\text{N}} &= \rho_{\text{N}0} + \rho_{\text{N}x} \sin\left(\frac{a_{  \rho \text{N} x }\pi x}{L}\right)+\rho_{\text{N}t} \cos\left( \dfrac{ a_{ \rho \text{N} t}  \pi t}{L_t}\right),\\
+\Rho_{\text{N}_2} &= \rho_{\text{N}_2 0}+ \rho_{\text{N}_2 x} \cos\left(\frac{a_{ \rho \text{N}_2 x } \pi x}{L}\right)+\rho_{\text{N}_2 t} \sin\left( \dfrac{ a_{ \rho \text{N}_2 t}\pi t}{L_t}\right),\\
+\Rho&=\Rho_{\text{N}}+\Rho_{\text{N}_2},\\
+\U &=  u_{0}+u_{x} \sin\left(\frac{a_{u x} \pi x}{L}\right)+ u_t \cos\left( \dfrac{ a_{ut}\pi t}{L_t}\right),\\
+\T &=  T_{0}+T_{x} \cos\left(\frac{a_{T x} \pi x}{L}\right)+ T_t \cos\left( \dfrac{ a_{Tt} \pi t}{L_t}\right),\\
+\TV &=T_{V0}+T_{Vx} \cos\left(\frac{a_{T_V x} \pi x}{L}\right)+T_{Vt}\sin\left(\frac{a_{T_V t} \pi t}{L_t}\right),\\
+\end{split}
+\end{equation}
+which simply are the manufactured solutions, and the following variables:
+
+\begin{equation}
+\begin{split}\label{eq:aux_02}	
+%
+\Mu_{\N} &= \dfrac{1}{10} \exp\left((A_{\N} \ln(T)+B_{\N}) \ln(T)+C_{\N}\right) \, ,\\
+%
+\Mu_{\N_2} &= \dfrac{1}{10} \exp\left((A_{\N_2} \ln(T)+B_{\N_2}) \ln(T)+C_{\N_2}\right) \, ,\\
+%
+M_{tot} &= \dfrac{1}{ \dfrac{\Rho_{\N}}{M_{\N}  \Rho }+ \dfrac{1}{2} \dfrac{ \Rho_{\N_2}}{M_{\N}  \Rho} }  \, ,\\ 
+%
+%
+\Mu_{\text{mix}} &= \dfrac{\Mu_{\N} \Rho_{\N} M_{tot}}{M_{\N} \Phi_{\N} \Rho }+ \dfrac{1}{2} \dfrac{ \Mu_{\N_2} \Rho_{\N_2} M_{tot}}{M_{\N} \Phi_{\N_2} \Rho } \, ,\\
+%
+\Phi_{\N} & = \dfrac{ \Rho_{\N} M_{tot}}{M_{\N} \Rho }+\dfrac{1}{12}\dfrac{\sqrt{3} \, \Rho_{\N_2} M_{tot}}{M_{\N} \Rho } \left(1+2^{1/4} \sqrt{\Mu_{\N}/\Mu_{\N_2}} \right)^2 \, , \\
+%
+\Phi_{\N_2}  &= \dfrac{1}{2} \dfrac{\Rho_{\N_2} M_{tot}}{M_{\N} \Rho }+\dfrac{1}{12} \dfrac{\sqrt{6} \, \Rho_{\N} M_{tot}}{M_{\N} \Rho } \left(1+\dfrac{2^{3/4}}{2} \sqrt{\Mu_{\N_2}/\Mu_{\N}} \right)^2 \,, \\
+%
+\E_{\N}^{\elec} &= \dfrac{ R }{M_\N} \dfrac{\sum_{i=0}^{nel_{\N}} \theta^{\elec}_{\N,i}   \, g_{\N,i}   \exp \left( -\theta^{\elec}_{\N,i} / \TV  \right)}{\sum_{i=0}^{nel_{\N}}   \, g_{\N,i}   \exp \left( -\theta^{\elec}_{\N,i} / \TV  \right)} \,, \\ 
+%
+\E_{\N_2}^{\elec} &= \dfrac{ R }{ 2 M_\N} \dfrac{\sum_{i=0}^{nel_{\N_2}} \theta^{\elec}_{\N_2,i}   \, g_{\N_2,i}   \exp \left( -\theta^{\elec}_{\N_2,i} /  \TV \right) }{ \sum_{i=0}^{nel_{\N_2}}  \, g_{\N_2,i}   \exp \left( -\theta^{\elec}_{\N_2,i} /  \TV \right) } \,, \\
+% 
+\E_{\N_2}^{\vib}  &= \dfrac{ R}{2 M_\N }  \dfrac{  \theta^{\vib}_{\N_2} }{\left[ \exp \left( \theta^{\vib}_{\N_2} / \TV \right)-1 \right]} \,,\\ 
+%
+%novo Cv
+C_v &= \frac{3}{2} \frac{R \Rho_{\N}}{M_{\N} \Rho} + \frac{5}{4} \frac{R \Rho_{\N_2}}{M_{\N} \Rho} +\\
+  %
+  &+ \frac{R \Rho_{\N} }{M_{\N} \Rho \TV^{2} \eelecNden } \sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)} +\\
+  %
+  &+ \frac{R \Rho_{\N_2} }{2 M_{\N} \Rho \TV^{2} \eelecNdoisden }  \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)}+\\
+  %
+  &- \frac{M_{\N} \Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 }{R \Rho \TV^{2}} - \frac{2 M_{\N} \Rho_{\N_2} \left( \E^{\elec}_{\N_2} \right)^2 }{R \Rho \TV^{2}} + \frac{2 M_{\N} \Rho_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} \, / \TV \right) }{R \Rho \TV^{2}},\\
+%
+&(\text{cont.})
+ \end{split}
+\end{equation}
+
+\begin{equation*}
+\begin{split}
+C_p &=  C_v+R\,, \\
+% %
+%novo k_ev
+%
+\kappa^{ev}_{\mix} &= \frac{M_{tot} \Mu_{\N} R \Rho_{\N} }{\Phi_{\N} \Rho M_{\N}^{2} \TV^{2} \eelecNden } \sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)} +\\
+%
+  &+ \frac{M_{tot} \Mu_{\N_2} R \Rho_{\N_2} }{4 \Phi_{\N_2} \Rho M_{\N}^{2} \TV^{2} \eelecNdoisden }  \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)} +\\
+%
+  &- \frac{M_{tot} \Mu_{\N} \Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 }{\Phi_{\N} R \Rho \TV^{2}} - \frac{M_{tot} \Mu_{\N_2} \Rho_{\N_2} \left( \E^{\elec}_{\N_2} \right)^2 }{\Phi_{\N_2} R \Rho \TV^{2}} + \frac{M_{tot} \Mu_{\N_2} \Rho_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} \, / \TV \right) }{\Phi_{\N_2} R \Rho \TV^{2}},\\
+%
+% % 
+\kappa^{tr}_{\text{mix}} &= \dfrac{15}{4} \dfrac{\Mu_{\N} R \Rho_{\N} M_{tot}}{ \, M_{\N}^2 \, \Phi_{\N}\, \Rho }+\dfrac{19}{16} \dfrac{ \Mu_{\N_2} \Rho_{\N_2} M_{tot} R}{ \, M_{\N}^2 \, \Phi_{\N_2}\, \Rho  }\,, \\ 
+% %
+\kappa_{\text{mix}}  &= \kappa^{ev}_{\text{mix}}+\kappa^{tr}_{\text{mix}} \,,\\
+%
+D_s &= \dfrac{Le \, \kappa_{\text{mix}}}{\Rho C_p},	\,\\
+%
+e_{V\N_2} &= \dfrac{\Rho_{\N_2}}{\Rho} \left( \E_{\N_2}^{\vib}   + \E_{\N_2}^{\elec}  \right),\\
+%
+e_{V\N} &= \dfrac{\Rho_{\N}}{\Rho} \left(  \E_{\N}^{\elec}  \right),\\
+%
+e_{V} &= e_{V\N_2}+e_{V\N},
+ \end{split}
+\end{equation*}
+%
+and the derivatives of $e_V,\,e_{V \N},\,e_{V \N_2},C_p, \Mu_\mix, \, \kappa^{tr}_\mix$ and $\, \kappa^{ev}_\mix$ with respect to $x$, given, respectively in Equations (\ref{eq:DeVDx})--(\ref{eq:DKappaevDx}):
+%
+\begin{equation}
+\begin{split}\label{eq:DeVDx}
+ \DeVDx &= \DeVNNDx + \DeVNDx,\\
+%
+&\\ %--------------------------
+%
+ \DeVNDx &= - \frac{\E^{\elec}_{\N} \Rho_{\N} \pi }{L \Rho^{2}}\left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right) +\\
+%
+&+ \frac{\E^{\elec}_{\N} a_{ \rho \N x} \pi \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)}{L \Rho} + \frac{M_{\N}
+\Rho_{\N} a_{T_V x} \pi T_{Vx} \left( \E^{\elec}_{\N} \right)^2 }{L R \Rho \TV^{2}}\sin\left(\frac{a_{T_V x} \pi x}{L}\right) +\\
+%
+&- \frac{R \pi \Rho_{\N}  a_{T_V x} T_{Vx} }{L M_{\N} \Rho \eelecNden \TV^{2}}\sin\left(\frac{a_{T_V x} \pi
+x}{L}\right)\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left(
+\theta^{\elec}_{\N,i} / \TV \right)},\\
+%
+&\\ %--------------------------
+%
+ \DeVNNDx &= - \frac{\left(\E^{\elec}_{\N_2} + \E^{\vib}_{\N_2} \right) \Rho_{\N_2} \pi }{L \Rho^{2}}\left(a_{ \rho \N x} \rho_{\N
+x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right)\right) +\\
+%
+&- \frac{\left( \E^{\elec}_{\N_2} + \E^{\vib}_{\N_2} \right)a_{ \rho \N_2 x} \pi \rho_{\N_2 x}  \sin\left(\frac{a_{ \rho \N_2 x}
+\pi x}{L}\right)}{L \Rho} +\\
+%
+&- \frac{M_{\N} \Rho_{\N_2} a_{T_V x} \pi T_{Vx} }{L R \Rho \TV^{2}}\left(- 2 \left( \E^{\elec}_{\N_2} \right)^2 + 2 \left(
+\E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} \, / \TV \right) \right) \sin\left(\frac{a_{T_V x} \pi x}{L}\right) +\\
+%
+&- \frac{R \Rho_{\N_2} a_{T_V x}  \pi T_{Vx} }{2 L M_{\N} \Rho \eelecNdoisden \TV^{2}}\sin\left(\frac{a_{T_V x} \pi x}{L}\right)
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)},
+%
+ \end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}\label{eq:DMuDx}
+%
+\DMuDx&= \frac{\pi M_{tot}^{3} \left(\frac{1}{2} \Mu_{\N} \Phi_{\N_2}^{2} \Rho_{\N}^{2} + \frac{1}{8} \Mu_{\N_2} \Phi_{\N}^{2}
+\Rho_{\N_2}^{2}\right) \left( 2 a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)  \right)}{L M_{\N}^{3} \Phi_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{3}} +\\ 
+  %
+  & - \frac{\pi M_{tot}^{2} \left(\frac{1}{2} \Mu_{\N} \Phi_{\N_2} \Rho_{\N} + \frac{1}{4} \Mu_{\N_2} \Phi_{\N} \Rho_{\N_2}\right)
+\left( 2 a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)  \right)}{L \Phi_{\N} \Phi_{\N_2} M_{\N}^{2} \Rho^{2}} +\\ 
+  %
+  &- \frac{M_{tot} \pi \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right) }{L M_{\N}^{3} \Phi_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{4}} \cdot\\
+ &\quad \cdot \left(- \frac{1}{4} M_{tot} \Rho_{\N} - \frac{1}{8} M_{tot} \Rho_{\N_2} + \frac{1}{4} M_{\N} \Rho\right) \left(-
+M_{tot} \Mu_{\N_2} \Phi_{\N}^{2} \Rho_{\N_2}^{2} - 4 M_{tot} \Mu_{\N} \Phi_{\N_2}^{2} \Rho_{\N}^{2} \right.+\\
+ &\qquad\left.+ 2 M_{\N} \Mu_{\N_2} \Phi_{\N_2} \Rho \Rho_{\N_2} \Phi_{\N}^{2} + 4 M_{\N} \Mu_{\N} \Phi_{\N} \Rho \Rho_{\N}
+\Phi_{\N_2}^{2}\right)+\\ 
+  %
+  &+ \frac{M_{tot} \Mu_{\N} a_{\rho N x} \pi \rho_{N x} \left(- M_{tot} \Rho_{\N} + M_{\N} \Phi_{\N} \Rho\right)
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{L M_{\N}^{2} \Phi_{\N}^{2} \Rho^{2}}+\\ 
+  %
+  & - \frac{1}{4} \frac{M_{tot} \Mu_{\N_2} a_{\rho N2 x} \pi \rho_{N2 x} \left(2 M_{\N} \Phi_{\N_2} \Rho - M_{tot} \Rho_{\N_2}
+\right) \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{L M_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{2}}+\\ 
+  %
+  & + \frac{\Mu_{\N} \pi \Rho_{\N} \Rho_{\N_2} \sqrt{3} M_{tot}^{3} \left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} / \Mu_{\N_2}
+}\right)^{2} \left( 2 a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)  \right)}{24 L M_{\N}^{3} \Phi_{\N}^{2} \Rho^{3}} +\\ 
+%
+  &+ \frac{\Mu_{\N_2} \pi \Rho_{\N} \Rho_{\N_2} \sqrt{6} M_{tot}^{3} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{ \Mu_{\N_2} / \Mu_{\N}
+}\right)^{2} \left( 2 a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)  \right)}{48 L M_{\N}^{3} \Phi_{\N_2}^{2} \Rho^{3}} +\\ 
+%
+  &+ \frac{M_{tot} \Mu_{\N} \pi \Rho_{\N} T_{x} a_{Tx} ( - 2 A_{\N} \log(\T) + 2 A_{\N_2} \log(\T)- B_{\N}+B_{\N_2} )
+\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)}{L M_{\N} \Phi_{\N} \Rho \T} +\\ 
+%
+  &- \frac{M_{tot} \pi T_{x} a_{Tx} ( 2 A_{\N_2} \log(\T)+B_{\N_2} ) \left(\Mu_{\N} \Phi_{\N_2} \Rho_{\N} + \frac{1}{2} \Mu_{\N_2}
+\Phi_{\N} \Rho_{\N_2}\right) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right)}{L M_{\N} \Phi_{\N} \Phi_{\N_2} \Rho \T} +\\ 
+  %
+  &- \frac{\Mu_{\N_2} \pi \Rho_{\N_2} a_{\rho N x} \rho_{N x} \sqrt{6} M_{tot}^{2} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{
+\Mu_{\N_2} / \Mu_{\N} }\right)^{2} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{24 L M_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{2}}+\\ 
+  %
+  & + \frac{\Mu_{\N} \pi \Rho_{\N} a_{\rho N2 x} \rho_{N2 x} \sqrt{3} M_{tot}^{2} \left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} /
+\Mu_{\N_2} }\right)^{2} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{12 L M_{\N}^{2} \Phi_{\N}^{2} \Rho^{2}} +\\ 
+  %
+  &+ \frac{\Mu_{\N} \pi \Rho_{\N} \Rho_{\N_2} \sqrt{3} M_{tot}^{2} \left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} / \Mu_{\N_2} }\right)^{2}
+\left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho
+N2 x} \pi x}{L}\right)\right) }{24 L M_{\N}^{3} \Phi_{\N}^{2} \Rho^{4}} \cdot\\
+	&\quad \cdot \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right)+\\ 
+  %
+  &+ \frac{\Mu_{\N_2} \pi \Rho_{\N} \Rho_{\N_2} \sqrt{6} M_{tot}^{2} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{ \Mu_{\N_2} / \Mu_{\N}
+}\right)^{2} \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right)}{48 L M_{\N}^{3} \Phi_{\N_2}^{2} \Rho^{4}} \cdot\\
+ &\quad \cdot \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right) +\\ 
+  %
+  &- \frac{\pi \Rho_{\N} \Rho_{\N_2} T_{x} a_{Tx} 2^{\frac{3}{4}} \sqrt{6} M_{tot}^{2} \Mu_{\N_2}^{2} \left(1 + \sqrt[4]{2^3} / 2
+\, \sqrt{ \Mu_{\N_2} / \Mu_{\N} }\right) }{48 L \Mu_{\N} \T M_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{2} \sqrt{\Mu_{\N_2} / \Mu_{\N} } }
+\cdot\\
+ &\quad \cdot ( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right) +\\ 
+  %
+  &+ \frac{\pi \Rho_{\N} \Rho_{\N_2} T_{x} a_{Tx} \sqrt[4]{2} \sqrt{3} M_{tot}^{2} \Mu_{\N}^{2} \left(1 + \sqrt[4]{2} \sqrt{
+\Mu_{\N} / \Mu_{\N_2} }\right) }{12 L \Mu_{\N_2} \T M_{\N}^{2} \Phi_{\N}^{2} \Rho^{2} \sqrt{\Mu_{\N} / \Mu_{\N_2} } } \cdot\\
+  &\quad \cdot ( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right),\\
+  %
+%
+\end{split}
+\end{equation}
+
+
+\begin{equation}
+\begin{split}\label{eq:DKappaDx}
+ \DKappaDx &= \DKappaevDx + \DKappatrDx,\\
+%
+\end{split}
+\end{equation}
+
+
+\begin{equation}
+\begin{split}\label{eq:DKappatrDx}
+ \DKappatrDx &= 
+- \frac{\pi R M_{tot}^{2} \left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x}
+\rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) }{L M_{\N}^{4} \Phi_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{3}} \cdot\\
+ &\quad \cdot \left(- \frac{19}{64} M_{tot} \Mu_{\N_2} \Phi_{\N}^{2} \Rho_{\N_2}^{2} - \frac{15}{8} M_{tot} \Mu_{\N}
+\Phi_{\N_2}^{2} \Rho_{\N}^{2}\right.+\\ 
+	&\quad\quad \left. + \frac{15}{8} M_{\N} \Mu_{\N} \Phi_{\N} \Rho \Rho_{\N} \Phi_{\N_2}^{2} + \frac{19}{32} M_{\N} \Mu_{\N_2}
+\Phi_{\N_2} \Rho \Rho_{\N_2} \Phi_{\N}^{2}\right)+\\ 
+%
+&+ \frac{M_{tot} \Mu_{\N} \pi R a_{\rho N x} \rho_{N x} \left(- \frac{15}{4} M_{tot} \Rho_{\N} + \frac{15}{4} M_{\N} \Phi_{\N}
+\Rho\right) \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{L M_{\N}^{3} \Phi_{\N}^{2} \Rho^{2}} +\\ 
+%
+&- \frac{M_{tot} \Mu_{\N} \pi R \Rho_{\N} \left(- M_{tot} \Rho_{\N} + M_{\N} \Phi_{\N} \Rho\right) \left(a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right)
+}{L M_{\N}^{4} \Phi_{\N}^{2} \Rho^{4}} \cdot\\
+ &\quad \cdot \left(- \frac{15}{4} M_{tot} \Rho_{\N} - \frac{15}{8} M_{tot} \Rho_{\N_2} + \frac{15}{4} M_{\N} \Rho\right) +\\ 
+%
+&- \frac{M_{tot} \Mu_{\N_2} \pi R \Rho_{\N_2} \left(2 M_{\N} \Phi_{\N_2} \Rho - M_{tot} \Rho_{\N_2} \right) \left(a_{\rho N x}
+\rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi
+x}{L}\right)\right)}{L M_{\N}^{4} \Phi_{\N_2}^{2} \Rho^{4}} \cdot\\
+ &\quad \cdot \left(- \frac{19}{32} M_{tot} \Rho_{\N} - \frac{19}{64} M_{tot} \Rho_{\N_2} + \frac{19}{32} M_{\N} \Rho\right) +\\ 
+%
+&- \frac{M_{tot} \Mu_{\N_2} \pi R a_{\rho N2 x} \rho_{N2 x} \left(- \frac{19}{32} M_{tot} \Rho_{\N_2} + \frac{19}{16} M_{\N}
+\Phi_{\N_2} \Rho\right) \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{L M_{\N}^{3} \Phi_{\N_2}^{2} \Rho^{2}} +\\ 
+%
+&+ \frac{5}{32} \frac{\Mu_{\N} \pi R \Rho_{\N} \Rho_{\N_2} \sqrt{3} M_{tot}^{3} \left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} / \Mu_{\N_2}
+}\right)^{2} }{L M_{\N}^{4} \Phi_{\N}^{2} \Rho^{3}} \cdot\\
+ &\quad \cdot \left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) +\\ 
+%
+&+ \frac{19}{384} \frac{\Mu_{\N_2} \pi R \Rho_{\N} \Rho_{\N_2} \sqrt{6} M_{tot}^{3} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{
+\Mu_{\N_2} / \Mu_{\N} }\right)^{2}}{L M_{\N}^{4} \Phi_{\N_2}^{2} \Rho^{3}} \cdot\\
+ &\quad \cdot \left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) +\\ 
+%
+&+ \frac{M_{tot} \Mu_{\N} \pi R \Rho_{\N} T_{x} a_{Tx} \left(- \frac{15}{4} B_{\N} + \frac{15}{4} B_{\N_2} - \frac{15}{2} A_{\N}
+\log(\T) + \frac{15}{2} A_{\N_2} \log(\T)\right) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right)}{L \Phi_{\N} \Rho \T M_{\N}^{2}} +\\ 
+%
+&- \frac{M_{tot} \pi R T_{x} a_{Tx} ( 2 A_{\N_2} \log(\T)+B_{\N_2} ) \left(\frac{15}{4} \Mu_{\N} \Phi_{\N_2} \Rho_{\N} +
+\frac{19}{16} \Mu_{\N_2} \Phi_{\N} \Rho_{\N_2}\right) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right)}{L \Phi_{\N} \Phi_{\N_2} \Rho \T
+M_{\N}^{2}} +\\ 
+%
+&- \frac{19}{192} \frac{\Mu_{\N_2} \pi R \Rho_{\N_2} a_{\rho N x} \rho_{N x} \sqrt{6} M_{tot}^{2} \left(1 + \sqrt[4]{2^3} / 2 \,
+\sqrt{ \Mu_{\N_2} / \Mu_{\N} }\right)^{2} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{L M_{\N}^{3} \Phi_{\N_2}^{2} \Rho^{2}}
++\\ 
+%
+&+ \frac{5}{16} \frac{\Mu_{\N} \pi R \Rho_{\N} a_{\rho N2 x} \rho_{N2 x} \sqrt{3} M_{tot}^{2} \left(1 + \sqrt[4]{2} \sqrt{
+\Mu_{\N} / \Mu_{\N_2} }\right)^{2} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{L M_{\N}^{3} \Phi_{\N}^{2} \Rho^{2}} +\\ 
+%
+&+\cdots \\
+\end{split}
+\end{equation}
+
+\begin{equation*}
+\begin{split} %(cont. \DKappatrDx )
+&+\cdots\\%
+&+ \frac{5}{32} \frac{\Mu_{\N} \pi R \Rho_{\N} \Rho_{\N_2} \sqrt{3} M_{tot}^{2} \left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} / \Mu_{\N_2}
+}\right)^{2} }{L M_{\N}^{4} \Phi_{\N}^{2} \Rho^{4}} \cdot\\
+ &\quad \cdot \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right)\left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right) +\\ 
+%
+&+ \frac{19}{384} \frac{\Mu_{\N_2} \pi R \Rho_{\N} \Rho_{\N_2} \sqrt{6} M_{tot}^{2} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{
+\Mu_{\N_2} / \Mu_{\N} }\right)^{2} }{L M_{\N}^{4} \Phi_{\N_2}^{2} \Rho^{4}} \cdot\\
+ &\quad \cdot \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right)\left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right) +\\ 
+%
+&- \frac{19}{384} \frac{\pi R \Rho_{\N} \Rho_{\N_2} T_{x} a_{Tx} 2^{\frac{3}{4}} \sqrt{6} M_{tot}^{2} \Mu_{\N_2}^{2} \left(1 +
+\sqrt[4]{2^3} / 2 \, \sqrt{ \Mu_{\N_2} / \Mu_{\N} }\right) }{L \Mu_{\N} \T M_{\N}^{3} \Phi_{\N_2}^{2} \Rho^{2} \sqrt{\Mu_{\N_2} /
+\Mu_{\N} } } \cdot\\
+ &\quad \cdot ( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right) +\\ 
+%
+&+ \frac{5}{16} \frac{\pi R \Rho_{\N} \Rho_{\N_2} T_{x} a_{Tx} \sqrt[4]{2} \sqrt{3} M_{tot}^{2} \Mu_{\N}^{2} \left(1 + \sqrt[4]{2}
+\sqrt{ \Mu_{\N} / \Mu_{\N_2} }\right) }{L \Mu_{\N_2} \T M_{\N}^{3} \Phi_{\N}^{2} \Rho^{2} \sqrt{\Mu_{\N} / \Mu_{\N_2} } } \cdot\\
+ &\quad \cdot ( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right),\\
+%
+%
+%---------------------------------------------------------------
+\end{split}
+\end{equation*}
+
+\begin{equation}
+\begin{split}\label{eq:DKappaevDx}
+\DKappaevDx &= \frac{M_{tot} a_{T_V x} \pi T_{Vx} \left(- 2 \Mu_{\N} \Phi_{\N_2} \Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 - 2
+\Mu_{\N_2} \Phi_{\N} \Rho_{\N_2} \left( \E^{\elec}_{\N_2} \right)^2\right) \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L
+\Phi_{\N} \Phi_{\N_2} R \Rho \TV^{3}} +\\ 
+%
+&+ \frac{1}{4}\frac{M_{tot} \pi \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x}
+\rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right) }{L R M_{\N}^{2} \Phi_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{4}
+\TV^{2}}  \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right) \cdot\\
+ &\quad \cdot\left(- M_{tot} \Mu_{\N_2} \left( \E^{\elec}_{\N_2} \right)^2 \Phi_{\N}^{2} \Rho_{\N_2}^{2} - 2 M_{tot} \Mu_{\N}
+\left( \E^{\elec}_{\N} \right)^2 \Phi_{\N_2}^{2} \Rho_{\N}^{2}\right.+\\
+ &\quad\quad\left. + 2 M_{\N} \Mu_{\N} \Phi_{\N} \Rho \Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 \Phi_{\N_2}^{2} + 2 M_{\N}
+\Mu_{\N_2} \Phi_{\N_2} \Rho \Rho_{\N_2} \left( \E^{\elec}_{\N_2} \right)^2 \Phi_{\N}^{2}\right) +\\ 
+%
+&- \frac{\pi \sqrt{3} M_{tot}^{2} \left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N
+x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) }{24 L R M_{\N}^{2} \Phi_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{3}
+\TV^{2}} \cdot\\
+ &\quad \cdot\left(2 M_{tot} \Mu_{\N_2} \sqrt{3} \left( \E^{\elec}_{\N_2} \right)^2 \Phi_{\N}^{2} \Rho_{\N_2}^{2} + 4 M_{tot}
+\Mu_{\N} \sqrt{3} \left( \E^{\elec}_{\N} \right)^2 \Phi_{\N_2}^{2} \Rho_{\N}^{2} \right.+\\
+ &\quad\quad\left.+ M_{tot} \Mu_{\N} \Rho_{\N} \Rho_{\N_2} \left( \E^{\elec}_{\N} \right)^2 \Phi_{\N_2}^{2} \left(1 + \sqrt[4]{2}
+\sqrt{ \Mu_{\N} / \Mu_{\N_2} }\right)^{2} - 4 M_{\N} \Mu_{\N} \Phi_{\N} \Rho \Rho_{\N} \sqrt{3} \left( \E^{\elec}_{\N} \right)^2
+\Phi_{\N_2}^{2} \right.+\\
+ &\quad\quad\left.- 4 M_{\N} \Mu_{\N_2} \Phi_{\N_2} \Rho \Rho_{\N_2} \sqrt{3} \left( \E^{\elec}_{\N_2} \right)^2
+\Phi_{\N}^{2}\right) +\\ 
+%
+&- \frac{M_{\N} M_{tot} a_{T_V x} \pi T_{Vx} \left(2 \Mu_{\N} \Phi_{\N_2} \Rho_{\N} \left( \E^{\elec}_{\N} \right)^3 + 4
+\Mu_{\N_2} \Phi_{\N} \Rho_{\N_2} \left( \E^{\elec}_{\N_2} \right)^3\right) \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L
+\Phi_{\N} \Phi_{\N_2} \Rho R^{2} \TV^{4}} +\\ 
+%
+&+ \frac{1}{2}\frac{M_{tot} \Mu_{\N_2} a_{\rho N2 x} \pi \rho_{N2 x} \left( \E^{\elec}_{\N_2} \right)^2  \left(2 M_{\N}
+\Phi_{\N_2} \Rho - M_{tot} \Rho_{\N_2} \right) \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{L M_{\N} R \Phi_{\N_2}^{2}
+\Rho^{2} \TV^{2}} +\\ 
+%
+%
+&+\cdots \\
+\end{split}
+\end{equation}
+
+\begin{equation*}
+\begin{split} %(cont. \DKappaevDx )
+&+\cdots\\
+&+ \frac{M_{tot} \pi T_{x} a_{Tx} \left(\Mu_{\N} \Phi_{\N_2} \Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 + \Mu_{\N_2} \Phi_{\N}
+\Rho_{\N_2} \left( \E^{\elec}_{\N_2} \right)^2 - \Mu_{\N_2} \Phi_{\N} \Rho_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left(
+\theta^{\vib}_{\N_2} / \TV \right) \right)}{L \Phi_{\N} \Phi_{\N_2} R \Rho \T \TV^{2}} \cdot\\
+ &\quad \cdot( 2 A_{\N_2} \log(\T)+B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right) +\\ 
+%
+&- \frac{M_{tot} \Mu_{\N} a_{\rho N x} \pi \rho_{N x} \left( \E^{\elec}_{\N} \right)^2 \left(- M_{tot} \Rho_{\N} + M_{\N}
+\Phi_{\N} \Rho\right) \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{L M_{\N} R \Phi_{\N}^{2} \Rho^{2} \TV^{2}} +\\ 
+%
+&- \frac{\Mu_{\N} \pi R \Rho_{\N} M_{tot}^{2} \left(- \frac{1}{2} M_{tot} \Rho_{\N} + \frac{1}{2} M_{\N} \Phi_{\N} \Rho\right) }{L
+M_{\N}^{4} \Phi_{\N}^{2} \Rho^{3} \TV^{2} \eelecNden } \cdot\\
+ &\quad \cdot\left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) \sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \,
+g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)}+\\ 
+%
+&- \frac{1}{16} \frac{\Mu_{\N_2} \pi R \Rho_{\N_2} M_{tot}^{2} \left(2 M_{\N} \Phi_{\N_2} \Rho - M_{tot} \Rho_{\N_2} \right)}{L
+M_{\N}^{4} \Phi_{\N_2}^{2} \Rho^{3} \TV^{2} \eelecNdoisden} \cdot\\
+ &\quad \cdot\left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right)  \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2  
+\, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)} +\\ 
+%
+&+ \frac{2 M_{tot} \Mu_{\N_2} \pi \Rho_{\N_2} a_{T_V x} T_{Vx} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} /
+\TV \right) \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L \Phi_{\N_2} R \Rho \TV^{3}} +\\ 
+%
+&+ \frac{M_{tot} \Mu_{\N} \pi R a_{\rho N x} \rho_{N x} \left(- M_{tot} \Rho_{\N} + M_{\N} \Phi_{\N} \Rho\right)
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{L M_{\N}^{3} \Phi_{\N}^{2} \Rho^{2} \TV^{2} \eelecNden} +\sum_{i=0}^{nel_{\N}}
+\dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)} \\ 
+%
+&+ \frac{M_{tot} \Mu_{\N} \pi \Rho_{\N} a_{T_V x} T_{Vx} \left(2 R \TV + 3 \E^{\elec}_{\N} M_{\N}\right) \sin\left(\dfrac{a_{T_V
+x} \pi x}{L}\right)}{L \Phi_{\N} \Rho M_{\N}^{2} \TV^{4} \eelecNden } \sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i}
+\right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)}+\\ 
+%
+&+ \frac{M_{tot} \Mu_{\N} \pi \Rho_{\N} T_{x} a_{Tx} \left( \E^{\elec}_{\N} \right)^2 ( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T)
++B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right)}{L \Phi_{\N} R \Rho \T \TV^{2}} +\\ 
+%
+&+ \frac{M_{tot} \Mu_{\N_2} \pi \Rho_{\N_2} a_{T_V x} T_{Vx} \left(\frac{1}{2} R \TV + \frac{3}{2} \E^{\elec}_{\N_2} M_{\N}\right)
+\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L \Phi_{\N_2} \Rho M_{\N}^{2} \TV^{4} \eelecNdoisden }  \sum_{i=0}^{nel_{\N_2}}
+\dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)} +\\ 
+%
+&+ \frac{M_{tot} \Mu_{\N_2} \pi \Rho_{\N_2} a_{T_V x} T_{Vx} \theta^{\vib}_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left(
+\theta^{\vib}_{\N_2} / \TV \right) \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L \Phi_{\N_2} R \Rho \TV^{4}} +\\ 
+%
+&- \frac{1}{2}\frac{M_{tot} \Mu_{\N} \pi R \Rho_{\N}\left(- M_{tot} \Rho_{\N} + M_{\N} \Phi_{\N} \Rho\right) }{L M_{\N}^{4}
+\Phi_{\N}^{2} \Rho^{4} \TV^{2} \eelecNden } \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho
+N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right)\cdot\\
+ &\quad \cdot \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right) \sum_{i=0}^{nel_{\N}} \dfrac{ \left(
+\theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)} +\\ 
+%
+&- \frac{M_{tot} \Mu_{\N} \pi R \Rho_{\N}  \sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^3   \, g_{\N,i} }{
+\exp \left( \theta^{\elec}_{\N,i} / \TV \right)} a_{T_V x} T_{Vx} \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L \Phi_{\N} \Rho
+M_{\N}^{2} \TV^{4} \eelecNden } +\\ 
+%
+%
+&+\cdots \\
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split} %(cont. \DKappaevDx )
+&+\cdots\\
+&- \frac{1}{16} \frac{M_{tot} \Mu_{\N_2} \pi R \Rho_{\N_2} \left(2 M_{\N} \Phi_{\N_2} \Rho - M_{tot} \Rho_{\N_2} \right) }{L
+M_{\N}^{4} \Phi_{\N_2}^{2} \Rho^{4} \TV^{2} \eelecNdoisden} \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi
+x}{L}\right) - a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right) \cdot\\
+ &\quad \cdot\left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right)  \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left(
+\theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)} +\\ 
+%
+&- \frac{1}{8}\frac{M_{tot} \Mu_{\N_2} \pi R a_{\rho N2 x} \rho_{N2 x} \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot}
+\Rho_{\N_2}\right) \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{L M_{\N}^{3} \Phi_{\N_2}^{2} \Rho^{2} \TV^{2} \eelecNdoisden} 
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)}+\\ 
+%
+&- \frac{1}{2}\frac{M_{tot} \Mu_{\N_2} a_{\rho N2 x} \pi \rho_{N2 x} \left( \E^{\vib}_{\N_2} \right)^2  \left(2 M_{\N} \Phi_{\N_2}
+\Rho - M_{tot} \Rho_{\N_2} \right) \exp\left( \theta^{\vib}_{\N_2} / \TV \right) \sin\left(\dfrac{a_{\rho N2 x} \pi
+x}{L}\right)}{L M_{\N} R \Phi_{\N_2}^{2} \Rho^{2} \TV^{2}} +\\ 
+%
+&- 4 \frac{M_{\N} M_{tot} \Mu_{\N_2} \pi \Rho_{\N_2} a_{T_V x} T_{Vx} \left( \E^{\vib}_{\N_2} \right)^3 \left[ \exp\left(
+\theta^{\vib}_{\N_2} / \TV \right) \right]^2 \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L \Phi_{\N_2} \Rho R^{2} \TV^{4}} +\\ 
+%
+&- \frac{M_{tot} \Mu_{\N_2} \pi R \Rho_{\N_2} a_{T_V x} T_{Vx} \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{4 L \Phi_{\N_2} \Rho
+M_{\N}^{2} \TV^{4} \eelecNdoisden }  \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^3   \, g_{\N_2,i} }{
+\exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)} +\\ 
+%
+&+ \frac{\Mu_{\N_2} \pi \Rho_{\N} \Rho_{\N_2} \sqrt{6} M_{tot}^{3} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{ \Mu_{\N_2} / \Mu_{\N}
+}\right)^{2} \left(- \left( \E^{\elec}_{\N_2} \right)^2 + \left( \E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} / \TV
+\right) \right) }{24 L R M_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{3} \TV^{2}} \cdot\\
+ &\quad \cdot\left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) +\\ 
+%
+&- \frac{\Mu_{\N} \pi \Rho_{\N} a_{\rho N2 x} \rho_{N2 x} \sqrt{3} \left( \E^{\elec}_{\N} \right)^2 M_{tot}^{2} \left(1 +
+\sqrt[4]{2} \sqrt{ \Mu_{\N} / \Mu_{\N_2} }\right)^{2} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{12 L M_{\N} R \Phi_{\N}^{2}
+\Rho^{2} \TV^{2}} +\\ 
+%
+&- \frac{\Mu_{\N_2} \pi \Rho_{\N_2} a_{\rho N x} \rho_{N x} \sqrt{6} M_{tot}^{2} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{ \Mu_{\N_2}
+/ \Mu_{\N} }\right)^{2} \left(- \left( \E^{\elec}_{\N_2} \right)^2 + \left( \E^{\vib}_{\N_2} \right)^2 \exp\left(
+\theta^{\vib}_{\N_2} / \TV \right) \right) \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{12 L M_{\N} R \Phi_{\N_2}^{2} \Rho^{2}
+\TV^{2}} +\\ 
+%
+&- \frac{\Mu_{\N} \pi \Rho_{\N} \Rho_{\N_2} \sqrt{3} \left( \E^{\elec}_{\N} \right)^2 M_{tot}^{2} \left(1 + \sqrt[4]{2} \sqrt{
+\Mu_{\N} / \Mu_{\N_2} }\right)^{2}}{24 L R M_{\N}^{2} \Phi_{\N}^{2} \Rho^{4} \TV^{2}} \cdot\\
+ &\quad \cdot\left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right) \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right) +\\ 
+%
+&+ \frac{\Mu_{\N} \pi R \Rho_{\N} \Rho_{\N_2} \sqrt{3} M_{tot}^{3} \left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} / \Mu_{\N_2} }\right)^{2}
+}{24 L M_{\N}^{4} \Phi_{\N}^{2} \Rho^{3} \TV^{2} \eelecNden } \cdot\\
+ &\quad \cdot\left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) \sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \,
+g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)}+\\ 
+%
+&+ \frac{\Mu_{\N_2} \pi \Rho_{\N} \Rho_{\N_2} \sqrt{6} M_{tot}^{2} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{ \Mu_{\N_2} / \Mu_{\N}
+}\right)^{2} \left(- \left( \E^{\elec}_{\N_2} \right)^2 + \left( \E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} / \TV
+\right) \right)}{24 L R M_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{4} \TV^{2}} \cdot\\
+ &\quad \cdot\left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right) \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right) +\\ 
+%
+%
+&+\cdots \\
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split} %(cont. \DKappaevDx )
+&+\cdots\\
+&+ \frac{\Mu_{\N_2} \pi R \Rho_{\N} \Rho_{\N_2} \sqrt{6} M_{tot}^{3} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{ \Mu_{\N_2} / \Mu_{\N}
+}\right)^{2} }{96 L M_{\N}^{4} \Phi_{\N_2}^{2} \Rho^{3} \TV^{2} \eelecNdoisden} \cdot\\
+ &\quad \cdot\left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2  
+\, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)} +\\ 
+%
+&- \frac{M_{tot} \Mu_{\N} \pi R \Rho_{\N} T_{x} a_{Tx} ( 2 A_{\N_2} \log(\T)+B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi
+x}{L}\right)}{L \Phi_{\N} \Rho \T M_{\N}^{2} \TV^{2} \eelecNden} \sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i}
+\right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)}+\\ 
+%
+&- \frac{M_{tot} \Mu_{\N} \pi R \Rho_{\N} T_{x} a_{Tx} ( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} )
+\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)}{L \Phi_{\N} \Rho \T M_{\N}^{2} \TV^{2} \eelecNden} \sum_{i=0}^{nel_{\N}} \dfrac{ \left(
+\theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)}+\\ 
+%
+%
+&- \frac{1}{4}\frac{M_{tot} \Mu_{\N_2} \pi R \Rho_{\N_2} T_{x} a_{Tx} \left( 2 A_{\N_2} \log(\T) +B_{\N_2} \right)
+\sin\left(\dfrac{a_{Tx} \pi x}{L}\right)}{L \Phi_{\N_2} \Rho \T \eelecNdoisden M_{\N}^{2} \TV^{2}}  \sum_{i=0}^{nel_{\N_2}}
+\dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)}+\\ 
+%
+&- \frac{\Mu_{\N_2} \pi R \Rho_{\N_2} a_{\rho N x} \rho_{N x} \sqrt{6} M_{tot}^{2} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{
+\Mu_{\N_2} / \Mu_{\N} }\right)^{2} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{48 L M_{\N}^{3} \Phi_{\N_2}^{2} \Rho^{2}
+\TV^{2} \eelecNdoisden}  \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left(
+\theta^{\elec}_{\N_2,i} /  \TV \right)}+\\ 
+%
+&+ \frac{\Mu_{\N} \pi R \Rho_{\N} a_{\rho N2 x} \rho_{N2 x} \sqrt{3} M_{tot}^{2} \left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} /
+\Mu_{\N_2} }\right)^{2} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{12 L M_{\N}^{3} \Phi_{\N}^{2} \Rho^{2} \TV^{2}
+\eelecNden} \sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left(
+\theta^{\elec}_{\N,i} / \TV \right)}+\\ 
+%
+&+ \frac{\Mu_{\N} \pi R \Rho_{\N} \Rho_{\N_2} \sqrt{3} M_{tot}^{2} \left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} / \Mu_{\N_2}
+}\right)^{2}}{24 L M_{\N}^{4} \Phi_{\N}^{2} \Rho^{4} \TV^{2} \eelecNden } \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N
+x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right)\cdot\\
+ &\quad \cdot \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right)\sum_{i=0}^{nel_{\N}} \dfrac{ \left(
+\theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)} +\\ 
+%
+& + \frac{\Mu_{\N_2} \pi R \Rho_{\N} \Rho_{\N_2} \sqrt{6} M_{tot}^{2} \left(1 + \sqrt[4]{2^3} / 2 \, \sqrt{ \Mu_{\N_2} / \Mu_{\N}
+}\right)^{2} }{96 L M_{\N}^{4} \Phi_{\N_2}^{2} \Rho^{4} \TV^{2} \eelecNdoisden} \left(a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi
+x}{L}\right)\right)\cdot\\
+ &\quad \cdot \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right)  \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left(
+\theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} /  \TV \right)}+\\ 
+%
+&- \frac{\pi \Rho_{\N} \Rho_{\N_2} T_{x} a_{Tx} \sqrt[4]{2} \sqrt{3} \left( \E^{\elec}_{\N} \right)^2 M_{tot}^{2} \Mu_{\N}^{2}
+\left(1 + \sqrt[4]{2} \sqrt{ \Mu_{\N} / \Mu_{\N_2} }\right)}{12 L M_{\N} \Mu_{\N_2} R \T \Phi_{\N}^{2} \Rho^{2} \TV^{2}
+\sqrt{\Mu_{\N} / \Mu_{\N_2} } } \cdot\\
+ &\quad \cdot( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right) +\\ 
+%
+&- \frac{\pi \Rho_{\N} \Rho_{\N_2} T_{x} a_{Tx} 2^{\frac{3}{4}} \sqrt{6} M_{tot}^{2} \Mu_{\N_2}^{2} \left(1 + \sqrt[4]{2^3} / 2 \,
+\sqrt{ \Mu_{\N_2} / \Mu_{\N} }\right) \left(- \left( \E^{\elec}_{\N_2} \right)^2 + \left( \E^{\vib}_{\N_2} \right)^2 \exp\left(
+\theta^{\vib}_{\N_2} / \TV \right) \right)}{24 L M_{\N} \Mu_{\N} R \T \Phi_{\N_2}^{2} \Rho^{2} \TV^{2} \sqrt{\Mu_{\N_2} / \Mu_{\N}
+} } \cdot\\
+ &\quad \cdot( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right) +\\ 
+%
+%
+&+\cdots \\
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split} %(cont. \DKappatrDx )
+&+\cdots\\
+&- \frac{\pi R \Rho_{\N} \Rho_{\N_2} T_{x} a_{Tx} 2^{\frac{3}{4}} \sqrt{6} M_{tot}^{2} \Mu_{\N_2}^{2} \left(1 + \sqrt[4]{2^3} / 2
+\, \sqrt{ \Mu_{\N_2} / \Mu_{\N} }\right) }{96 L \Mu_{\N} \T M_{\N}^{3} \Phi_{\N_2}^{2} \Rho^{2} \TV^{2} \sqrt{\Mu_{\N_2} /
+\Mu_{\N} } \eelecNdoisden}\cdot\\
+ &\quad \cdot( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right) 
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)} +\\ 
+%
+&+ \frac{\pi R \Rho_{\N} \Rho_{\N_2} T_{x} a_{Tx} \sqrt[4]{2} \sqrt{3} M_{tot}^{2} \Mu_{\N}^{2} \left(1 + \sqrt[4]{2} \sqrt{
+\Mu_{\N} / \Mu_{\N_2} }\right) }{12 L \Mu_{\N_2} \T M_{\N}^{3} \Phi_{\N}^{2} \Rho^{2} \TV^{2} \sqrt{\Mu_{\N} / \Mu_{\N_2} }
+\eelecNden }\cdot\\
+ &\quad \cdot( 2 A_{\N} \log(\T) - 2 A_{\N_2} \log(\T) +B_{\N} - B_{\N_2} ) \sin\left(\dfrac{a_{Tx} \pi x}{L}\right)
+\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV
+\right)}+\\ 
+%
+&- \frac{1}{4}\frac{\Mu_{\N_2} \pi \Rho_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 M_{tot}^{2} \left(2 M_{\N} \Phi_{\N_2} \Rho -
+M_{tot} \Rho_{\N_2} \right)}{L R M_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{3} \TV^{2}} \cdot\\
+ &\quad \cdot\left(- a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + 2 a_{\rho N x} \rho_{N x}
+\cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right) \exp\left( \theta^{\vib}_{\N_2} / \TV \right) +\\ 
+%
+&- \frac{1}{4}\frac{M_{tot} \Mu_{\N_2} \pi \Rho_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 \left(2 M_{\N} \Phi_{\N_2} \Rho - M_{tot}
+\Rho_{\N_2} \right)\exp\left( \theta^{\vib}_{\N_2} / \TV \right)}{L R M_{\N}^{2} \Phi_{\N_2}^{2} \Rho^{4} \TV^{2}} \cdot\\
+ &\quad \cdot\left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right) \left(2 M_{\N} \Rho - 2 M_{tot} \Rho_{\N} - M_{tot} \Rho_{\N_2}\right) ,
+%
+%
+\end{split}
+\end{equation*}
+
+\begin{equation}
+\begin{split} \label{eq:DCpDx}
+ \DCpDx &= 
+\frac{\pi R \left(- \frac{5}{4} a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) + \frac{3}{2} a_{\rho N
+x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)\right)}{L M_{\N} \Rho} +\\
+%
+&- \frac{1}{4}\frac{\pi R \left(5 \Rho_{\N_2} + 6 \Rho_{\N}\right) \left( a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x}
+\pi x}{L}\right) -  a_{\rho N2 x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) \right)}{L M_{\N} \Rho^{2}} +\\
+%
+&- \frac{M_{\N} \pi \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right) }{L R \Rho^{2} \TV^{2}}\cdot\\
+ &\quad \cdot\left(- \Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 - 2 \Rho_{\N_2} \left( \E^{\elec}_{\N_2} \right)^2 + 2 \Rho_{\N_2}
+\left( \E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} / \TV \right) \right) +\\
+%
+&+ \frac{M_{\N} a_{T_V x} \pi T_{Vx} \left(- 4 \Rho_{\N_2} \left( \E^{\elec}_{\N_2} \right)^2 - 2 \Rho_{\N} \left( \E^{\elec}_{\N}
+\right)^2 + 4 \Rho_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} / \TV \right) \right)
+\sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L R \Rho \TV^{3}} +\\
+%
+&- \frac{M_{\N} a_{\rho N2 x} \pi \rho_{N2 x} \left(- 2 \left( \E^{\elec}_{\N_2} \right)^2 + 2 \left( \E^{\vib}_{\N_2} \right)^2
+\exp\left( \theta^{\vib}_{\N_2} / \TV \right) \right) \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{L R \Rho \TV^{2}} +\\
+%
+&- \frac{M_{\N} a_{\rho N x} \pi \rho_{N x} \left( \E^{\elec}_{\N} \right)^2 \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{L R
+\Rho \TV^{2}} +\\
+%
+&- \frac{\pi R \Rho_{\N} \left(a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) - a_{\rho N2 x} \rho_{N2 x}
+\sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)\right)}{L M_{\N} \eelecNden \Rho^{2} \TV^{2}} \sum_{i=0}^{nel_{\N}} \dfrac{ \left(
+\theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV \right)}+\\
+%
+%
+&+\cdots \\
+\end{split}
+\end{equation}
+
+\begin{equation*}
+\begin{split} %(cont. \DCpDx )
+&+\cdots\\
+&-  \frac{1}{2}\frac{\pi R \Rho_{\N_2}\left( a_{\rho N x} \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right) -  a_{\rho N2
+x} \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right) \right)}{L M_{\N} \eelecNdoisden \Rho^{2} \TV^{2}} 
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)}+\\
+%
+&- \frac{a_{T_V x} \pi T_{Vx} M_{\N}^{2} \left(2 \Rho_{\N} \left( \E^{\elec}_{\N} \right)^3 + 8 \Rho_{\N_2} \left(
+\E^{\elec}_{\N_2} \right)^3 + 8 \Rho_{\N_2} \left( \E^{\vib}_{\N_2} \right)^3 \left[ \exp\left( \theta^{\vib}_{\N_2} / \TV \right)
+\right]^2\right) \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L \Rho R^{2} \TV^{4}} +\\
+%
+&+ \frac{R a_{\rho N x} \pi \rho_{N x} \cos\left(\dfrac{a_{\rho N x} \pi x}{L}\right)}{L M_{\N} \Rho \eelecNden \TV^{2}}
+\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV
+\right)} +\\
+%
+&+ \frac{3 \E^{\elec}_{\N} \pi \Rho_{\N} a_{T_V x} T_{Vx} \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L \Rho \eelecNden \TV^{4}}
+\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV
+\right)}+\\
+%
+&+ \frac{3 \E^{\elec}_{\N_2} \pi \Rho_{\N_2} a_{T_V x} T_{Vx} \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L \Rho \eelecNdoisden
+\TV^{4}}  \sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left(
+\theta^{\elec}_{\N_2,i} /  \TV \right)}+\\
+%
+&- \frac{R a_{\rho N2 x} \pi \rho_{N2 x} \sin\left(\dfrac{a_{\rho N2 x} \pi x}{L}\right)}{2 L M_{\N} \Rho \eelecNdoisden \TV^{2}} 
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)}+\\
+%
+&+ \frac{R \Rho_{\N_2} a_{T_V x} \pi T_{Vx} \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L M_{\N} \Rho \eelecNdoisden \TV^{3}} 
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)}+\\
+%
+&- \frac{R \Rho_{\N} a_{T_V x} \pi T_{Vx} \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L M_{\N} \Rho \eelecNden \TV^{4}} 
+\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^3   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV
+\right)}+\\
+%
+&+ \frac{2 R \Rho_{\N} a_{T_V x} \pi T_{Vx} \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L M_{\N} \Rho \eelecNden \TV^{3}}
+\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV
+\right)}+\\
+%
+&- \frac{R \Rho_{\N_2} a_{T_V x} \pi T_{Vx} \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{2 L M_{\N} \Rho \eelecNdoisden \TV^{4}} 
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^3   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)} +\\
+%
+&+ \frac{2 M_{\N} \Rho_{\N_2} a_{T_V x} \pi T_{Vx} \theta^{\vib}_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left(
+\theta^{\vib}_{\N_2} / \TV \right) \sin\left(\dfrac{a_{T_V x} \pi x}{L}\right)}{L R \Rho \TV^{4}}.
+ \end{split}
+\end{equation*}
+
+
+
+Table \ref{table_aux_var} shows the relationship between the auxiliary variables listed in Equation (\ref{eq:aux_01}) and the
+equations that are part of the model.
+\begin{table}[htb]
+\caption{Relations between auxiliary variables and model documentation.}
+\centering
+\begin{tabular}{l c }
+\hline\hline
+     Variable    &  Equation  \\ [0.25ex]
+\hline 
+$\Mu_{\N}$, $\Mu_{\N_2}$   	&   \ref{eq:viscosity}      		\vspace{2pt} \\
+$M_{tot} $    			&   \ref{eq:chi_definition} 		\vspace{2pt} \\
+$\Mu_{\text{mix}}  $  		&   \ref{eq:viscosity}, \ref{eq:mixture_viscosity}           \vspace{2pt} \\
+$\Phi_{\N} $, $\Phi_{\N_2}$    	&   \ref{eq:phi}             \vspace{2pt} \\ 
+$\E_{\N}^{\elec} $ , $\E_{\N_2}^{\elec}$   &  \ref{eq:elec_excitation}              \vspace{2pt} \\
+$\E_{\N_2}^{\vib} $   		&   \ref{eq:species_vibrational_energy}             \vspace{2pt} \\
+$C_v $    			&   \ref{eq:Cv}             \vspace{2pt} \\
+$C_p  $    			&   \ref{eq:Cp}             \vspace{2pt} \\
+$\kappa^{ev}_{\text{mix}}$, $\kappa^{tr}_{\text{mix}}$, $\kappa_{\text{mix}} $    & 
+\ref{eq:thermal_subconductivity_start}-\ref{eq:thermal_subconductivity_end}    ,\ref{eq:mixture_conductivity}         
+\vspace{2pt} \\ 
+$D_s $    			&  \ref{eq:lewis_equilibrium}              \vspace{2pt} \\
+$e_V$				&  \ref{eq:rev-Tv-relationship}\vspace{2pt} \\
+\hline
+\end{tabular}
+\label{table_aux_var}
+\end{table}
+
+\vfill
+
+\subsection{Mass Conservation of Nitrogen Atom}
+
+The mass conservation equation for Nitrogen atom (N), written as an operator, is:
+\begin{equation*}
+ \label{eq:ns1d_11}
+\Lo_{\rho_{\N} } = \Lo_{\rho_{\N} \text{time}}+\Lo_{\rho_{\N} \convection}+\Lo_{\rho_{\N} \production}+\Lo_{\rho_{\N} \diffusion} 
+\end{equation*}
+where:
+\begin{equation}
+\begin{split}\label{eq:rhoN_operators}
+\Lo_{\rho_{\N} \text{time}}&= \Diff{\rho_{\N}}{t}\\
+\Lo_{\rho_{\N} \convection}&= \Diff{\rho_{\N} u}{x}\\
+\Lo_{\rho_{\N} \production}&= - \dot{\omega}_{\text{N}}\\
+\Lo_{\rho_{\N} \diffusion} &= -\diff{ \left(\rho \mathcal{D}_{\N} \nabla c_{\N} \right)}{x}\\
+\end{split}
+\end{equation}
+
+The operators defined in Eq. (\ref{eq:rhoN_operators}) are applied into Equation  (\ref{eq:manufactured02}), providing respective
+source terms that will compound source term $Q_{\rho_{\N} }$:
+\begin{equation*}
+Q_{\rho_{\N} } = Q_{\rho_{\N} \text{time}}+Q_{\rho_{\N} \convection}+Q_{\rho_{\N} \production}+Q_{\rho_{\N} \diffusion} 	
+\end{equation*}
+
+They are:
+\begin{equation*}
+\begin{split}
+ %Q_{\rho_{\N}} &= Q_{\rho_{\N} \convection} + Q_{\rho_{\N} \diffusion} + Q_{\rho_{\N} \production} + Q_{\rho_{\N} \text{time}},\\
+%
+ Q_{\rho_{\N}\text{time}} &=- \frac{ a_{ \rho \N t} \pi \rho_{\N t} }{L_t}\sin\left(\frac{a_{ \rho \N t} \pi t}{L_t}\right),\\
+%
+ Q_{\rho_{\N}\convection} &= 
+\frac{\Rho_{\N} a_{ux} \pi u_{x} }{L} \cos\left(\frac{a_{ux} \pi x}{L}\right)+ \frac{\U a_{ \rho \N x} \pi \rho_{\N x}
+}{L}\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right),\\ 
+%
+Q_{\rho_{\N}\production} &= - \dot{\omega}_{\N},\\
+%
+\end{split}
+\end{equation*}
+\begin{equation*}
+\begin{split}
+ Q_{\rho_{\N}\diffusion} &= 
+\frac{D_s \rho_{\N x} \pi^{2} a_{ \rho \N x}^{2} }{L^{2}}\sin\left(\frac{a_{ \rho \N x} \pi x}{L}\right)+\\
+%
+& - \frac{D_s \Rho_{\N} \pi^{2} }{L^{2} \Rho}\left(a_{ \rho \N_2 x}^{2} \rho_{\N_2 x} \cos\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right) + a_{ \rho \N x}^{2} \rho_{\N x} \sin\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) +\\ 
+%
+& - \DKappaDx \frac{ Le \, \Rho_{\N} \pi }{L C_p\Rho^{2}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) +\\
+%
+& - \frac{D_s a_{ \rho \N x} \rho_{\N x} \pi^{2} }{L^{2} \Rho}\left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2
+x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) \cos\left(\frac{a_{ \rho
+\N x} \pi x}{L}\right) +\\ 
+%
+& + \DCpDx \frac{ \kappa_{\mix} Le \, \Rho_{\N} \pi }{L C_p^{2} \Rho^{2}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{
+\rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) +\\
+%
+& - \DKappaDx \frac{ Le \, a_{ \rho \N x} \pi \rho_{\N x} }{L C_p\Rho}\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) + \DCpDx
+\frac{ \kappa_{\mix} Le \, a_{ \rho \N x} \pi \rho_{\N x} }{L C_p^{2} \Rho}\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) +\\
+%
+& - \frac{\kappa_{\mix} Le \, a_{ \rho \N x} \rho_{\N x} \pi^{2} }{L^{2} C_p \Rho^{2}} \left(a_{ \rho \N_2 x} \rho_{\N_2 x}
+\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right) \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)+\\
+%
+& - \frac{D_s \Rho_{\N} \pi^{2} }{L^{2} \Rho^{2}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right)^{2} +\\
+%
+& - \frac{\kappa_{\mix} Le \, \Rho_{\N} \pi^{2} }{L^{2} C_p \Rho^{3}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho
+\N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right)^{2}.\\
+%
+\end{split}
+\end{equation*}
+
+\vspace{10pt}
+In the above equations, $\Rho,\Rho_\N$ and $\U$ are defined in Equation (\ref{eq:aux_01}), $C_p,\, \kappa_{\mix}$ and $D_s$ are 
+defined in Equation (\ref{eq:aux_02}), and the derivatives $\DKappaDx$ and  $\DCpDx$ are defined in Equations (\ref{eq:DKappaDx})
+and (\ref{eq:DCpDx}), respectively.  The source term $\dot{\omega}_\N$ is given by:
+$$
+\dot{\omega}_\N = -2 M_\N \mathcal{R}_1	
+$$
+where $M_{\text{N}}$ is the molar mass of Nitrogen and $\mathcal{R}_1$ is the reaction given according to Eq.
+(\ref{eq:reaction1}):
+\begin{equation}\label{eq:reaction3}
+\mathcal{R}_1= \dfrac{k_{f_1 \N}}{K(\T)} \dfrac{\Rho_{\N}^3}{M_\N^3} - k_{f_1 \N}   \dfrac{\Rho_{\N_2} \Rho_{\N}}{2  M_\N^2}+
+\dfrac{k_{f_1 \N_2}}{K(\T)} \dfrac{\Rho_\N^2 \Rho_{\N_2}}{2M_\N^3 }- k_{f_1 \N_2} \dfrac{\Rho_{\N_2}^2}{4 M_\N^2},
+\end{equation}
+$K(\T)$ is a to-be-defined function for the equilibrium constant (\ref{eq:equilibrium_constant}), and $k_{f_1 \text{N}}$ and
+$k_{f_1 \text{N}_2}$ are defined by:
+\begin{equation}
+ \begin{split}\label{eq:forward_rates}
+k_{f_1 \text{N}} &= C_{f_1 \text{N}} \bar{T}^{\eta_{f_1 \text{N}}} \exp\left(\dfrac{-E_{a\text{N}}}{R \bar{T}}\right),\\
+k_{f_1 \text{N}_2} &= C_{f_1 \text{N}_2} \bar{T}^{\eta_{f_1 \text{N}_2}} \exp\left(\dfrac{-E_{a\text{N}_2}}{R \bar{T}}\right),\\
+\bar{T}&=\T^q \TV^{1-q}.
+ \end{split}
+\end{equation}
+
+
+
+\subsection{Mass Conservation of Nitrogen Molecule}
+
+The mass conservation equation for Nitrogen molecule ($\text{N}_2$), written as an operator, is:
+\begin{equation*}
+ \label{eq:ns1d_11a}
+\Lo_{\rho_{\N_2} } = \Lo_{\rho_{\N_2} \text{time}}+\Lo_{\rho_{\N_2} \convection}+\Lo_{\rho_{\N_2} \production}+\Lo_{\rho_{\N_2}
+\diffusion} 	
+\end{equation*}
+where:
+\begin{equation}
+\begin{split}\label{eq:rhoN2_operators}
+ \Lo_{\rho_{\N_2} \text{time}}&= \Diff{\rho_{\N_2}}{t}\\
+\Lo_{\rho_{\N_2} \convection}&= \Diff{\rho_{\N_2} u}{x} \\
+\Lo_{\rho_{\N_2} \production}&= - \dot{\omega}_{\text{N}_2}\\
+\Lo_{\rho_{\N_2} \diffusion}&=  -\diff{ \left(\rho \mathcal{D}_{\N_2} \nabla c_{\N_2} \right)}{x} 
+\end{split}
+\end{equation}
+
+
+The operators defined in Eq. (\ref{eq:rhoN2_operators}) are applied into Equation  (\ref{eq:manufactured02}), providing respective
+source terms that will compound source term $Q_{\rho_{\N_2} }$:
+\begin{equation*}
+Q_{\rho_{\N_2} } = Q_{\rho_{\N_2} \text{time}}+Q_{\rho_{\N_2} \convection}+Q_{\rho_{\N_2} \production}+Q_{\rho_{\N_2} \diffusion}
+\end{equation*}
+
+They are:
+\begin{equation*}
+\begin{split}
+Q_{\rho_{\N_2}} &= Q_{\rho_{\N_2} \convection} + Q_{\rho_{\N_2} \diffusion} + Q_{\rho_{\N_2} \production} + Q_{\rho_{\N_2}
+\text{time}},\\
+%
+Q_{\rho_{\N_2}\convection} &= \frac{\Rho_{\N_2} a_{ux} \pi u_{x} }{L}\cos\left(\frac{a_{ux} \pi x}{L}\right) - \frac{\U a_{ \rho
+\N_2 x} \pi \rho_{\N_2 x}}{L} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right),\\
+%
+ Q_{\rho_{\N_2}\diffusion} &= \frac{D_s a_{ \rho \N_2 x}^{2} \pi^{2} \rho_{\N_2 x} }{L^{2}} \cos\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right)+\\
+%
+&- \frac{D_s \Rho_{\N_2} \pi^{2} }{L^{2} \Rho}\left(a_{ \rho \N_2 x}^{2} \rho_{\N_2 x} \cos\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right) + a_{ \rho \N x}^{2} \rho_{\N x} \sin\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) +\\ 
+%
+& + \frac{D_s a_{ \rho \N_2 x} \pi^{2} \rho_{\N_2 x} }{L^{2} \Rho} \left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho
+\N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) \sin\left(\frac{a_{
+\rho \N_2 x} \pi x}{L}\right)+\\ 
+%
+& - \DKappaDx \frac{ Le \, \Rho_{\N_2} \pi }{L C_p\Rho^{2}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x}
+\pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) +\\
+%
+& + \DCpDx \frac{ \kappa_{\mix} Le \, \Rho_{\N_2} \pi }{L C_p^{2} \Rho^{2}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x}
+\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right) +\\
+%
+& + \DKappaDx \frac{ Le \, a_{ \rho \N_2 x} \pi \rho_{\N_2 x} }{L C_p\Rho}\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) +\\
+%
+&+ \frac{\kappa_{\mix} Le \, a_{ \rho \N_2 x} \pi^{2} \rho_{\N_2 x} }{L^{2} C_p \Rho^{2}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x}
+\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right) \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) +\\
+%
+& - \DCpDx \frac{ \kappa_{\mix} Le \, a_{ \rho \N_2 x} \pi \rho_{\N_2 x} }{L C_p^{2} \Rho}\sin\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right) +\\
+%
+& - \frac{D_s \Rho_{\N_2} \pi^{2} }{L^{2} \Rho^{2}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right)^{2} +\\
+%
+& - \frac{\kappa_{\mix} Le \, \Rho_{\N_2} \pi^{2} }{L^{2} C_p \Rho^{3}}\left(a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{
+\rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right)^{2},\\
+%
+ Q_{\rho_{\N_2}\production} &= - \dot{\omega}_{\N_2},\\
+%
+ Q_{\rho_{\N_2}\text{time}} &= 
+\frac{a_{ \rho \N_2 t} \pi \rho_{\N_2 t} }{L_t}\cos\left(\frac{a_{ \rho \N_2 t} \pi t}{L_t}\right).\\
+\end{split}
+\end{equation*}
+%
+%%%
+\vspace{5pt}
+
+In the above equations, $\Rho,\Rho_\N$ and $\U$ are defined in Equation (\ref{eq:aux_01}), $C_p,\, \kappa_{\mix}$ and $D_s$ are 
+defined in Equation (\ref{eq:aux_02}), and the derivatives $\DKappaDx$ and  $\DCpDx$ are defined in Equations (\ref{eq:DKappaDx})
+and (\ref{eq:DCpDx}), respectively.  The source term $\dot{\omega}_{\N_2}$ is given by:
+$$
+\dot{\omega}_{\N_2} =  M_{\N_2} \mathcal{R}_1	= 2 M_\N \mathcal{R}_1	\,,
+$$
+with  $\mathcal{R}_1$ given in Equation (\ref{eq:reaction3}).
+
+
+\subsection{Momentum Conservation}
+
+For the generation of the analytical source term $Q_u$, $x$-momentum equation (\ref{eq:ns:u}) is written as an operator $\Lo_u$:
+ $$\Lo_u = \Lo_{u \, \text{time}}+\Lo_{u \, \convection}+\Lo_{u \, \gradp }+\Lo_{u \, \work }$$
+with each one of the sub-operators defined as follows:
+
+\begin{equation}
+ \begin{split}
+\Lo_{u \, \text{time}}&= \Diff{\rho u}{t} \\
+\Lo_{u \, \convection}&= \Diff{\rho u^2 }{x}\\
+\Lo_{u \, \gradp }&= \Diff{p}{x}\\
+\Lo_{u \, \work }&= -\Diff{\tau_{xx}}{x}
+ \end{split}
+\end{equation}
+
+Source term $Q_u$ is obtained by operating $\Lo_{u}$ on Equations  (\ref{eq:manufactured02}) and (\ref{eq:manufactured03})
+together with the use of the  auxiliary relations given in Equations (\ref{eq:aux_01}) and (\ref{eq:aux_02}). It yields:
+\begin{equation*}
+ \label{eq:ns1d_12}
+Q_u = Q_{u \, \text{time}}+Q_{u \, \convection}+Q_{u \, \gradp }+Q_{u \, \work }
+\end{equation*}
+where:
+\begin{equation*}
+\begin{split}
+ %Q_u &= Q_{u \convection} + Q_{u \gradp} + Q_{u \,\text{time}} + Q_{u \work},\\
+ Q_{u \,\text{time}} &= 
+- \frac{\U \pi }{L_t}\left(a_{ \rho \N t} \rho_{\N t} \sin\left(\frac{a_{ \rho \N t} \pi t}{L_t}\right) - a_{ \rho \N_2 t}
+\rho_{\N_2 t} \cos\left(\frac{a_{ \rho \N_2 t} \pi t}{L_t}\right)\right) - \frac{ \Rho a_{ut} \pi u_{t}
+}{L_t}\sin\left(\frac{a_{ut} \pi t}{L_t}\right),\\
+%
+ Q_{u \convection} &= 
+\frac{\pi \U^{2} }{L}\left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x}
+\rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right) + \frac{2 \Rho \U a_{ux} \pi u_{x}
+}{L}\cos\left(\frac{a_{ux} \pi x}{L}\right),\\
+%
+ Q_{u \gradp} &= 
+\frac{R \T \pi }{L M_{\N}}\left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - \frac{1}{2} a_{ \rho
+\N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right)+\\
+%
+& + \frac{R a_{Tx} \pi T_{x} }{L M_{\N}}\left(- \Rho_{\N} - \frac{1}{2} \Rho_{\N_2}\right) \sin\left(\frac{a_{Tx} \pi
+x}{L}\right),\\
+%
+ Q_{u \work} &= 
+- \frac{4}{3} \DMuDx \frac{ a_{ux} \pi u_{x} }{L} \cos\left(\frac{a_{ux} \pi x}{L}\right)+ \frac{4}{3} \frac{\Mu_{\mix} a_{ux}^{2}
+\pi^{2} u_{x}}{L^{2}} \sin\left(\frac{a_{ux} \pi x}{L}\right),\\
+%
+\end{split}
+\end{equation*}
+with $\Rho,\Rho_\N, \Rho_{\N_2}, \T$ and $\U$ defined in Equation (\ref{eq:aux_01}), $\Mu_{\mix}$ defined in Equation
+(\ref{eq:aux_02}), and $\DMuDx$ defined in Equation (\ref{eq:DMuDx}).
+
+
+%=================================================================================================================================
+===========
+\subsection{Total Energy Conservation}
+The total energy equation is written as an operator:
+\begin{equation*}
+ \label{eq:ns1d_14}
+\Lo_E = \Lo_{E \text{time}} + \Lo_{E \convection} + \Lo_{E \work} + \Lo_{E \heatflux} + \Lo_{E \diffusion}
+\end{equation*}
+with
+\begin{equation}
+\begin{split}
+\Lo_{E \text{time}}&= \Diff{\rho E}{t} ,\\
+\Lo_{E \convection} &= \Diff{\rho u H}{x} = \Diff{\rho uE}{x}+\Diff{pu}{x},\\
+\Lo_{E \work} &= -\Diff{u\tau_{xx}}{x},\\
+\Lo_{E \heatflux} &=\Diff{q_x}{x},\\ 
+ \Lo_{E \diffusion}&= -\diff{ }{x}\left(\rho \sum_{s=1}^{ns} h_s \mathcal{D}_s \nabla c_s\right),	
+\end{split}
+\end{equation}
+% since $H= E+ \dfrac{p}{\rho} \quad \mbox{and}\quad E=e^{\text{int}} + \dfrac{u^2 }{2} ,$ with $p$ and $e^{\text{int}}$ as
+defined in Equations (\ref{eq:p_eq_state}) and (\ref{eq:energy_partition}), respectively.  resulting:
+% \begin{equation*}
+% \Lo_{E \convection} &= \Diff{\rho uE}{x}+\Diff{pu}{x},\\
+% \end{equation*}
+
+Source term $Q_E$\footnote{Note that $\Lo_{E \diffusion}$ depends on $h_\N=h_\N(T)$ and $h_{\N_2}=h_{\N_2}(T)$, which are 
+to-be-defined functions for the enthalpy of N and N$_2$, respectively.} is obtained by operating $\Lo$ on Equations
+(\ref{eq:manufactured02}) and (\ref{eq:manufactured03}):
+$$Q_E = Q_{E \text{time}} + Q_{E \convection} + Q_{E \work} + Q_{E \heatflux} + Q_{E \diffusion	}$$
+where:
+%%
+
+\begin{equation*}
+\begin{split}
+%Q_E &= Q_{E \,\text{time}} + Q_{E \convection} + Q_{E \diffusion} + Q_{E \heatflux} +  Q_{E \work},\\
+%
+%
+%
+ Q_{E \text{time}} &= 
+- \frac{\pi \U^{2} }{L_t}\left(\frac{1}{2} a_{ \rho \N t} \rho_{\N t} \sin\left(\frac{a_{ \rho \N t} \pi t}{L_t}\right) -
+\frac{1}{2} a_{ \rho \N_2 t} \rho_{\N_2 t} \cos\left(\frac{a_{ \rho \N_2 t} \pi t}{L_t}\right)\right) +\\ 
+%%
+&- \frac{ a_{ \rho \N t} \pi \rho_{\N t} }{L_t}\left(\E^{\elec}_{\N} + h^0_{\N}\right) \sin\left(\frac{a_{ \rho \N t} \pi
+t}{L_t}\right) + \frac{a_{ \rho \N_2 t} \pi \rho_{\N_2 t} }{L_t}\left(\E^{\elec}_{\N_2} + \E^{\vib}_{\N_2} + h^0_{\N_2}\right)
+\cos\left(\frac{a_{ \rho \N_2 t} \pi t}{L_t}\right)+\\ 
+%
+&- \frac{ \Rho \U a_{ut} \pi u_{t} }{L_t}\sin\left(\frac{a_{ut} \pi t}{L_t}\right) +\\ 
+%
+&- \frac{R a_{Tt} \pi T_{t} }{L_t M_{\N}}\left(\frac{3}{2} \Rho_{\N} + \frac{5}{4} \Rho_{\N_2}\right) \sin\left(\frac{a_{Tt} \pi
+t}{L_t}\right) +\\
+%
+&- \frac{3}{2} \frac{R \T a_{ \rho \N t} \pi \rho_{\N t} }{L_t M_{\N}}\sin\left(\frac{a_{ \rho \N t} \pi t}{L_t}\right) +
+\frac{5}{4} \frac{R \T a_{ \rho \N_2 t} \pi \rho_{\N_2 t} }{L_t M_{\N}}\cos\left(\frac{a_{ \rho \N_2 t} \pi t}{L_t}\right) +\\
+%
+&- \frac{M_{\N} a_{T_V t} \pi T_{Vt} }{L_t R \TV^{2}}\left(\Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 + 2 \Rho_{\N_2} \left(
+\E^{\elec}_{\N_2} \right)^2 \right) \cos\left(\frac{a_{T_V t} \pi t}{L_t}\right) +\\
+%
+& + \frac{R \Rho_{\N} a_{T_V t} \pi T_{Vt} }{L_t M_{\N} \TV^{2} \eelecNden}\cos\left(\frac{a_{T_V t} \pi t}{L_t}\right)
+\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV
+\right)}+\\
+%
+& + \frac{R \Rho_{\N_2} a_{T_V t} \pi T_{Vt}}{2 L_t M_{\N}\TV^{2} \eelecNdoisden }\cos\left(\frac{a_{T_V t} \pi t}{L_t}\right)
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)} +\\
+%
+& + \frac{2 M_{\N} \Rho_{\N_2} a_{T_V t} \pi T_{Vt} }{L_t R \TV^{2}} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left(
+\theta^{\vib}_{\N_2} \, / \TV \right) \cos\left(\frac{a_{T_V t} \pi t}{L_t}\right),\\
+%
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split}
+%
+%--------------------------------------------------------------------------------
+%
+ Q_{E \convection} &= 
+\frac{\pi \U^{3} }{L} \left(\frac{1}{2} a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - \frac{1}{2}
+a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right)+\\
+%
+&+ \frac{ \Rho a_{ux} \pi u_{x} }{L}\left(e + \U^{2}\right) \cos\left(\frac{a_{ux} \pi x}{L}\right) +\\
+%
+& + \frac{\U a_{ \rho \N x} \pi \rho_{\N x} }{L} \left(\E^{\elec}_{\N} + h^0_{\N}\right) \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)- \frac{\U a_{ \rho \N_2 x} \pi \rho_{\N_2 x} }{L}\left(\E^{\elec}_{\N_2} + \E^{\vib}_{\N_2} + h^0_{\N_2}\right)
+\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) +\\
+%
+&+ \frac{R \T a_{ux} \pi u_{x} }{L M_{\N}}\left(\Rho_{\N} + \frac{1}{2} \Rho_{\N_2}\right) \cos\left(\frac{a_{ux} \pi
+x}{L}\right)+\\
+%
+& - \frac{ R \U a_{Tx} \pi T_{x} }{L M_{\N}}\left(\frac{5}{2} \Rho_{\N} + \frac{7}{4} \Rho_{\N_2}\right) \sin\left(\frac{a_{Tx}
+\pi x}{L}\right)+\\
+%
+& - \frac{7}{4} \frac{R \U \T a_{ \rho \N_2 x} \pi \rho_{\N_2 x} }{L M_{\N}}\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)+\\
+%
+& + \frac{5}{2} \frac{R \U \T a_{ \rho \N x} \pi \rho_{\N x} }{L M_{\N}}\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)+\\
+%
+& + \frac{M_{\N} \U a_{T_V x} \pi T_{Vx}}{L R \TV^{2}}\left(\Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 + 2 \Rho_{\N_2} \left(
+\E^{\elec}_{\N_2} \right)^2 \right) \sin\left(\frac{a_{T_V x} \pi x}{L}\right) +\\ 
+%
+& - \frac{ R \Rho_{\N} \U a_{T_V x} \pi T_{Vx} }{L M_{\N} \TV^{2} \eelecNden}\sin\left(\frac{a_{T_V x} \pi x}{L}\right)
+\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV
+\right)}+\\
+%
+& - \frac{2 M_{\N} \Rho_{\N_2}\U a_{T_V x} \pi T_{Vx} }{L R \TV^{2}}\left( \E^{\vib}_{\N_2} \right)^2 \exp\left(
+\theta^{\vib}_{\N_2} \, / \TV \right) \sin\left(\frac{a_{T_V x} \pi x}{L}\right) +\\ 
+%
+& - \frac{R \Rho_{\N_2}\U a_{T_V x} \pi T_{Vx} }{2 L M_{\N} \eelecNdoisden \TV^{2}}\sin\left(\frac{a_{T_V x} \pi x}{L}\right) 
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)},\\
+%
+%
+%
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split}
+%
+ Q_{E \work} &= - \frac{4}{3} \DMuDx \frac{ \U a_{ux} \pi u_{x} }{L}\cos\left(\frac{a_{ux} \pi x}{L}\right) +\\
+%
+&+ \frac{4}{3} \frac{\Mu_{\mix} \U a_{ux}^{2} \pi^{2} u_{x} }{L^{2}}\sin\left(\frac{a_{ux} \pi x}{L}\right) +\\ 
+%
+&- \frac{4}{3} \frac{\Mu_{\mix} a_{ux}^{2} \pi^{2} u_{x}^{2}}{L^{2}} \cos^{2}\left(\frac{a_{ux} \pi x}{L}\right),\\
+%
+%-----------------------------------------
+&\\
+%
+ Q_{E \heatflux} &= 
+\DKappaevDx \frac{ a_{T_V x} \pi T_{Vx} \sin\left(\frac{a_{T_V x} \pi x}{L}\right)}{L} + \DKappatrDx \frac{ a_{Tx} \pi T_{x}
+\sin\left(\frac{a_{Tx} \pi x}{L}\right)}{L} +\\
+%
+&+ \frac{\kappa^{ev}_{\mix} a_{T_V x}^{2} \pi^{2} T_{Vx} }{L^{2}}\cos\left(\frac{a_{T_V x} \pi x}{L}\right) +
+\frac{\kappa^{tr}_{\mix} a_{Tx}^{2} \pi^{2} T_{x} }{L^{2}}\cos\left(\frac{a_{Tx} \pi x}{L}\right).\\
+%
+%-----------------------------------------
+&\\
+%
+ Q_{E \diffusion} &= 
+\frac{D_s \pi^{2} }{L^{2}}\left(h_{\N} a_{ \rho \N x}^{2} \rho_{\N x} \sin\left(\frac{a_{ \rho \N x} \pi x}{L}\right) + h_{\N_2}
+a_{ \rho \N_2 x}^{2} \rho_{\N_2 x} \cos\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right) +\\ 
+%
+&- \frac{D_s \pi^{2} }{L^{2} \Rho}\left(\Rho_{\N} h_{\N} + \Rho_{\N_2} h_{\N_2}\right) \left(a_{ \rho \N_2 x}^{2} \rho_{\N_2 x}
+\cos\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) + a_{ \rho \N x}^{2} \rho_{\N x} \sin\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right) +\\ 
+%
+& - \frac{D_s \pi^{2} }{L^{2} \Rho^{2}}\left(2 \Rho_{\N} h_{\N} + 2 \Rho_{\N_2} h_{\N_2}\right)\left(a_{ \rho \N_2 x} \rho_{\N_2
+x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right)^{2} +\\
+%
+& + \DCpDx \frac{ D_s \pi }{L C_p \Rho} \left(\Rho_{\N} h_{\N} + \Rho_{\N_2} h_{\N_2}\right) \left(a_{ \rho \N_2 x} \rho_{\N_2 x}
+\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right)+\\ 
+%
+&- \DKappaDx \frac{ Le \, \pi }{L C_p\Rho^{2}}\left(\Rho_{\N} h_{\N} + \Rho_{\N_2} h_{\N_2}\right) \left(a_{ \rho \N_2 x}
+\rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right) +\\
+%
+& + \DCpDx \frac{ h_{\N} D_s a_{ \rho \N x} \pi \rho_{\N x} }{L C_p}\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) +\\
+%
+& - \DCpDx \frac{ h_{\N_2} D_s a_{ \rho \N_2 x} \pi\rho_{\N_2 x} }{L C_p}\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) +\\
+%
+& - \frac{ h_{\N} D_s a_{ \rho \N x} \pi^{2} \rho_{\N x}}{L^{2} \Rho}\left(- 2 a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho
+\N x} \pi x}{L}\right) + 2 a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right)
+\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) +\\ 
+%
+& + \frac{ h_{\N_2} D_s a_{ \rho \N_2 x} \pi^{2} \rho_{\N_2 x} }{L^{2} \Rho} \left(- 2 a_{ \rho \N x} \rho_{\N x}
+\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) + 2 a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right)\right) \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)+\\ 
+%
+& + \diff{h_{\N}}{T}\frac{D_s \Rho_{\N} a_{Tx} \pi^{2} T_{x} }{L^{2} \Rho} \left(a_{ \rho \N_2 x} \rho_{\N_2 x}
+\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right) \sin\left(\frac{a_{Tx} \pi x}{L}\right)+\\ 
+%
+& + \diff{h_{\N_2}}{T}\frac{D_s \Rho_{\N_2} a_{Tx} \pi^{2} T_{x} }{L^{2} \Rho}\left(a_{ \rho \N_2 x} \rho_{\N_2 x}
+\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) - a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right)\right) \sin\left(\frac{a_{Tx} \pi x}{L}\right) +\\ 
+%
+& + \diff{h_{\N}}{T}\frac{D_s a_{ \rho \N x} a_{Tx} \pi^{2}\rho_{\N x} T_{x} }{L^{2}}\cos\left(\frac{a_{ \rho \N x} \pi
+x}{L}\right) \sin\left(\frac{a_{Tx} \pi x}{L}\right) +\\ 
+%
+&- \diff{h_{\N_2}}{T} \frac{D_s a_{ \rho \N_2 x} a_{Tx} \pi^{2} \rho_{\N_2 x} T_{x} }{L^{2}}\sin\left(\frac{a_{Tx} \pi
+x}{L}\right) \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)+\\
+%
+&- \DKappaDx \frac{ h_{\N} Le \, a_{ \rho \N x} \pi \rho_{\N x} }{L C_p \Rho}\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) +\\ 
+%
+& + \DKappaDx \frac{h_{\N_2} Le \, a_{ \rho \N_2 x} \pi \rho_{\N_2 x} }{L C_p\Rho}\sin\left(\frac{a_{ \rho \N_2 x} \pi
+x}{L}\right) .\\
+\end{split}
+\end{equation*}
+%
+%
+Again, $\Rho,\Rho_\N, \Rho_{\N_2}, \T$ and $\U$ are defined in Equation (\ref{eq:aux_01});
+$\E^{\elec}_{\N},\E^{\elec}_{\N_2},\E^{\vib}_{\N_2}\Mu_{\mix}, \kappa_{\mix},\kappa^{ev}_{\mix}, \kappa^{tr}_{\mix}, C_p$ and
+$D_s$ are defined in Equation (\ref{eq:aux_02}); and $\DMuDx, \DKappaDx,\DKappaevDx,\DKappatrDx$,$\DCpDx$ defined in Equations
+(\ref{eq:DMuDx})--(\ref{eq:DCpDx}).
+
+Note that $h_\N=h_\N(T)$ and $h_{\N_2}=h_{\N_2}(T)$ are to-be-defined functions for the enthalpy of N and N$_2$, respectively.
+Their derivatives $\diff{h_\N}{T}$ and $\diff{h_{\N_2}}{T}$ must be determined accordingly.
+
+
+
+\subsection{Vibrational Energy Conservation}
+The vibrational energy equation is written as an operator:
+\begin{equation*}
+ \label{eq:ns1d_15}
+\begin{split}
+\Lo_{e_V} &= \Lo_{e_V \text{time}} + \Lo_{e_V \convection} + \Lo_{e_V \production} + \Lo_{e_V \heatflux} + \Lo_{e_V \diffusion}
+,\\
+\Lo_{e_V \text{time}} &= \Diff{\rho e_V}{t}\\
+\Lo_{e_V \convection} &= \Diff{\rho e_V u }{x}\\
+\Lo_{e_V \production} &= -\dot{\omega}_V\\ 
+\Lo_{e_V \heatflux} &= \Diff{q_{Vx}}{x}\\
+\Lo_{e_V \diffusion}&= -\diff{ }{x}\left(\rho \sum_{s=1}^{ns} e_{Vs} \mathcal{D}_s \nabla{c_s}\right).
+\end{split}
+\end{equation*}
+
+For the N--N$_2$ mixture, $e_V$ is given by Equation (\ref{eq:rev-Tv-relationship}):
+\begin{equation*}
+\begin{split}
+e_V= \dfrac{\rho_{\N_2}}{\rho} e_{\N_2}^{\vib} + \dfrac{\rho_{\N}}{\rho} e_{\N}^{\elec} + \dfrac{\rho_{\N_2}}{\rho}
+e_{\N_2}^{\elec}.
+\end{split}
+\end{equation*}
+
+
+Analogously to the previous cases, source term $Q_{e_V}$ is obtained by operating $\Lo_{e_V}$ on Equations
+(\ref{eq:manufactured02}) and~(\ref{eq:manufactured03}):
+$$Q_{e_V} = Q_{e_V \text{time}} + Q_{e_V \convection} + Q_{e_V \production} + Q_{e_V \heatflux} + Q_{e_V \diffusion}$$
+with:
+
+%
+
+\begin{equation*}
+\begin{split}
+% Q_{e_V} &= Q_{e_V \convection} + Q_{e_V \diffusion} + Q_{e_V \heatflux} + Q_{e_V \production} + Q_{e_V \,\text{time}},\\
+%
+% 
+Q_{e_V \text{time}} &= 
+\frac{a_{ \rho \N_2 t} \pi \rho_{\N_2 t} }{L_t}\left(\E^{\elec}_{\N_2} + \E^{\vib}_{\N_2} \right) \cos\left(\frac{a_{ \rho \N_2 t}
+\pi t}{L_t}\right) +\\ 
+%
+&- \frac{\E^{\elec}_{\N} a_{ \rho \N t} \pi \rho_{\N t} }{L_t}\sin\left(\frac{a_{ \rho \N t} \pi t}{L_t}\right) +\\ 
+%
+& + \frac{M_{\N} a_{T_V t} \pi T_{Vt} }{L_t R \TV^{2}}\left(- \Rho_{\N} \left( \E^{\elec}_{\N} \right)^2 - 2 \Rho_{\N_2} \left(
+\E^{\elec}_{\N_2} \right)^2 + 2 \Rho_{\N_2} \left( \E^{\vib}_{\N_2} \right)^2 \exp\left( \theta^{\vib}_{\N_2} \, / \TV \right)
+\right) \cos\left(\frac{a_{T_V t} \pi t}{L_t}\right) +\\
+%
+& + \frac{R \Rho_{\N} a_{T_V t} \pi T_{Vt} }{L_t M_{\N} \TV^{2} \eelecNden}\cos\left(\frac{a_{T_V t} \pi t}{L_t}\right)
+\sum_{i=0}^{nel_{\N}} \dfrac{ \left( \theta^{\elec}_{\N,i} \right)^2   \, g_{\N,i} }{ \exp \left( \theta^{\elec}_{\N,i} / \TV
+\right)} +\\
+%
+& + \frac{R \Rho_{\N_2} a_{T_V t} \pi T_{Vt} }{2 L_t M_{\N}\TV^{2} \eelecNdoisden \cos\left(\frac{a_{T_V t} \pi t}{L_t}\right)}
+\sum_{i=0}^{nel_{\N_2}} \dfrac{ \left( \theta^{\elec}_{\N_2,i} \right)^2   \, g_{\N_2,i} }{ \exp \left( \theta^{\elec}_{\N_2,i} / 
+\TV \right)} ,\\
+%------------------------------------------------------------------------------------
+&\\
+%
+ Q_{e_V \convection} &= \DeVDx \Rho \U + \frac{e_V \Rho a_{ux} \pi u_{x} }{L}\cos\left(\frac{a_{ux} \pi x}{L}\right)+\\
+%
+&+ \frac{e_V \U \pi }{L}\left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x}
+\rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right) ,\\
+%
+%------------------------------------------------------------------------------------
+&\\
+%
+ Q_{e_V \production} &= - \dot{\omega}_V,\\
+%
+%------------------------------------------------------------------------------------
+&\\
+%
+ Q_{e_V \heatflux} &= \DKappaevDx \frac{ a_{T_V x} \pi T_{Vx} }{L}\sin\left(\frac{a_{T_V x} \pi x}{L}\right) +
+\frac{\kappa^{ev}_{\mix} a_{T_V x}^{2} \pi^{2} T_{Vx}}{L^{2}} \cos\left(\frac{a_{T_V x} \pi x}{L}\right),\\
+%
+%------------------------------------------------------------------------------------
+%&\\
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split}
+%
+Q_{e_V \diffusion} &= 
+- \frac{D_s \pi^{2} }{L^{2} \Rho}\left(\Rho_{\N} \, e_{V {\N}} + \Rho_{\N_2} \, e_{V {\N_2}}\right) \left(a_{ \rho \N_2 x}^{2} \rho_{\N_2 x} \cos\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) + a_{ \rho \N x}^{2} \rho_{\N x} \sin\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) +\\ 
+%
+& - \frac{D_s \pi^{2} }{L^{2} \Rho^{2}}\left(2 \Rho_{\N} \, e_{V {\N}} + 2 \Rho_{\N_2} \, e_{V {\N_2}}\right)\left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right)^{2} +\\
+%
+&+ \DeVNDx \frac{ D_s \Rho_{\N} \pi }{L \Rho} \left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right)+\\
+%
+& + \DeVNNDx \frac{ D_s \Rho_{\N_2} \pi }{L \Rho}\left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right) +\\
+%
+&- \DeVNDx \frac{ D_s a_{ \rho \N x} \pi \rho_{\N x} }{L} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)+ \DeVNNDx \frac{ D_s a_{ \rho \N_2 x}\pi \rho_{\N_2 x} }{L}\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) +\\
+%
+&+ \frac{ e_{V {\N}} \, D_s \, \rho_{\N x} \pi^{2} a_{ \rho \N x}^{2} }{L^{2}}\sin\left(\frac{a_{ \rho \N x} \pi x}{L}\right) + \frac{\, e_{V {\N_2}} \, D_s a_{ \rho \N_2 x}^{2} \pi^{2} \rho_{\N_2 x} }{L^{2}}\cos\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) +\\ 
+%
+& + \DCpDx \frac{ e_{V {\N}} \, D_s a_{ \rho \N x} \pi \rho_{\N x} }{L C_p}\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - \DCpDx \frac{e_{V {\N_2}} \, D_s a_{ \rho \N_2 x} \pi \rho_{\N_2 x} }{L C_p}\sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) +\\
+%
+&+ \frac{e_{V {\N}}\, D_s a_{ \rho \N x}  \pi^{2} \rho_{\N x} }{L^{2} \Rho} \left(- 2 a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) + 2 a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)+\\ 
+%
+&- \frac{ e_{V {\N_2}} \, D_s a_{ \rho \N_2 x} \pi^{2} \rho_{\N_2 x} }{L^{2} \Rho}\left(- 2 a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) + 2 a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right)\right) \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right) +\\ 
+%
+& - \DCpDx \frac{e_{V {\N}} \, D_s \Rho_{\N} \pi }{L C_p \Rho}\left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right) +\\ 
+%
+&- \DCpDx \frac{e_{V {\N_2}} \, D_s \Rho_{\N_2} \pi }{L C_p \Rho}\left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right) +\\ 
+%
+&+ \DKappaDx \frac{ Le \, \pi }{L C_p\Rho^{2}} \left(\Rho_{\N} \, e_{V {\N}} + \Rho_{\N_2} \, e_{V {\N_2}}\right) \left(a_{ \rho \N x} \rho_{\N x} \cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) - a_{ \rho \N_2 x} \rho_{\N_2 x} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right)\right)+\\
+%
+&- \DKappaDx \frac{ Le \, a_{ \rho \N x} \pi \, e_{V {\N}} \rho_{\N x} }{L C_p\Rho}\cos\left(\frac{a_{ \rho \N x} \pi x}{L}\right) + \DKappaDx \frac{ Le \, a_{ \rho \N_2 x} \pi \, e_{V {\N_2}} \rho_{\N_2 x} }{L C_p \Rho} \sin\left(\frac{a_{ \rho \N_2 x} \pi x}{L}\right),\\
+%
+\end{split}
+\end{equation*}
+
+Once more, $\Rho,\Rho_\N, \Rho_{\N_2}, \T, \TV$ and $\U$ are defined in Equation (\ref{eq:aux_01}); $\kappa^{ev}_{\mix}, C_p$ and $D_s$ are defined in Equation (\ref{eq:aux_02}); $e_V, e_{V\N},e_{V\N_2}, \DeVNDx$ and $\DeVNNDx$ are given in Equation (\ref{eq:DeVDx}), and $\DMuDx, \DKappaDx,\DKappaevDx,\DKappatrDx$ and $\DCpDx$ are defined in Equations (\ref{eq:DMuDx})--(\ref{eq:DCpDx}).
+
+%
+Source term $\dot{\omega}_V$ is given according to Section \ref{sec:omega_v} as:
+$$\dot{\omega}_V = \dot{\omega}_\N \E_{\N}^{\elec} + \dot{\omega}_{\N_2} (\E_{\N_2}^{\vib}+\E_{\N_2}^{\elec})+\Rho_{\N_2} (\E_{\N_2,eq}^{\vib}-\E_{\N_2}^{\vib}) \left[\dfrac{2 \Rho_{\N}}{(2 \Rho_{\N}+\Rho_{\N_2}) \tau^{\vib}_{\N_2\N}}+\dfrac{\Rho_{\N_2}}{(2 \Rho_{\N}+\Rho_{\N_2}) \tau^{\vib}_{\N_2\N_2}}\right],$$
+with
+\begin{equation}
+\begin{split}
+\E_{\N_2, eq}^{\vib} &=\dfrac{ R}{2 M_\N } \sum_{i=0}^{nvib_{\N_2}} \dfrac{  \theta^{\vib}_{\N_2,i} }{\left[ \exp \left( \theta^{\vib}_{\N_2,i} / \T \right)-1 \right]} \,, \vspace{5pt}\\
+\tau^{\vib}_{\N_2\N_2} &= \dfrac{ \exp\left(\frac{29}{25000} M_\N^{1/2} (\theta^{\vib}_{\N_2})^{4/3}  \left[\T^{-1/3}-\frac{3}{2000} M_\N^{1/4}\right] -18.42\right)}{P}, \vspace{5pt}\\
+\tau^{\vib}_{\N_2\N} &=\dfrac{ \exp\left(\frac{29}{75000} (6 M_\N)^{1/2} (\theta^{\vib}_{\N_2})^{4/3} \left[\T^{-1/3} -\frac{1}{200} (54M_\N)^{1/4}\right]-18.42\right)}{P}.
+\end{split}
+\end{equation}
+and $P$ is given by the Dalton's law (\ref{eq:p_eq_state}):
+$$P = \dfrac{\Rho_{\N}  \T R}{M_\N}+ \dfrac{\Rho_{\N_2}  \T R}{2 M_\N}.$$
+
+% In the computation of tau_vib, only the first level of theta_v is taken into account. Please, refer to physics/comp_ns/sources.C -> 
+% void compute_vibrational_energy_source_terms_default(DenseVector<Real> &S)
+
+
+
+\section{Hierarchic MMS}
+The complexity, and consequently length, of the source terms increase with both dimension and physics handled by the governing equations. 
+Applying commands in order to simplify extensive expressions is challenging even with a high performance workstation; thus, a suitable alternative to this issue is to simplify each equation by dividing it into a combination of sub-operators handling different physical phenomena. Then, each one of the operators may be applied to the manufactured solutions individually, and the resulting sub-source terms are combined back to represent the source term for the original equation.
+
+
+
+For instance, instead of writing the 1D transient total energy equation using one single operator~$\Lo_E$:
+\begin{equation}
+ \label{eq:sub}
+\Lo_E = \Diff{\rho E}{t} +\Diff{\rho uE}{x}+ \Diff{pu}{x}+ \Diff{q_x}{x}-\diff{ }{x}\left(\rho \sum_{s=1}^{ns} h_s \mathcal{D}_s \nabla c_s\right)-\Diff{u\tau_{xx}}{x} %\Lo_{E \text{time}} + \Lo_{E \convection} + \Lo_{E \work} + \Lo_{E \heatflux} + \Lo_{E \diffusion}
+%\Diff{\rho e_t}{t}& + \nabla \cdot (\rho \mathbf{u} H)+\nabla\cdot \mathbf{q} - \nabla \cdot (\bv{\tau u})
+\end{equation}
+to then be used in the MMS, let equation (\ref{eq:sub}) be written in six distinct operators:
+\begin{equation}
+ \begin{split}\label{sub01}
+\Lo_{E \text{time}}&= \Diff{\rho E}{t} ,\\
+\Lo_{E \convection} &= \Diff{\rho u H}{x} = \Diff{\rho uE}{x}+\Diff{pu}{x},\\
+\Lo_{E \work} &= -\Diff{u\tau_{xx}}{x},\\
+\Lo_{E \heatflux} &=\Diff{q_x}{x},\\ 
+ \Lo_{E \diffusion}&= -\diff{ }{x}\left(\rho \sum_{s=1}^{ns} h_s \mathcal{D}_s \nabla c_s\right).
+   \end{split}
+\end{equation}
+
+After the application of each sub-operator defined in (\ref{sub01}), the corresponding sub-source terms are also simplified, factorized and sorted. Then, the final factorized version is checked against the original one, in order to assure that no human error has been introduced.
+
+An advantage of this strategy is the possibility of inclusion and/or removal of other physical effects without the need of re-doing previous manipulations. For instance, in order to simplify this model to Euler equations, one may only need to let $\Lo_{E \work} =\Lo_{E \heatflux}= \Lo_{E \diffusion}=0$. This strategy, named ``Hierarchic MMS'', results in less time spent in the manipulations, decreases the computational effort and occasional software crashes, and also increases the flexibility in the code verification procedure.
+
+
+
+
+\subsection{Boundary Conditions and C Codes}
+
+Source terms $Q_{\rho_\text{N} }$, $Q_{\rho \text{N}_{2}}$, $Q_u$, $Q_E$ and $Q_{e_V}$ have been generated by replacing the analytical Expressions (\ref{eq:manufactured02}) and~(\ref{eq:manufactured03}) into respective Equations (\ref{eq:ns:rhoN})--(\ref{eq:ns:eV}), followed by the usage of Maple commands for collecting, sorting and factorizing the terms. Files containing $C$ codes for the source terms have also been generated. They are: 
+\texttt{NS\_1d\_transient\_thermochemical\_noneq\_rho\_N\_code.C, \\
+NS\_1d\_transient\_thermochemical\_noneq\_rho\_N2\_code.C,\\ 
+NS\_1d\_transient\_thermochemical\_noneq\_u\_code.C, \\
+NS\_1d\_transient\_thermochemical\_noneq\_E\_code.C} and \\
+\texttt{NS\_1d\_transient\_thermochemical\_noneq\_eV\_code.C}.
+
+%\newpage
+An example of the automatically generated C file from the source term for the mass conservation equation of N$_2$ is:
+\begin{scriptsize}
+ \begin{verbatim}
+// Source term for the continuity equation for N2 - second species. 1D Navier-Stokes in thermochemical non-equilibrium. 
+Equilibrium constant K is a to-be-defined function and must be calculated previously, as indicated bellow.
+double SourceQ_rho_N2 ( double x, double t, double q, double R, double M_N, double Cf1_N, double etaf1_N, double Ea_N,
+  double Cf1_N2, double etaf1_N2, double Ea_N2, int energy_level_N, int energy_level_N2, double *theta_e_N, double *g_N,
+  double *theta_e_N2, double *g_N2, double theta_v_N2, double A_N, double B_N, double C_N, double A_N2, double B_N2, double C_N2)
+{
+  double Q_rho_N2; double RHO; double RHO_N; double RHO_N2; double U; double T; double TV;
+  double kf1_N; double kf1_N2; double K; double R1; double w_dot_N2; double T_bar;
+  double Mu_N; double Mu_N2; double Phi_N; double Phi_N2; double Mtot; double Cp; double Cv; double Kappa_mix; double Ds;
+  double E_elec_N; double e_elec_N_num; double e_elec_N_den; double E_elec_N2; double e_elec_N2_num; double e_elec_N2_den;
+  double E_vib_N2;
+  int i;
+  double DKappa_mix_Dx; double DKappa_ev_Dx; double DKappa_tr_Dx; double DCp_Dx;
+  double Sum_eN_thetae2_g_div_e; double Sum_eN_thetae3_g_div_e; double Sum_eN2_thetae2_g_div_e; double Sum_eN2_thetae3_g_div_e;
+  double Q_rho_N2_time; double Q_rho_N2_convection; double Q_rho_N2_diffusion; double Q_rho_N2_production;
+
+  RHO_N = rho_N_0 + rho_N_x * sin(a_rho_N_x * PI * x / L) + rho_N_t * cos(a_rho_N_t * PI * t / Lt);
+  RHO_N2 = rho_N2_0 + rho_N2_x * cos(a_rho_N2_x * PI * x / L) + rho_N2_t * sin(a_rho_N2_t * PI * t / Lt);
+  RHO = RHO_N + RHO_N2;
+  U = u_0 + u_x * sin(a_ux * PI * x / L) + u_t * cos(a_ut * PI * t / Lt);
+  T = T_0 + T_x * cos(a_Tx * PI * x / L) + T_t * cos(a_Tt * PI * t / Lt);
+  TV = Tv_0 + Tv_x * cos(a_Tvx * PI * x / L) + Tv_t * sin(a_Tvt * PI * t / Lt);
+  T_bar = pow(T, q) * pow(TV, 0.1e1 - q);
+  K = calculate_equilibrium_constant_K(T);
+  kf1_N2 = Cf1_N2 * pow(T_bar, etaf1_N2) * exp(-Ea_N2 / R / T_bar);
+  kf1_N = Cf1_N * pow(T_bar, etaf1_N) * exp(-Ea_N / R / T_bar);
+  R1 = kf1_N * pow(RHO_N, 0.3e1) / K * pow(M_N, -0.3e1) - kf1_N * RHO_N2 * RHO_N * pow(M_N, -0.2e1) / 0.2e1 
+	+ kf1_N2 * RHO_N * RHO_N * RHO_N2 / K * pow(M_N, -0.3e1) / 0.2e1 - kf1_N2 * RHO_N2 * RHO_N2 * pow(M_N, -0.2e1) / 0.4e1;
+  w_dot_N2 = 0.2e1 * M_N * R1;
+
+    // "Electronic and Aux summations -----------------------------------------------";
+  e_elec_N_num = 0.0e0;
+  e_elec_N2_num = 0.0e0;
+  e_elec_N_den = 0.0e0;
+  e_elec_N2_den = 0.0e0;
+  Sum_eN_thetae2_g_div_e = 0.0e0;
+  Sum_eN_thetae3_g_div_e = 0.0e0;
+  Sum_eN2_thetae2_g_div_e = 0.0e0;
+  Sum_eN2_thetae3_g_div_e = 0.0e0;
+  for (i = 1; i <= energy_level_N; i++)
+  {
+    e_elec_N_den = e_elec_N_den + g_N[i - 1] * exp(-theta_e_N[i - 1] / TV);
+    e_elec_N_num = e_elec_N_num + theta_e_N[i - 1] * g_N[i - 1] * exp(-theta_e_N[i - 1] / TV);
+    Sum_eN_thetae2_g_div_e = Sum_eN_thetae2_g_div_e + pow(theta_e_N[i - 1], 0.2e1) * g_N[i - 1] / exp(theta_e_N[i - 1] / TV);
+    Sum_eN_thetae3_g_div_e = Sum_eN_thetae3_g_div_e + pow(theta_e_N[i - 1], 0.3e1) * g_N[i - 1] / exp(theta_e_N[i - 1] / TV);
+  }
+  for (i = 1; i <= energy_level_N2; i++)
+  {
+    e_elec_N2_den = e_elec_N2_den + g_N2[i - 1] * exp(-theta_e_N2[i - 1] / TV);
+    e_elec_N2_num = e_elec_N2_num + theta_e_N2[i - 1] * g_N2[i - 1] * exp(-theta_e_N2[i - 1] / TV);
+    Sum_eN2_thetae2_g_div_e = Sum_eN2_thetae2_g_div_e + pow(theta_e_N2[i - 1], 0.2e1) * g_N2[i - 1] / exp(theta_e_N2[i - 1] / TV);
+    Sum_eN2_thetae3_g_div_e = Sum_eN2_thetae3_g_div_e + pow(theta_e_N2[i - 1], 0.3e1) * g_N2[i - 1] / exp(theta_e_N2[i - 1] / TV);
+  }
+  E_elec_N = e_elec_N_num * R / e_elec_N_den / M_N;
+  E_elec_N2 = e_elec_N2_num * R / e_elec_N2_den / M_N / 0.2e1;
+  E_vib_N2 = R * theta_v_N2 / M_N / (exp(theta_v_N2 / TV) - 0.1e1) / 0.2e1;
+
+    // "Aux relationships-----------------------------------------------";
+  Mu_N = exp((A_N * log(T) + B_N) * log(T) + C_N) / 0.10e2;
+  Mu_N2 = exp((A_N2 * log(T) + B_N2) * log(T) + C_N2) / 0.10e2;
+  Mtot = 0.1e1 / (RHO_N / RHO / M_N + RHO_N2 / RHO / M_N / 0.2e1);
+  Phi_N = RHO_N * Mtot / RHO / M_N 
++ RHO_N2 * Mtot * pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1), 0.2e1) * sqrt(0.3e1) / RHO / M_N / 0.12e2;
+  Phi_N2 = RHO_N * Mtot * pow(0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * sqrt(0.6e1) / RHO / M_N / 0.12e2 
++ RHO_N2 * Mtot / RHO / M_N / 0.2e1;
+  Cv = 0.3e1 / 0.2e1 * RHO_N * R / RHO / M_N + 0.5e1 / 0.4e1 * RHO_N2 * R / RHO / M_N 
++ RHO_N * R * Sum_eN_thetae2_g_div_e / RHO * pow(TV, -0.2e1) / M_N / e_elec_N_den 
+- RHO_N * E_elec_N * E_elec_N * M_N / RHO / R * pow(TV, -0.2e1) 
++ 0.2e1 * RHO_N2 * exp(theta_v_N2 / TV) * M_N * E_vib_N2 * E_vib_N2 / RHO / R * pow(TV, -0.2e1) 
++ RHO_N2 * R * Sum_eN2_thetae2_g_div_e / RHO * pow(TV, -0.2e1) / M_N / e_elec_N2_den / 0.2e1 
+- 0.2e1 * RHO_N2 * E_elec_N2 * E_elec_N2 * M_N / RHO / R * pow(TV, -0.2e1);
+  Cp = Cv + R;
+  Kappa_mix = 0.15e2 / 0.4e1 * Mu_N * R * RHO_N * Mtot * pow(M_N, -0.2e1) / RHO / Phi_N 
++ 0.19e2 / 0.16e2 * Mu_N2 * R * RHO_N2 * Mtot * pow(M_N, -0.2e1) / RHO / Phi_N2 
++ Mu_N * R * RHO_N * Mtot * Sum_eN_thetae2_g_div_e * pow(M_N, -0.2e1) / RHO / Phi_N * pow(TV, -0.2e1) / e_elec_N_den 
+- Mu_N * RHO_N * Mtot * E_elec_N * E_elec_N / RHO / Phi_N / R * pow(TV, -0.2e1) 
++ Mu_N2 * R * RHO_N2 * Mtot * Sum_eN2_thetae2_g_div_e * pow(M_N, -0.2e1) / RHO / Phi_N2 * pow(TV, -0.2e1) / e_elec_N2_den / 0.4e1 
+- Mu_N2 * RHO_N2 * Mtot * E_elec_N2 * E_elec_N2 / RHO / Phi_N2 / R * pow(TV, -0.2e1) 
++ Mu_N2 * exp(theta_v_N2 / TV) * RHO_N2 * E_vib_N2 * E_vib_N2 * Mtot / RHO / Phi_N2 / R * pow(TV, -0.2e1);
+  Ds = Le * Kappa_mix / RHO / Cp;
+
+    // "Aux derivatives-----------------------------------------------";
+  DKappa_tr_Dx = -0.15e2 / 0.4e1 * (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 * log(T) + B_N - B_N2) * a_Tx * PI * T_x * R * Mu_N *
+Mtot * RHO_N * sin(a_Tx * PI * x / L) / L * pow(M_N, -0.2e1) / Phi_N / RHO / T - 0.19e2 / 0.192e3 * sqrt(0.6e1) * pow(0.1e1 +
+sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * a_rho_N_x * PI * rho_N_x * R * Mu_N2 * Mtot * Mtot * RHO_N2 *
+cos(a_rho_N_x * PI * x / L) / L * pow(M_N, -0.3e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) + 0.5e1 / 0.16e2 * sqrt(0.3e1) *
+pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1), 0.2e1) * a_rho_N2_x * PI * rho_N2_x * R * Mu_N * Mtot * Mtot * RHO_N *
+sin(a_rho_N2_x * PI * x / L) / L * pow(M_N, -0.3e1) * pow(Phi_N, -0.2e1) * pow(RHO, -0.2e1) + 0.5e1 / 0.16e2 * sqrt(0.3e1) *
+pow(0.2e1, 0.1e1 / 0.4e1) * (0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1)) * (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 *
+log(T) + B_N - B_N2) * a_Tx * PI * T_x * R * Mu_N * Mu_N * Mtot * Mtot * RHO_N * RHO_N2 * sin(a_Tx * PI * x / L) / sqrt(Mu_N /
+Mu_N2) / L * pow(M_N, -0.3e1) / Mu_N2 * pow(Phi_N, -0.2e1) * pow(RHO, -0.2e1) / T - 0.19e2 / 0.384e3 * sqrt(0.6e1) * pow(0.2e1,
+0.3e1 / 0.4e1) * (0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1) * (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 * log(T)
++ B_N - B_N2) * a_Tx * PI * T_x * R * Mu_N2 * Mu_N2 * Mtot * Mtot * RHO_N * RHO_N2 * sin(a_Tx * PI * x / L) / sqrt(Mu_N2 / Mu_N) /
+L * pow(M_N, -0.3e1) / Mu_N * pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) / T + 0.15e2 / 0.4e1 * (M_N * Phi_N * RHO - RHO_N * Mtot) *
+a_rho_N_x * PI * rho_N_x * R * Mu_N * Mtot * cos(a_rho_N_x * PI * x / L) / L * pow(M_N, -0.3e1) * pow(Phi_N, -0.2e1) * pow(RHO,
+-0.2e1) - 0.19e2 / 0.32e2 * (0.2e1 * M_N * Phi_N2 * RHO - RHO_N2 * Mtot) * a_rho_N2_x * PI * rho_N2_x * R * Mu_N2 * Mtot *
+sin(a_rho_N2_x * PI * x / L) / L * pow(M_N, -0.3e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) - (0.60e2 * Mu_N * Phi_N2 * RHO_N +
+0.19e2 * Mu_N2 * Phi_N * RHO_N2) * (0.2e1 * A_N2 * log(T) + B_N2) * a_Tx * PI * T_x * R * Mtot * sin(a_Tx * PI * x / L) / L *
+pow(M_N, -0.2e1) / Phi_N / Phi_N2 / RHO / T / 0.16e2 + 0.5e1 / 0.32e2 * sqrt(0.3e1) * (0.2e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x
+* PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 /
+0.4e1), 0.2e1) * PI * R * Mu_N * pow(Mtot, 0.3e1) * RHO_N * RHO_N2 / L * pow(M_N, -0.4e1) * pow(Phi_N, -0.2e1) * pow(RHO, -0.3e1)
++ 0.19e2 / 0.384e3 * sqrt(0.6e1) * (0.2e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x *
+sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * PI * R * Mu_N2 *
+pow(Mtot, 0.3e1) * RHO_N * RHO_N2 / L * pow(M_N, -0.4e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.3e1) + 0.5e1 / 0.32e2 * sqrt(0.3e1) *
+(0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot - RHO_N2 * Mtot) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x *
+rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1), 0.2e1) * PI * R * Mu_N *
+Mtot * Mtot * RHO_N * RHO_N2 / L * pow(M_N, -0.4e1) * pow(Phi_N, -0.2e1) * pow(RHO, -0.4e1) + 0.19e2 / 0.384e3 * sqrt(0.6e1) *
+(0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot - RHO_N2 * Mtot) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x *
+rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * PI * R *
+Mu_N2 * Mtot * Mtot * RHO_N * RHO_N2 / L * pow(M_N, -0.4e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.4e1) - 0.15e2 / 0.8e1 * (0.2e1 *
+RHO * M_N - 0.2e1 * RHO_N * Mtot - RHO_N2 * Mtot) * (M_N * Phi_N * RHO - RHO_N * Mtot) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI
+* x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * R * Mu_N * Mtot * RHO_N / L * pow(M_N, -0.4e1) *
+pow(Phi_N, -0.2e1) * pow(RHO, -0.4e1) - 0.19e2 / 0.64e2 * (0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot - RHO_N2 * Mtot) * (0.2e1 *
+M_N * Phi_N2 * RHO - RHO_N2 * Mtot) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x
+* PI * x / L)) * PI * R * Mu_N2 * Mtot * RHO_N2 / L * pow(M_N, -0.4e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.4e1) - (0.120e3 * M_N *
+Mu_N * Phi_N * Phi_N2 * Phi_N2 * RHO_N * RHO + 0.38e2 * M_N * Mu_N2 * Phi_N * Phi_N * Phi_N2 * RHO_N2 * RHO - 0.120e3 * Mu_N *
+Phi_N2 * Phi_N2 * Mtot * RHO_N * RHO_N - 0.19e2 * Mu_N2 * Phi_N * Phi_N * Mtot * RHO_N2 * RHO_N2) * (0.2e1 * a_rho_N_x * rho_N_x *
+cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * R * Mtot * Mtot / L * pow(M_N, -0.4e1)
+* pow(Phi_N, -0.2e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.3e1) / 0.64e2;
+
+  DKappa_ev_Dx = -0.4e1 * pow(exp(theta_v_N2 / TV), 0.2e1) * a_Tvx * PI * Tv_x * M_N * Mu_N2 * Mtot * pow(E_vib_N2, 0.3e1) *
+RHO_N2 * sin(a_Tvx * PI * x / L) / L * pow(R, -0.2e1) / Phi_N2 / RHO * pow(TV, -0.4e1) + 0.2e1 * exp(theta_v_N2 / TV) * a_Tvx * PI
+* Tv_x * Mu_N2 * Mtot * E_vib_N2 * E_vib_N2 * RHO_N2 * sin(a_Tvx * PI * x / L) / L / R / Phi_N2 / RHO * pow(TV, -0.3e1) +
+theta_v_N2 * exp(theta_v_N2 / TV) * a_Tvx * PI * Tv_x * Mu_N2 * Mtot * E_vib_N2 * E_vib_N2 * RHO_N2 * sin(a_Tvx * PI * x / L) / L
+/ R / Phi_N2 / RHO * pow(TV, -0.4e1) - (M_N * Phi_N * RHO - RHO_N * Mtot) * a_rho_N_x * PI * rho_N_x * Mu_N * Mtot * E_elec_N *
+E_elec_N * cos(a_rho_N_x * PI * x / L) / L / M_N / R * pow(Phi_N, -0.2e1) * pow(RHO, -0.2e1) * pow(TV, -0.2e1) + (0.2e1 * M_N *
+Phi_N2 * RHO - RHO_N2 * Mtot) * a_rho_N2_x * PI * rho_N2_x * Mu_N2 * Mtot * E_elec_N2 * E_elec_N2 * sin(a_rho_N2_x * PI * x / L) /
+L / M_N / R * pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) * pow(TV, -0.2e1) / 0.2e1 - (0.2e1 * M_N * Phi_N2 * RHO - RHO_N2 * Mtot) *
+exp(theta_v_N2 / TV) * a_rho_N2_x * PI * rho_N2_x * Mu_N2 * Mtot * E_vib_N2 * E_vib_N2 * sin(a_rho_N2_x * PI * x / L) / L / M_N /
+R * pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) * pow(TV, -0.2e1) / 0.2e1 - (0.2e1 * Mu_N * Phi_N2 * E_elec_N * E_elec_N * RHO_N +
+0.2e1 * Mu_N2 * Phi_N * E_elec_N2 * E_elec_N2 * RHO_N2) * a_Tvx * PI * Tv_x * Mtot * sin(a_Tvx * PI * x / L) / L / R / Phi_N /
+Phi_N2 / RHO * pow(TV, -0.3e1) - (0.2e1 * Mu_N * Phi_N2 * pow(E_elec_N, 0.3e1) * RHO_N + 0.4e1 * Mu_N2 * Phi_N * pow(E_elec_N2,
+0.3e1) * RHO_N2) * a_Tvx * PI * Tv_x * M_N * Mtot * sin(a_Tvx * PI * x / L) / L * pow(R, -0.2e1) / Phi_N / Phi_N2 / RHO * pow(TV,
+-0.4e1) - (0.2e1 * M_N * Phi_N2 * RHO - RHO_N2 * Mtot) * (0.2e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x *
+rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * exp(theta_v_N2 / TV) * PI * Mu_N2 * Mtot * Mtot * E_vib_N2 * E_vib_N2 * RHO_N2 / L *
+pow(M_N, -0.2e1) / R * pow(Phi_N2, -0.2e1) * pow(RHO, -0.3e1) * pow(TV, -0.2e1) / 0.4e1 - (0.2e1 * RHO * M_N - 0.2e1 * RHO_N *
+Mtot - RHO_N2 * Mtot) * (0.2e1 * M_N * Phi_N2 * RHO - RHO_N2 * Mtot) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) -
+a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * exp(theta_v_N2 / TV) * PI * Mu_N2 * Mtot * E_vib_N2 * E_vib_N2 * RHO_N2 /
+L * pow(M_N, -0.2e1) / R * pow(Phi_N2, -0.2e1) * pow(RHO, -0.4e1) * pow(TV, -0.2e1) / 0.4e1 + (0.2e1 * RHO * M_N - 0.2e1 * RHO_N *
+Mtot - RHO_N2 * Mtot) * (0.2e1 * M_N * Mu_N * Phi_N * Phi_N2 * Phi_N2 * E_elec_N * E_elec_N * RHO_N * RHO + 0.2e1 * M_N * Mu_N2 *
+Phi_N * Phi_N * Phi_N2 * E_elec_N2 * E_elec_N2 * RHO_N2 * RHO - 0.2e1 * Mu_N * Phi_N2 * Phi_N2 * Mtot * E_elec_N * E_elec_N *
+RHO_N * RHO_N - Mu_N2 * Phi_N * Phi_N * Mtot * E_elec_N2 * E_elec_N2 * RHO_N2 * RHO_N2) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x *
+PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * Mtot / L * pow(M_N, -0.2e1) / R * pow(Phi_N, -0.2e1) *
+pow(Phi_N2, -0.2e1) * pow(RHO, -0.4e1) * pow(TV, -0.2e1) / 0.4e1 - (0.2e1 * A_N2 * log(T) + B_N2) * a_Tx * PI * T_x * R * Mu_N *
+Mtot * RHO_N * sin(a_Tx * PI * x / L) * Sum_eN_thetae2_g_div_e / L * pow(M_N, -0.2e1) / Phi_N / RHO / T * pow(TV, -0.2e1) /
+e_elec_N_den - (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 * log(T) + B_N - B_N2) * a_Tx * PI * T_x * R * Mu_N * Mtot * RHO_N * sin(a_Tx
+* PI * x / L) * Sum_eN_thetae2_g_div_e / L * pow(M_N, -0.2e1) / Phi_N / RHO / T * pow(TV, -0.2e1) / e_elec_N_den + sqrt(0.3e1) *
+pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1), 0.2e1) * a_rho_N2_x * PI * rho_N2_x * R * Mu_N * Mtot * Mtot * RHO_N *
+sin(a_rho_N2_x * PI * x / L) * Sum_eN_thetae2_g_div_e / L * pow(M_N, -0.3e1) * pow(Phi_N, -0.2e1) * pow(RHO, -0.2e1) * pow(TV,
+-0.2e1) / e_elec_N_den / 0.12e2 + sqrt(0.3e1) * pow(0.2e1, 0.1e1 / 0.4e1) * (0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 /
+0.4e1)) * (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 * log(T) + B_N - B_N2) * a_Tx * PI * T_x * R * Mu_N * Mu_N * Mtot * Mtot * RHO_N *
+RHO_N2 * sin(a_Tx * PI * x / L) * Sum_eN_thetae2_g_div_e / sqrt(Mu_N / Mu_N2) / L * pow(M_N, -0.3e1) / Mu_N2 * pow(Phi_N, -0.2e1)
+* pow(RHO, -0.2e1) / T * pow(TV, -0.2e1) / e_elec_N_den / 0.12e2 + (0.3e1 * M_N * E_elec_N + 0.2e1 * R * TV) * a_Tvx * PI * Tv_x *
+Mu_N * Mtot * RHO_N * sin(a_Tvx * PI * x / L) * Sum_eN_thetae2_g_div_e / L * pow(M_N, -0.2e1) / Phi_N / RHO * pow(TV, -0.4e1) /
+e_elec_N_den + (M_N * Phi_N * RHO - RHO_N * Mtot) * a_rho_N_x * PI * rho_N_x * R * Mu_N * Mtot * cos(a_rho_N_x * PI * x / L) *
+Sum_eN_thetae2_g_div_e / L * pow(M_N, -0.3e1) * pow(Phi_N, -0.2e1) * pow(RHO, -0.2e1) * pow(TV, -0.2e1) / e_elec_N_den -
+Sum_eN_thetae3_g_div_e * a_Tvx * PI * Tv_x * R * Mu_N * Mtot * RHO_N * sin(a_Tvx * PI * x / L) / L * pow(M_N, -0.2e1) / Phi_N /
+RHO * pow(TV, -0.4e1) / e_elec_N_den - Sum_eN2_thetae3_g_div_e * a_Tvx * PI * Tv_x * R * Mu_N2 * Mtot * RHO_N2 * sin(a_Tvx * PI *
+x / L) / L * pow(M_N, -0.2e1) / Phi_N2 / RHO * pow(TV, -0.4e1) / e_elec_N2_den / 0.4e1 + (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 *
+log(T) + B_N - B_N2) * a_Tx * PI * T_x * Mu_N * Mtot * E_elec_N * E_elec_N * RHO_N * sin(a_Tx * PI * x / L) / L / R / Phi_N / RHO
+/ T * pow(TV, -0.2e1) - sqrt(0.3e1) * pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1), 0.2e1) * a_rho_N2_x * PI *
+rho_N2_x * Mu_N * Mtot * Mtot * E_elec_N * E_elec_N * RHO_N * sin(a_rho_N2_x * PI * x / L) / L / M_N / R * pow(Phi_N, -0.2e1) *
+pow(RHO, -0.2e1) * pow(TV, -0.2e1) / 0.12e2 - sqrt(0.3e1) * pow(0.2e1, 0.1e1 / 0.4e1) * (0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1,
+0.1e1 / 0.4e1)) * (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 * log(T) + B_N - B_N2) * a_Tx * PI * T_x * Mu_N * Mu_N * Mtot * Mtot *
+E_elec_N * E_elec_N * RHO_N * RHO_N2 * sin(a_Tx * PI * x / L) / sqrt(Mu_N / Mu_N2) / L / M_N / R / Mu_N2 * pow(Phi_N, -0.2e1) *
+pow(RHO, -0.2e1) / T * pow(TV, -0.2e1) / 0.12e2 - sqrt(0.6e1) * (-E_elec_N2 * E_elec_N2 + exp(theta_v_N2 / TV) * E_vib_N2 *
+E_vib_N2) * pow(0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * a_rho_N_x * PI * rho_N_x * Mu_N2 * Mtot *
+Mtot * RHO_N2 * cos(a_rho_N_x * PI * x / L) / L / M_N / R * pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) * pow(TV, -0.2e1) / 0.12e2 -
+sqrt(0.6e1) * pow(0.2e1, 0.3e1 / 0.4e1) * (-E_elec_N2 * E_elec_N2 + exp(theta_v_N2 / TV) * E_vib_N2 * E_vib_N2) * (0.1e1 +
+sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1) * (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 * log(T) + B_N - B_N2) * a_Tx * PI
+* T_x * Mu_N2 * Mu_N2 * Mtot * Mtot * RHO_N * RHO_N2 * sin(a_Tx * PI * x / L) / sqrt(Mu_N2 / Mu_N) / L / M_N / R / Mu_N *
+pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) / T * pow(TV, -0.2e1) / 0.24e2 + (Mu_N * Phi_N2 * E_elec_N * E_elec_N * RHO_N + Mu_N2 *
+Phi_N * E_elec_N2 * E_elec_N2 * RHO_N2 - Mu_N2 * exp(theta_v_N2 / TV) * Phi_N * E_vib_N2 * E_vib_N2 * RHO_N2) * (0.2e1 * A_N2 *
+log(T) + B_N2) * a_Tx * PI * T_x * Mtot * sin(a_Tx * PI * x / L) / L / R / Phi_N / Phi_N2 / RHO / T * pow(TV, -0.2e1) -
+sqrt(0.3e1) * (0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot - RHO_N2 * Mtot) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) -
+a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1), 0.2e1) * PI *
+Mu_N * Mtot * Mtot * E_elec_N * E_elec_N * RHO_N * RHO_N2 / L * pow(M_N, -0.2e1) / R * pow(Phi_N, -0.2e1) * pow(RHO, -0.4e1) *
+pow(TV, -0.2e1) / 0.24e2 + sqrt(0.6e1) * (-E_elec_N2 * E_elec_N2 + exp(theta_v_N2 / TV) * E_vib_N2 * E_vib_N2) * (0.2e1 *
+a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N2
+/ Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * PI * Mu_N2 * pow(Mtot, 0.3e1) * RHO_N * RHO_N2 / L * pow(M_N, -0.2e1) / R *
+pow(Phi_N2, -0.2e1) * pow(RHO, -0.3e1) * pow(TV, -0.2e1) / 0.24e2 + sqrt(0.6e1) * (0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot -
+RHO_N2 * Mtot) * (-E_elec_N2 * E_elec_N2 + exp(theta_v_N2 / TV) * E_vib_N2 * E_vib_N2) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI
+* x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) /
+0.2e1, 0.2e1) * PI * Mu_N2 * Mtot * Mtot * RHO_N * RHO_N2 / L * pow(M_N, -0.2e1) / R * pow(Phi_N2, -0.2e1) * pow(RHO, -0.4e1) *
+pow(TV, -0.2e1) / 0.24e2 - sqrt(0.3e1) * (-0.4e1 * sqrt(0.3e1) * M_N * Mu_N * Phi_N * Phi_N2 * Phi_N2 * E_elec_N * E_elec_N *
+RHO_N * RHO - 0.4e1 * sqrt(0.3e1) * M_N * Mu_N2 * Phi_N * Phi_N * Phi_N2 * E_elec_N2 * E_elec_N2 * RHO_N2 * RHO + 0.4e1 *
+sqrt(0.3e1) * Mu_N * Phi_N2 * Phi_N2 * Mtot * E_elec_N * E_elec_N * RHO_N * RHO_N + pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1,
+0.1e1 / 0.4e1), 0.2e1) * Mu_N * Phi_N2 * Phi_N2 * Mtot * E_elec_N * E_elec_N * RHO_N * RHO_N2 + 0.2e1 * sqrt(0.3e1) * Mu_N2 *
+Phi_N * Phi_N * Mtot * E_elec_N2 * E_elec_N2 * RHO_N2 * RHO_N2) * (0.2e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) -
+a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * Mtot * Mtot / L * pow(M_N, -0.2e1) / R * pow(Phi_N, -0.2e1) *
+pow(Phi_N2, -0.2e1) * pow(RHO, -0.3e1) * pow(TV, -0.2e1) / 0.24e2 + sqrt(0.3e1) * (0.2e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x *
+PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1),
+0.2e1) * PI * R * Mu_N * pow(Mtot, 0.3e1) * RHO_N * RHO_N2 * Sum_eN_thetae2_g_div_e / L * pow(M_N, -0.4e1) * pow(Phi_N, -0.2e1) *
+pow(RHO, -0.3e1) * pow(TV, -0.2e1) / e_elec_N_den / 0.24e2 + sqrt(0.3e1) * (0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot - RHO_N2 *
+Mtot) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 +
+sqrt(Mu_N / Mu_N2) * pow(0.2e1, 0.1e1 / 0.4e1), 0.2e1) * PI * R * Mu_N * Mtot * Mtot * RHO_N * RHO_N2 * Sum_eN_thetae2_g_div_e / L
+* pow(M_N, -0.4e1) * pow(Phi_N, -0.2e1) * pow(RHO, -0.4e1) * pow(TV, -0.2e1) / e_elec_N_den / 0.24e2 - (M_N * Phi_N * RHO - RHO_N
+* Mtot) * (0.2e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI
+* R * Mu_N * Mtot * Mtot * RHO_N * Sum_eN_thetae2_g_div_e / L * pow(M_N, -0.4e1) * pow(Phi_N, -0.2e1) * pow(RHO, -0.3e1) * pow(TV,
+-0.2e1) / e_elec_N_den / 0.2e1 - (0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot - RHO_N2 * Mtot) * (M_N * Phi_N * RHO - RHO_N * Mtot) *
+(a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * R * Mu_N * Mtot
+* RHO_N * Sum_eN_thetae2_g_div_e / L * pow(M_N, -0.4e1) * pow(Phi_N, -0.2e1) * pow(RHO, -0.4e1) * pow(TV, -0.2e1) / e_elec_N_den /
+0.2e1 - (0.2e1 * A_N2 * log(T) + B_N2) * a_Tx * PI * T_x * R * Mu_N2 * Mtot * RHO_N2 * sin(a_Tx * PI * x / L) *
+Sum_eN2_thetae2_g_div_e / L * pow(M_N, -0.2e1) / Phi_N2 / RHO / T * pow(TV, -0.2e1) / e_elec_N2_den / 0.4e1 - sqrt(0.6e1) *
+pow(0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * a_rho_N_x * PI * rho_N_x * R * Mu_N2 * Mtot * Mtot *
+RHO_N2 * cos(a_rho_N_x * PI * x / L) * Sum_eN2_thetae2_g_div_e / L * pow(M_N, -0.3e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) *
+pow(TV, -0.2e1) / e_elec_N2_den / 0.48e2 - sqrt(0.6e1) * pow(0.2e1, 0.3e1 / 0.4e1) * (0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1,
+0.3e1 / 0.4e1) / 0.2e1) * (0.2e1 * A_N * log(T) - 0.2e1 * A_N2 * log(T) + B_N - B_N2) * a_Tx * PI * T_x * R * Mu_N2 * Mu_N2 * Mtot
+* Mtot * RHO_N * RHO_N2 * sin(a_Tx * PI * x / L) * Sum_eN2_thetae2_g_div_e / sqrt(Mu_N2 / Mu_N) / L * pow(M_N, -0.3e1) / Mu_N *
+pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) / T * pow(TV, -0.2e1) / e_elec_N2_den / 0.96e2 + (0.3e1 * M_N * E_elec_N2 + R * TV) * a_Tvx
+* PI * Tv_x * Mu_N2 * Mtot * RHO_N2 * sin(a_Tvx * PI * x / L) * Sum_eN2_thetae2_g_div_e / L * pow(M_N, -0.2e1) / Phi_N2 / RHO *
+pow(TV, -0.4e1) / e_elec_N2_den / 0.2e1 - (0.2e1 * M_N * Phi_N2 * RHO - RHO_N2 * Mtot) * a_rho_N2_x * PI * rho_N2_x * R * Mu_N2 *
+Mtot * sin(a_rho_N2_x * PI * x / L) * Sum_eN2_thetae2_g_div_e / L * pow(M_N, -0.3e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.2e1) *
+pow(TV, -0.2e1) / e_elec_N2_den / 0.8e1 + sqrt(0.6e1) * (0.2e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x *
+rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 + sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * PI * R *
+Mu_N2 * pow(Mtot, 0.3e1) * RHO_N * RHO_N2 * Sum_eN2_thetae2_g_div_e / L * pow(M_N, -0.4e1) * pow(Phi_N2, -0.2e1) * pow(RHO,
+-0.3e1) * pow(TV, -0.2e1) / e_elec_N2_den / 0.96e2 + sqrt(0.6e1) * (0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot - RHO_N2 * Mtot) *
+(a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * pow(0.1e1 +
+sqrt(Mu_N2 / Mu_N) * pow(0.2e1, 0.3e1 / 0.4e1) / 0.2e1, 0.2e1) * PI * R * Mu_N2 * Mtot * Mtot * RHO_N * RHO_N2 *
+Sum_eN2_thetae2_g_div_e / L * pow(M_N, -0.4e1) * pow(Phi_N2, -0.2e1) * pow(RHO, -0.4e1) * pow(TV, -0.2e1) / e_elec_N2_den / 0.96e2
+- (0.2e1 * M_N * Phi_N2 * RHO - RHO_N2 * Mtot) * (0.2e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x *
+rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * R * Mu_N2 * Mtot * Mtot * RHO_N2 * Sum_eN2_thetae2_g_div_e / L * pow(M_N, -0.4e1)
+* pow(Phi_N2, -0.2e1) * pow(RHO, -0.3e1) * pow(TV, -0.2e1) / e_elec_N2_den / 0.16e2 - (0.2e1 * RHO * M_N - 0.2e1 * RHO_N * Mtot -
+RHO_N2 * Mtot) * (0.2e1 * M_N * Phi_N2 * RHO - RHO_N2 * Mtot) * (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x *
+rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * R * Mu_N2 * Mtot * RHO_N2 * Sum_eN2_thetae2_g_div_e / L * pow(M_N, -0.4e1) *
+pow(Phi_N2, -0.2e1) * pow(RHO, -0.4e1) * pow(TV, -0.2e1) / e_elec_N2_den / 0.16e2;
+
+  DKappa_mix_Dx = DKappa_ev_Dx + DKappa_tr_Dx;
+
+  DCp_Dx = 0.2e1 * a_Tvx * PI * Tv_x * M_N * theta_v_N2 * exp(theta_v_N2 / TV) * E_vib_N2 * E_vib_N2 * RHO_N2 * sin(a_Tvx * PI * x
+/ L) / L / R / RHO * pow(TV, -0.4e1) - a_rho_N_x * PI * rho_N_x * M_N * E_elec_N * E_elec_N * cos(a_rho_N_x * PI * x / L) / L / R
+/ RHO * pow(TV, -0.2e1) + a_rho_N_x * PI * rho_N_x * R * cos(a_rho_N_x * PI * x / L) * Sum_eN_thetae2_g_div_e / L / M_N / RHO *
+pow(TV, -0.2e1) / e_elec_N_den - (-0.2e1 * E_elec_N2 * E_elec_N2 + 0.2e1 * exp(theta_v_N2 / TV) * E_vib_N2 * E_vib_N2) *
+a_rho_N2_x * PI * rho_N2_x * M_N * sin(a_rho_N2_x * PI * x / L) / L / R / RHO * pow(TV, -0.2e1) - a_rho_N2_x * PI * rho_N2_x * R *
+sin(a_rho_N2_x * PI * x / L) * Sum_eN2_thetae2_g_div_e / L / M_N / RHO * pow(TV, -0.2e1) / e_elec_N2_den / 0.2e1 + 0.2e1 * a_Tvx *
+PI * Tv_x * R * RHO_N * sin(a_Tvx * PI * x / L) * Sum_eN_thetae2_g_div_e / L / M_N / RHO * pow(TV, -0.3e1) / e_elec_N_den + a_Tvx
+* PI * Tv_x * R * RHO_N2 * sin(a_Tvx * PI * x / L) * Sum_eN2_thetae2_g_div_e / L / M_N / RHO * pow(TV, -0.3e1) / e_elec_N2_den +
+0.3e1 * a_Tvx * PI * Tv_x * E_elec_N * RHO_N * sin(a_Tvx * PI * x / L) * Sum_eN_thetae2_g_div_e / L / RHO * pow(TV, -0.4e1) /
+e_elec_N_den + 0.3e1 * a_Tvx * PI * Tv_x * E_elec_N2 * RHO_N2 * sin(a_Tvx * PI * x / L) * Sum_eN2_thetae2_g_div_e / L / RHO *
+pow(TV, -0.4e1) / e_elec_N2_den + (0.4e1 * exp(theta_v_N2 / TV) * E_vib_N2 * E_vib_N2 * RHO_N2 - 0.2e1 * RHO_N * E_elec_N *
+E_elec_N - 0.4e1 * RHO_N2 * E_elec_N2 * E_elec_N2) * a_Tvx * PI * Tv_x * M_N * sin(a_Tvx * PI * x / L) / L / R / RHO * pow(TV,
+-0.3e1) - a_Tvx * PI * Tv_x * R * RHO_N * sin(a_Tvx * PI * x / L) * Sum_eN_thetae3_g_div_e / L / M_N / RHO * pow(TV, -0.4e1) /
+e_elec_N_den - a_Tvx * PI * Tv_x * R * RHO_N2 * sin(a_Tvx * PI * x / L) * Sum_eN2_thetae3_g_div_e / L / M_N / RHO * pow(TV,
+-0.4e1) / e_elec_N2_den / 0.2e1 + (0.6e1 * a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - 0.5e1 * a_rho_N2_x * rho_N2_x *
+sin(a_rho_N2_x * PI * x / L)) * PI * R / L / M_N / RHO / 0.4e1 - (0.8e1 * pow(exp(theta_v_N2 / TV), 0.2e1) * pow(E_vib_N2, 0.3e1)
+* RHO_N2 + 0.2e1 * pow(E_elec_N, 0.3e1) * RHO_N + 0.8e1 * pow(E_elec_N2, 0.3e1) * RHO_N2) * a_Tvx * PI * Tv_x * M_N * M_N *
+sin(a_Tvx * PI * x / L) / L * pow(R, -0.2e1) / RHO * pow(TV, -0.4e1) - (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) -
+a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * (0.6e1 * RHO_N + 0.5e1 * RHO_N2) * PI * R / L / M_N * pow(RHO, -0.2e1) /
+0.4e1 - (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * R *
+RHO_N * Sum_eN_thetae2_g_div_e / L / M_N * pow(RHO, -0.2e1) * pow(TV, -0.2e1) / e_elec_N_den - (a_rho_N_x * rho_N_x *
+cos(a_rho_N_x * PI * x / L) - a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * PI * R * RHO_N2 * Sum_eN2_thetae2_g_div_e /
+L / M_N * pow(RHO, -0.2e1) * pow(TV, -0.2e1) / e_elec_N2_den / 0.2e1 - (a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) -
+a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) * (0.2e1 * exp(theta_v_N2 / TV) * E_vib_N2 * E_vib_N2 * RHO_N2 - RHO_N *
+E_elec_N * E_elec_N - 0.2e1 * RHO_N2 * E_elec_N2 * E_elec_N2) * PI * M_N / L / R * pow(RHO, -0.2e1) * pow(TV, -0.2e1);
+
+    // "Contribution from the transient term to the total source term ---------------------------------------------";
+  Q_rho_N2_time = a_rho_N2_t * PI * rho_N2_t * cos(a_rho_N2_t * PI * t / Lt) / Lt;
+
+    // "Contribution from the convective term to the total source term --------------------------------------------";
+
+  Q_rho_N2_convection = -a_rho_N2_x * PI * rho_N2_x * U * sin(a_rho_N2_x * PI * x / L) / L 
++ a_ux * PI * u_x * RHO_N2 * cos(a_ux * PI * x / L) / L;
+
+    // "Contribution from the production term to the total source term --------------------------------------------";
+
+  Q_rho_N2_production = -w_dot_N2;
+
+    // "Contribution from the difusion term to the total source term ----------------------------------------------";
+
+  Q_rho_N2_diffusion = a_rho_N2_x * a_rho_N2_x * PI * PI * rho_N2_x * Ds * cos(a_rho_N2_x * PI * x / L) * pow(L, -0.2e1) 
+- DCp_Dx * a_rho_N2_x * PI * rho_N2_x * Le * Kappa_mix * sin(a_rho_N2_x * PI * x / L) / L * pow(Cp, -0.2e1) / RHO 
++ (-a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) + a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) 
+	  * a_rho_N2_x * PI * PI * rho_N2_x * Ds * sin(a_rho_N2_x * PI * x / L) * pow(L, -0.2e1) / RHO 
++ (-a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) + a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) 
+	  * a_rho_N2_x * PI * PI * rho_N2_x * Le * Kappa_mix * sin(a_rho_N2_x * PI * x / L) * pow(L, -0.2e1) / Cp * pow(RHO, -0.2e1) 
++ DKappa_mix_Dx * a_rho_N2_x * PI * rho_N2_x * Le * sin(a_rho_N2_x * PI * x / L) / L / Cp / RHO 
+- (a_rho_N_x * a_rho_N_x * rho_N_x * sin(a_rho_N_x * PI * x / L) + a_rho_N2_x * a_rho_N2_x * rho_N2_x * cos(a_rho_N2_x * PI * x / L)) 
+	  * PI * PI * Ds * RHO_N2 * pow(L, -0.2e1) / RHO 
++ (-a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) + a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) 
+	  * DCp_Dx * PI * Le * Kappa_mix * RHO_N2 / L * pow(Cp, -0.2e1) * pow(RHO, -0.2e1) 
+- pow(-a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) + a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L), 0.2e1) 
+	  * PI * PI * Ds * RHO_N2 * pow(L, -0.2e1) * pow(RHO, -0.2e1) 
+- pow(-a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) + a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L), 0.2e1) 
+	  * PI * PI * Le * Kappa_mix * RHO_N2 * pow(L, -0.2e1) / Cp * pow(RHO, -0.3e1) 
+- (-a_rho_N_x * rho_N_x * cos(a_rho_N_x * PI * x / L) + a_rho_N2_x * rho_N2_x * sin(a_rho_N2_x * PI * x / L)) 
+	  * DKappa_mix_Dx * PI * Le * RHO_N2 / L / Cp * pow(RHO, -0.2e1);
+
+    // "Total source term -------------------------------------------------------------------------";
+  Q_rho_N2 = Q_rho_N2_time + Q_rho_N2_convection + Q_rho_N2_diffusion + Q_rho_N2_production;
+  return(Q_rho_N2);
+}
+\end{verbatim}
+ \end{scriptsize}
+
+Finally, the gradients of the analytical solutions (\ref{eq:manufactured02}) and (\ref{eq:manufactured03}) have also been computed
+and their respective C codes are presented in 
+\texttt{NS\_1d\_transient\_themochemincal\_noneq\_manuf\_solutions\_grad\_and\_code.C}. Therefore,
+\begin{equation}
+\begin{split}
+\nabla \rho_{\text{N}} &=  \dfrac{ a_{ \rho \text{N} x} \pi \rho_{\text{N}x} }{L} \cos\left( \dfrac{ a_{\rho \text{N} x} \pi x }{L}\right),
+\quad\quad\quad\,
+\nabla \rho_{\text{N}_2} =  \dfrac{ a_{ \rho \text{N}_2 x} \pi \rho_{\text{N}_2 x} }{L} \sin\left( \dfrac{ a_{ \rho \text{N}_2 x} \pi x }{L}\right),\vspace{10pt}\\
+\quad
+%
+\nabla T &=- \dfrac{ a_{Tx} \pi T_x }{L} \sin\left( \dfrac{ a_{Tx} \pi x }{L}\right),
+\quad\qquad\qquad
+%
+\nabla u = \dfrac{ a_{ux} \pi u_x}{L} \cos\left( \dfrac{ a_{ux} \pi x }{L}\right),
+\vspace{10pt}\\
+%
+\nabla T_V &= - \dfrac{ a_{T_V x} \pi  }{L} \sin\left( \dfrac{ a_{T_Vx} \pi x }{L}\right),
+\quad\quad\quad\,\,
+%
+\nabla \rho =\nabla \left( \rho_\text{N}\right) + \nabla \left(\rho_{\text{N}_2} \right),
+\end{split}
+\end{equation}
+ are written in C language as:
+
+
+
+
+\begin{small}
+	
+
+\begin{verbatim}
+grad_rho_an_N[0] = rho_N_x * cos(a_rho_N_x * pi * x / L) * a_rho_N_x * pi / L;
+grad_rho_an_N2[0] = -rho_N2_x * sin(a_rho_N2_x * pi * x / L) * a_rho_N2_x * pi / L;
+grad_rho_an[0] = rho_N_x * cos(a_rho_N_x * pi * x / L) * a_rho_N_x * pi / L 
+	       - rho_N2_x * sin(a_rho_N2_x * pi * x / L) * a_rho_N2_x * pi / L;
+grad_u_an[0] = u_x * cos(a_ux * pi * x / L) * a_ux * pi / L;
+grad_T_an[0] = -T_x * sin(a_Tx * pi * x / L) * a_Tx * pi / L;
+grad_Tv_an[0] = -Tv_x * sin(a_Tvx * pi * x / L) * a_Tvx * pi / L;
+\end{verbatim}
+
+
+\end{small}
+
+%---------------------------------------------------------------------------------------------------------
+%\bibliographystyle{ieeetr}
+\bibliographystyle{chicago} 
+\bibliography{../../MMS_bib}
+
+
+\appendix
+
+\input{list_of_variables}
+
+\end{document}

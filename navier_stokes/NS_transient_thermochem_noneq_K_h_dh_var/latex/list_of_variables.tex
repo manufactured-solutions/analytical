@@ -1,0 +1,111 @@
+\section{List of model / manufactured solution parameters}\label{Appendix:01}
+
+There are a variety of parameters present in the thermochemical nonequilibrium flow of a inviscid fluid, due to both fluid properties and the constants arising from the chosen manufactured solutions.
+
+\begin{description}
+\item[Functions to be defined:] There are three functions that need to be defined: $K(T)$ for the equilibrium constant, $h_\N$ for the enthalpy of Nitrogen atom and $h_{\N_2}$ for the enthalpy of Nitrogen molecule. The derivatives  $\diff{h_\N}{T}$ and $\diff{h_{\N_2}}{T}$ also must be determined.
+
+
+\vspace{10pt}
+In the C codes, theyare represented, respectively, by:
+\vspace{-5pt}
+\begin{verbatim}
+K,h_N,h_N2,d_hN_dT, d_hN2_dT.
+\end{verbatim}
+
+
+
+\item[Fluid properties:] $R , \, M_\N , \,  h^0_{\N} , \, h^0_{\N_2} , \, \theta^{\vib}_{\N_2} , \, \theta^{\elec}_{\N} , \, 
+\theta^{\elec}_{\N_2} , \,   g_\N , \,  g_{\N_2} , \,  nel_{\N} , \, nel_{\N_2} ,  C_{f_1 \N} , \,  \eta_{f_1
+\N}  , \, E_{a\N} , \,  C_{f_1 \N_2} $,  
+
+$  \eta_{f_1 \N_2},  \,E_{a\N_2}$, $ q$, $A_\N,\, B_\N,\, C_\N,\, A_{\N_2},\, B_{\N_2}, C_{\N_2}$.  
+
+Here,  $ \theta^{\elec}_{\N_2} , \,  \theta^{\elec}_{\N} , \,  g_\N , \,  g_{\N_2}$ are lists of values
+with corresponding sizes $ nel_{\N}$ or $nel_{\N_2}$,  depending on the species: N or N$_2$.
+
+
+
+\vspace{10pt}
+In the C codes, these values are represented, respectively, by:
+\vspace{-5pt}
+\begin{verbatim}
+R, M_N, h0_N, h0_N2, theta_v_N2, theta_e_N, theta_e_N2, g_N, g_N2, energy_level_N, 
+energy_level_N2, Cf1_N, etaf1_N, Ea_N, Cf1_N2, etaf1_N2, Ea_N2, q, A_N, B_N, C_N, 
+A_N2, B_N2, C_N2.
+
+\end{verbatim}
+
+
+\item[Manufactured solutions:] $\rho_{\N 0} , \,  \rho_{\N x} , \,  \rho_{\N t} ,\,  a_{  \rho \N x } , \,  a_{  \rho \N t } ,\,  \rho_{\N_2 0} , \, \rho_{\N_2 x} , \, \rho_{\N_2 t} ,\,  a_{ \rho \N_2 x } , \,  a_{ \rho \N_2 t } ,\,  u_{0} , \, u_{x}  , \, u_{t}  ,\, a_{u x}  , \, a_{u t}  , $
+
+$ T_{0} , \, T_{x} , \, T_{t} ,\,  a_{T x} , \,  a_{T t} ,\,  T_{V0} , \, T_{Vx}  ,  \, T_{Vt}  ,\,  a_{T_V x} , \,  a_{T_V t} ,\, L,\, L_t $.
+
+\vspace{10pt}
+In the C codes, these values are represented, respectively, by:
+\vspace{-5pt}
+\begin{verbatim} 
+rho_N_0, rho_N_x, a_rho_N_x, a_rho_N_t, rho_N2_0, rho_N2_x, a_rho_N2_x, a_rho_N2_t, 
+u_0, u_x, u_t, a_ux, a_ut, T_0, T_x, T_t, a_Tx, a_Tt, Tv_0, Tv_x, Tv_t, a_Tvx, a_Tvt, 
+L, Lt.
+\end{verbatim}
+\end{description}
+
+
+\paragraph{Examples of data values:}
+The data for each of the species are given in Table \ref{table01}: $M_s$ is the species molar mass,   $R_s$ is the species gas constant, $h^0_s$ is the activation energy, and $\theta^{\vib}_{s}$ is the species characteristic temperature of vibration for the 5--species model \citep{Kessler2004}.
+\begin{table}[htb]
+\caption{Parameters for Nitrogen atom and molecule.}
+\centering
+\begin{tabular}{l l l}
+\hline\hline
+ &     N$_2$     &  N  \\ [0.25ex]
+\hline 
+$M_s$ [kg/kg-mol]  & 28.02     &14.01               \vspace{2pt} \\
+$R_s$ [J/ kg K]    & 296.7    &593.6               \vspace{2pt}\\
+$h^0_s$ [K]        & 0        &$33.59\times 10^6$  \vspace{2pt}\\
+$\theta^{\vib}_{s}$ [K] & 3393     &-                    \vspace{2pt}\\
+\hline
+\end{tabular}
+\label{table01}
+\end{table}
+
+
+Moreover, the characteristic electronic temperature $\theta^{\elec}_s$, degeneracy of the electronic mode  $g_s$ and total number of electronic levels $nel_s$ of Nitrogen atom and molecule are presented in Table \ref{table02} \citep{Kirk2011}.
+% Data taken from FIN-S file chemical.C
+\begin{table}[ht]
+\caption{Electronic data of N and N$_2$}
+\centering
+\begin{tabular}{c c c c}
+%\multicolumn{4}{c}{Electronic data of N and N$_2$} \\
+\hline\hline
+Species $s$  &  $nel_s$ & $\theta_{s}^{\elec} [K]$ & $g_s$ \\ [0.5ex]
+\hline 
+N & 3 &  0   &    4  \\
+& &	  2.76647 $\times 10^4$     & 10  \\
+& &	  4.14931 $\times 10^4$     & 6  \\
+\hline
+% inserting body of the table
+N$_2$ & 15  &  0  &    1  \\
+& &       7.22316 $\times 10^4$  &    3  \\
+& &       8.57786 $\times 10^4$  &    6  \\
+& &       8.60503 $\times 10^4$  &    6  \\
+& &       9.53512 $\times 10^4$  &    3  \\
+& &       9.80564 $\times 10^4$  &    1  \\
+& &       9.96827 $\times 10^4$  &    2  \\
+& &       1.04898 $\times 10^5$  &    2  \\
+& &       1.11649 $\times 10^5$  &    5  \\
+& &       1.22584 $\times 10^5$  &    1  \\
+& &       1.24886 $\times 10^5$  &    6  \\
+& &       1.28248 $\times 10^5$  &    6  \\
+& &       1.33806 $\times 10^5$  &   10  \\
+& &       1.40430 $\times 10^5$  &    6  \\
+& &       1.50496 $\times 10^5$  &    6  \\ [.5ex]
+% [1ex] adds vertical space
+\hline
+%inserts single line
+\end{tabular}
+\label{table02}
+\end{table} 
+
+
