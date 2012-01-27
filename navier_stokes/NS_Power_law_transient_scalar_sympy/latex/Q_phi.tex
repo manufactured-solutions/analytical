@@ -1,0 +1,12 @@
+
+ Q_phi: 
+$Q_{\phi convection} + Q_{\phi diffusion} + Q_{\phi time}$
+
+ Q_phi_convection: 
+$\frac{\pi \Phi \Rho \left(a_{ux} u_{x} \operatorname{cos}\left(\frac{\pi a_{ux} x}{L}\right) + a_{vy} v_{y} \operatorname{cos}\left(\frac{\pi a_{vy} y}{L}\right) - a_{wz} w_{z} \operatorname{sin}\left(\frac{\pi a_{wz} z}{L}\right)\right)}{L} + \frac{\pi \Phi U a_{rhox} \rho_{x} \operatorname{cos}\left(\frac{\pi a_{rhox} x}{L}\right)}{L} + \frac{\pi \Phi W a_{rhoz} \rho_{z} \operatorname{cos}\left(\frac{\pi a_{rhoz} z}{L}\right)}{L} + \frac{\pi \Rho W a_{phiz} \phi_{z} \operatorname{cos}\left(\frac{\pi a_{phiz} z}{L}\right)}{L} - \frac{\pi \Phi V a_{rhoy} \rho_{y} \operatorname{sin}\left(\frac{\pi a_{rhoy} y}{L}\right)}{L} - \frac{\pi \Rho U a_{phix} \phi_{x} \operatorname{sin}\left(\frac{\pi a_{phix} x}{L}\right)}{L} - \frac{\pi \Rho V a_{phiy} \phi_{y} \operatorname{sin}\left(\frac{\pi a_{phiy} y}{L}\right)}{L}$
+
+ Q_phi_time: 
+$\frac{\pi \Phi a_{rhot} \rho_{t} \operatorname{cos}\left(\frac{\pi a_{rhot} t}{Lt}\right)}{Lt} - \frac{\pi \Rho a_{phit} \phi_{t} \operatorname{sin}\left(\frac{\pi a_{phit} t}{Lt}\right)}{Lt}$
+
+ Q_phi_diffusion: 
+$\frac{\Gamma \pi^{2} \left(\phi_{x} a_{phix}^{2} \operatorname{cos}\left(\frac{\pi a_{phix} x}{L}\right) + \phi_{y} a_{phiy}^{2} \operatorname{cos}\left(\frac{\pi a_{phiy} y}{L}\right) + \phi_{z} a_{phiz}^{2} \operatorname{sin}\left(\frac{\pi a_{phiz} z}{L}\right)\right)}{L^{2}}$
