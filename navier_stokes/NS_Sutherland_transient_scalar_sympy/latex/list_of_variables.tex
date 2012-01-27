@@ -1,0 +1,78 @@
+\section{List of model / manufactured solution parameters}\label{Appendix:01}
+
+There are a variety of parameters present in the flow described by Navier-Stokes equations with the passive transport of a generic scalar and the Power-law viscosity model, due to both fluid properties and the constants arising from the chosen manufactured solutions.
+
+
+
+Table \ref{table_aux_var} shows the constants arising from fluid properties and their representation in the C code and Table \ref{table_aux_var02} shows the constants present in the manufactured solutions.
+
+
+\begin{table}[htb]
+\caption{Relations between auxiliary variables, model documentation, and C code.}
+\centering
+\begin{tabular}{l c c c}
+\hline\hline
+     Variable    &  Description & Equation &Representation in C  \\ [0.25ex]
+\hline 
+$B_\mu$   	& Sutherland temperature			& (\ref{eq:Sutherland01})	& \texttt{B\_mu}		\vspace{2pt} \\
+$T_{ref}$ 	& reference temperature					& (\ref{eq:Sutherland01}), (\ref{eq:Sutherland02})	& \texttt{T\_ref}		\vspace{2pt} \\
+$\mu_{ref}$	& reference viscosity					& (\ref{eq:Sutherland02})	& \texttt{mu\_ref} 	\vspace{2pt} \\
+$\gamma$	& ratio of specific heats				& (\ref{eq:k})			& \texttt{gamma}		\vspace{2pt} \\
+$\Gamma$	& diffusion coefficient					& (\ref{eq:ns_pscalar})	& \texttt{Gamma}		\vspace{2pt} \\
+Pr			& Prandtl number						& (\ref{eq:k})			& \texttt{Pr}		\vspace{2pt} \\
+R			& gas constant							& (\ref{eq:ns_05})		& \texttt{R}			\vspace{2pt} \\
+\hline
+\end{tabular}
+\label{table_aux_var}
+\end{table}
+
+For air, the Sutherland's law coefficents are: $B_\mu   = 110.4 \, [K], \, T_{ref} = 273.15 \, [K],  \, \mu_{ref} = 1.716\times 10^{-5}\, [kg/ms]$ and, therefore, $A_\mu=1.458\times 10^{-6} [kg /ms\sqrt{K}]$. Additionally, $\gamma  = 1.4 ,\, R = 287 \, [J/kg K],\, Pr  = 0.7$. 
+
+\begin{table}[htb]
+\caption{Constants in the manufactured solutions and their representation in C codes.}
+\centering
+\begin{tabular}{l c | c c}
+\hline\hline
+     Constant     &Representation in C  & Constant     & Representation in C \\ [0.25ex]
+\hline 
+$L$			  & L	   				&  $ L_{t}$ 	& Lt	   \\
+$ a_{\rho x}$ & \texttt{a\_rhox}	&  $a_{ux}$ 	&\texttt{a\_ux}    \\ 
+$ a_{\rho y}$ & \texttt{a\_rhoy}	&  $ a_{uy}$ 	& \texttt{a\_uy}   \\ 
+$ a_{\rho z}$ & \texttt{a\_rhoz}	&  $ a_{uz}$ 	& \texttt{a\_uz}   \\ 
+$ a_{\rho t}$ & \texttt{a\_rhot}	&  $ a_{ut}$ 	& \texttt{a\_ut}   \\ 
+$ \rho_{0}$  & 	\texttt{rho\_0}   	&  $ u_{0}$ 		& \texttt{u\_0}   \\ 
+$ \rho_{x}$ & 	\texttt{rho\_x}   	&  $ u_{x}$ 	& \texttt{u\_x}   \\
+$ \rho_{y}$ & 	\texttt{rho\_y}   	&  $ u_{y}$ 	& \texttt{u\_y}   \\ 
+$ \rho_{z}$ & 	\texttt{rho\_z}   	&  $ u_{z}$ 	& \texttt{u\_z}   \\ 
+$ \rho_{t}$ & 	\texttt{rho\_t}   	&  $ u_{t}$ 	& \texttt{u\_t}   \\ 
+$ a_{px}$ & 	\texttt{a\_px}   	&  $ a_{vx}$ 	& \texttt{a\_vx}   \\ 
+$ a_{py}$ & 	\texttt{a\_py}   	&  $ a_{vy}$ 	& \texttt{a\_vy}   \\ 
+$ a_{pz}$ & 	\texttt{a\_pz}   	&  $ a_{vz}$ 	& \texttt{a\_vz}   \\ 
+$ a_{pt}$ & 	\texttt{a\_pt}   	&  $ a_{vt}$ 	& \texttt{a\_vt}   \\ 
+$ p_{0}$ & 		\texttt{p\_0 }  	&  $ v_{0}$ 		& \texttt{v\_0}   \\ 
+$ p_{x}$ & 		\texttt{p\_x }  	&  $ v_{x}$ 	& \texttt{v\_x}   \\ 
+$ p_{y}$ &		\texttt{p\_y }  	&  $ v_{y}$		& \texttt{v\_y}   \\ 
+$ p_{z}$ & 		\texttt{p\_z}   	&  $ v_{z}$		& \texttt{v\_z}   \\
+$ p_{t}$ & 		\texttt{p\_t}   	&  $ v_{t}$		& \texttt{v\_t}   \\ 
+$ a_{\phi x}$ 	& \texttt{a\_phix}  &  $ a_{wx}$	 & \texttt{a\_wx}   \\
+$ a_{\phi y}$ 	& \texttt{a\_phiy}	&  $ a_{wy}$	 & \texttt{a\_wy}   \\
+$ a_{\phi z}$ 	& \texttt{a\_phiz}	&  $ a_{wz}$	 & \texttt{a\_wz}   \\ 
+$ a_{\phi t}$ 	& \texttt{a\_phit}	&  $ a_{wt}$	 & \texttt{a\_wt}   \\ 
+$ \phi_{0}$ 		&  \texttt{phi\_0}	&  $ w_{0}$ 		& \texttt{w\_0}   \\ 
+$ \phi_{x}$ 	& \texttt{phi\_x}	&  $ w_{x}$ 	& \texttt{w\_x}   \\
+$ \phi_{y}$ 	& \texttt{phi\_y}	&  $ w_{y}$ 	& \texttt{w\_y}   \\ 
+$ \phi_{z}$ 	& \texttt{phi\_z}	&  $ w_{z}$ 	& \texttt{w\_z}   \\ 
+$ \phi_{t}$ 	& \texttt{phi\_t}	&    $w_{t}$ 	& \texttt{w\_t}  \\
+\hline
+\end{tabular}
+\label{table_aux_var02}
+\end{table}
+
+
+%Nick, if it makes you job easier, here's the list without editing: 
+
+% L, Lt, a_rhox, a_rhoy, a_rhoz, a_rhot, rho_0, rho_x, rho_y, rho_z, rho_t, a_px, a_py, a_pz, a_pt, p_0, p_x, p_y, p_z, p_t, a_ux, a_uy, a_uz, a_ut, u_0, u_x, u_y, u_z, u_t, a_vx, a_vy, a_vz, a_vt, v_0, v_x, v_y, v_z, v_t, a_wx, a_wy, a_wz, a_wt, w_0, w_x, w_y, w_z, w_t, a_phix, a_phiy, a_phiz, a_phit, phi_0, phi_x, phi_y, phi_z, phi_t, 
+
+
+
+% B_mu, T_ref, mu_ref, gamma, Pr, R, Gamma

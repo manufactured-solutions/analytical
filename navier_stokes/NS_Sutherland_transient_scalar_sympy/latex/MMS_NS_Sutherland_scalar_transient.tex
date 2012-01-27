@@ -111,8 +111,11 @@ where $\mu$ is the absolute viscosity. The heat flux vector $\bv{q}=(q_x,q_y,q_z
  q_x = - \kappa  \diff{T}{x}, \quad q_y = - \kappa  \diff{T}{y}, \quad \mbox{and} \quad q_z = - \kappa  \diff{T}{z}
  \end{equation*}
 where $\kappa $ is the thermal conductivity, which can be determined by choosing the Prandtl number:
-$$\kappa = \dfrac{\gamma R \mu}{ (\gamma-1) \text{Pr}}.$$
-
+\begin{equation}
+ \label{eq:k}
+\kappa = \dfrac{\gamma R \mu}{ (\gamma-1) \text{Pr}},
+\end{equation}
+where $\gamma$ is the ratio of specific heats.
 
 
 \subsection{Sutherland viscosity model}
@@ -122,9 +125,10 @@ $$\kappa = \dfrac{\gamma R \mu}{ (\gamma-1) \text{Pr}}.$$
 \label{eq:Sutherland01}
  \mu  =\dfrac{A_\mu \, T^{\frac{3}{2}}}{T+B_\mu}
 \end{equation}
-with
-$$    A_\mu = \dfrac{\mu_\text{ref}}{T_{\text{ref}}^{\frac{3}{2}}}(T_\text{ref} + B_\mu), $$
-%
+\begin{equation}
+\label{eq:Sutherland02}
+   A_\mu = \dfrac{\mu_\text{ref}}{T_{\text{ref}}^{\frac{3}{2}}}(T_\text{ref} + B_\mu),
+\end{equation}
 where $B_\mu$ is the Sutherland temperature, $T_{\text{ref}}$ is a reference temperature,  and $\mu_\text{ref}$ is the viscosity at the reference temperature $T_\text{ref}$.
 
 
@@ -776,5 +780,9 @@ double Q_et(double Q_et_convection, double Q_et_gradp, double Q_et_heatflux, dou
 \bibliographystyle{chicago} 
 \bibliography{/home/kemelli/MMS_maple_workplace/MMS_bib}
 
+
+\appendix
+
+\input{list_of_variables}
 \end{document}
 
