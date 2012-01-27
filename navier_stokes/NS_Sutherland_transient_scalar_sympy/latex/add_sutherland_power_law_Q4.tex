@@ -1,0 +1,84 @@
+\documentclass[10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+%\usepackage[mathcal]{euscript}
+\geometry{ top=2.5cm, bottom=2cm, left=2cm, right=2cm}
+\usepackage[authoryear]{natbib}
+\usepackage{pdflscape}
+\usepackage{nicefrac}
+%\geometry{papersize={216mm,330mm}, top=3cm, bottom=2.5cm, left=4cm, right=2cm}
+
+\newcommand{\D}{\partial}
+\newcommand{\Diff}[2] {\dfrac{\partial( #1)}{\partial #2}}
+\newcommand{\diff}[2] {\dfrac{\partial #1}{\partial #2}}
+\newcommand{\bv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}% for vectors of Greek letters
+\newcommand{\grad}[1]{\gv{\nabla} #1}
+\newcommand{\Rho}{\,\mathtt{Rho}}
+\newcommand{\PP}{\,\mathtt{P}}
+\newcommand{\U}{\,\mathtt{U}}
+\newcommand{\V}{\,\mathtt{V}}
+\newcommand{\W}{\,\mathtt{W}}
+\newcommand{\Lo}{\,\mathcal{L}}
+\newcommand{\Mu}{\,\mathtt{Mu}}
+\newcommand{\T}{\,\mathtt{T}\,}
+
+\newcommand{\DMuDx}{\diff{\Mu}{x}}
+\newcommand{\DMuDy}{\diff{\Mu}{y}}
+\newcommand{\DMuDz}{\diff{\Mu}{z}}
+\newcommand{\Et}{\,\mathtt{E_t}}
+
+\newcommand{\convection}{\text{convection}}
+\newcommand{\production}{\text{production}}
+\newcommand{\diffusion}{\text{diffusion}}
+\newcommand{\gradp}{\text{grad}p}
+\newcommand{\viscous}{\text{viscous}}
+\newcommand{\heatflux}{\text{heat flux}}
+
+%opening
+\title{}
+\author{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{}
+
+ARRUMAR O CODIGO c, incluindo esse pedaco + a expressao para kappa
+
+
+atualizar o ticket
+
+atualizar no svn
+
+atualizar MASA, inclusive o antigo Sutherland, em caso do Nick ja ter colocado na MASA
+\begin{equation}
+ \begin{split}
+&- \DMuDx \frac{\gamma a_{px} \pi p_{x} }{L\, \text{Pr} \, \Rho \left(1 - \gamma\right)} \sin\left(\frac{ a_{px} \pi x}{L}\right)
++\DMuDy \frac{\gamma a_{py} \pi p_{y} }{L\, \text{Pr} \, \Rho \left(1 - \gamma\right)} \cos\left(\frac{ a_{py} \pi y}{L}\right)
+- \DMuDz \frac{\gamma a_{pz} \pi p_{z} }{L\, \text{Pr} \, \Rho \left(1 - \gamma\right)}\sin\left(\frac{ a_{pz} \pi z}{L}\right) +\\
+&- \DMuDx \frac{\PP \gamma  a_{\rho x} \pi \rho_{x} }{L\, \text{Pr} \, \Rho^{2} \left(1 - \gamma\right)} \cos\left(\frac{ a_{\rho x} \pi x}{L}\right)
++ \DMuDy \frac{\PP \gamma  a_{\rho y} \pi \rho_{y} }{L\, \text{Pr} \, \Rho^{2} \left(1 - \gamma\right)} \sin\left(\frac{ a_{\rho y} \pi y}{L}\right)
+- \DMuDz \frac{\PP \gamma  a_{\rho z} \pi \rho_{z} }{L\, \text{Pr} \, \Rho^{2} \left(1 - \gamma\right)}\cos\left(\frac{ a_{\rho z} \pi z}{L}\right)
+ \end{split}
+\end{equation}
+
+
+
+\begin{equation}
+ \begin{split}
+&- \DMuDx \frac{\gamma a_{px} \pi p_{x} }{L\, \text{Pr} \, \Rho \left(1 - \gamma\right)} \sin\left(\frac{ a_{px} \pi x}{L}\right)
+- \DMuDx \frac{\PP \gamma  a_{\rho x} \pi \rho_{x} }{L\, \text{Pr} \, \Rho^{2} \left(1 - \gamma\right)} \cos\left(\frac{ a_{\rho x} \pi x}{L}\right)+\\
+&+\DMuDy \frac{\gamma a_{py} \pi p_{y} }{L\, \text{Pr} \, \Rho \left(1 - \gamma\right)} \cos\left(\frac{ a_{py} \pi y}{L}\right)
++ \DMuDy \frac{\PP \gamma  a_{\rho y} \pi \rho_{y} }{L\, \text{Pr} \, \Rho^{2} \left(1 - \gamma\right)} \sin\left(\frac{ a_{\rho y} \pi y}{L}\right)+\\
+&- \DMuDz \frac{\gamma a_{pz} \pi p_{z} }{L\, \text{Pr} \, \Rho \left(1 - \gamma\right)}\sin\left(\frac{ a_{pz} \pi z}{L}\right) - \DMuDz \frac{\PP \gamma  a_{\rho z} \pi \rho_{z} }{L\, \text{Pr} \, \Rho^{2} \left(1 - \gamma\right)}\cos\left(\frac{ a_{\rho z} \pi z}{L}\right)
+ \end{split}
+\end{equation}
+\end{document}
+ hgfxdsz

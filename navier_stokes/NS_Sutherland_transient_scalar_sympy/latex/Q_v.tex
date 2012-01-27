@@ -1,0 +1,15 @@
+
+ Q_v: 
+$Q_{v convection} + Q_{v gradp} + Q_{v time} + Q_{v viscous}$
+
+ Q_v_convection: 
+$\frac{\pi \Rho V \left(a_{ux} u_{x} \operatorname{cos}\left(\frac{\pi a_{ux} x}{L}\right) - a_{wz} w_{z} \operatorname{sin}\left(\frac{\pi a_{wz} z}{L}\right) + 2 a_{vy} v_{y} \operatorname{cos}\left(\frac{\pi a_{vy} y}{L}\right)\right)}{L} - \frac{\pi a_{rhoy} \rho_{y} V^{2} \operatorname{sin}\left(\frac{\pi a_{rhoy} y}{L}\right)}{L} + \frac{\pi \Rho W a_{vz} v_{z} \operatorname{cos}\left(\frac{\pi a_{vz} z}{L}\right)}{L} + \frac{\pi U V a_{rhox} \rho_{x} \operatorname{cos}\left(\frac{\pi a_{rhox} x}{L}\right)}{L} + \frac{\pi V W a_{rhoz} \rho_{z} \operatorname{cos}\left(\frac{\pi a_{rhoz} z}{L}\right)}{L} - \frac{\pi \Rho U a_{vx} v_{x} \operatorname{sin}\left(\frac{\pi a_{vx} x}{L}\right)}{L}$
+
+ Q_v_gradp: 
+$\frac{\pi a_{py} p_{y} \operatorname{cos}\left(\frac{\pi a_{py} y}{L}\right)}{L}$
+
+ Q_v_viscous: 
+$\frac{\pi DMu_{Dx} \left(a_{uy} u_{y} \operatorname{sin}\left(\frac{\pi a_{uy} y}{L}\right) + a_{vx} v_{x} \operatorname{sin}\left(\frac{\pi a_{vx} x}{L}\right)\right)}{L} + \frac{\pi DMu_{Dy} \left(- \frac{4}{3} a_{vy} v_{y} \operatorname{cos}\left(\frac{\pi a_{vy} y}{L}\right) - \frac{2}{3} a_{wz} w_{z} \operatorname{sin}\left(\frac{\pi a_{wz} z}{L}\right) + \frac{2}{3} a_{ux} u_{x} \operatorname{cos}\left(\frac{\pi a_{ux} x}{L}\right)\right)}{L} + \frac{\pi DMu_{Dz} \left(- a_{vz} v_{z} \operatorname{cos}\left(\frac{\pi a_{vz} z}{L}\right) - a_{wy} w_{y} \operatorname{cos}\left(\frac{\pi a_{wy} y}{L}\right)\right)}{L} + \frac{\Mu \pi^{2} \left(v_{x} a_{vx}^{2} \operatorname{cos}\left(\frac{\pi a_{vx} x}{L}\right) + v_{z} a_{vz}^{2} \operatorname{sin}\left(\frac{\pi a_{vz} z}{L}\right) + \frac{4}{3} v_{y} a_{vy}^{2} \operatorname{sin}\left(\frac{\pi a_{vy} y}{L}\right)\right)}{L^{2}}$
+
+ Q_v_time: 
+$\frac{\pi \Rho a_{vt} v_{t} \operatorname{cos}\left(\frac{\pi a_{vt} t}{Lt}\right)}{Lt} + \frac{\pi V a_{rhot} \rho_{t} \operatorname{cos}\left(\frac{\pi a_{rhot} t}{Lt}\right)}{Lt}$
