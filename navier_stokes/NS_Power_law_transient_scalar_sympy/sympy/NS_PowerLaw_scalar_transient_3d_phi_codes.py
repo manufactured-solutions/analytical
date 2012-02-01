@@ -14,7 +14,7 @@ Q_phi=Q_phi_time+Q_phi_convection+Q_phi_diffusion
 
 from sympy.utilities.codegen import codegen,Routine
 codegen((
-#	("Rho", Rho),
+	("Rho", rho_an),
 	("U", u_an),
 	("V", v_an),
 	("W", w_an),
