@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# Using sympy, construct a desired analytical solution for some quantity \phi.
-# Compute the analytical derivatives of \phi and output them as C code.  This
+# Using sympy, construct a desired analytical solution for some quantity phi.
+# Compute the analytical derivatives of phi and output them as C code.  This
 # logic will be used to compute the manufactured solutions rho, u, v, w, and T.
 
 from sympy import *
@@ -21,14 +21,14 @@ var(""" a_0  a_x  a_xy  a_xz  a_y  a_yz  a_z
 var('twopi_invLx  twopi_invLy  twopi_invLz', real=True)
 
 # Form the analytical solution and its derivatives
-phi  = (
-        a_0                                                                 *cos(f_0 *t + g_0 )
-      + a_x  * cos(b_x *twopi_invLx*x + c_x )                               *cos(f_x *t + g_x )
-      + a_xy * cos(b_xy*twopi_invLx*x + c_xy)*cos(d_xy*twopi_invLy*y + e_xy)*cos(f_xy*t + g_xy)
-      + a_xz * cos(b_xz*twopi_invLx*x + c_xz)*cos(d_xz*twopi_invLz*z + e_xz)*cos(f_xz*t + g_xz)
-      + a_y  * cos(b_y *twopi_invLy*y + c_y )                               *cos(f_y *t + g_y )
-      + a_yz * cos(b_yz*twopi_invLy*y + c_yz)*cos(d_yz*twopi_invLz*z + e_yz)*cos(f_yz*t + g_yz)
-      + a_z  * cos(b_z *twopi_invLz*z + c_z )                               *cos(f_z *t + g_z )
+phi = (
+    a_0                                                                 *cos(f_0 *t + g_0 )
+  + a_x  * cos(b_x *twopi_invLx*x + c_x )                               *cos(f_x *t + g_x )
+  + a_xy * cos(b_xy*twopi_invLx*x + c_xy)*cos(d_xy*twopi_invLy*y + e_xy)*cos(f_xy*t + g_xy)
+  + a_xz * cos(b_xz*twopi_invLx*x + c_xz)*cos(d_xz*twopi_invLz*z + e_xz)*cos(f_xz*t + g_xz)
+  + a_y  * cos(b_y *twopi_invLy*y + c_y )                               *cos(f_y *t + g_y )
+  + a_yz * cos(b_yz*twopi_invLy*y + c_yz)*cos(d_yz*twopi_invLz*z + e_yz)*cos(f_yz*t + g_yz)
+  + a_z  * cos(b_z *twopi_invLz*z + c_z )                               *cos(f_z *t + g_z )
 )
 phi_t  = phi.diff(t)
 phi_x  = phi.diff(x)
