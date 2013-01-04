@@ -15,8 +15,8 @@
 \newcommand{\V}{\,\mathtt{V}}
 \newcommand{\bv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}}
 %opening
-\title{Manufactured Solution for 2D Burgers equations using Maple}
-\author{KÃ©melli C. Estacio-Hiroms}
+\title{Manufactured Solution for 2D Burgers equations using a hierarchic approach and Maple$^{TM}$}
+\author{Kemelli C. Estacio-Hiroms}
 
 \begin{document}
 
@@ -32,16 +32,17 @@ This document describes the usage of the Method of Manufactured Solutions (MMS) 
 \section{2D Burgers Equations}
 
 Burgers' equation is a useful test case for numerical methods due to its simplicity and predictable dynamics, together with its non-linearity and multidimensionality. The various kinds of Burgers equation constitute a good benchmark to modeling traffic flows, shock waves and acoustic transmission, and they are also considered a basic model of nonlinear convective-diffusive phenomena such as those that arise
-in NavierâStokes equations.
+in Navier--Stokes equations.
+
 
 
 The 2D Burgers  equations are:
 \begin{equation}
  \label{eq:burgers2d_01}
 \begin{split}
-%&\diff{ u}{t} + \diff{ u^2 }{x}+\diff{uv}{y}=\nu \left( \diff{^2u}{ x^2}+ \diff{^2u }{y^2}\right),\\
-%& \diff{ v}{t}+ \diff{ u v}{x} + \diff{  v^2 }{y}=\nu \left( \diff{^2v}{ x^2}+ \diff{^2v }{y^2}\right),\\
-&\diff{\bv{u} }{t} + \nabla\cdot(\bv{uu}) = \nu \nabla^2 \bv{u},\\
+&\diff{ u}{t} + \diff{ u^2 }{x}+\diff{uv}{y}=\nu \left( \diff{^2u}{ x^2}+ \diff{^2u }{y^2}\right),\\
+& \diff{ v}{t}+ \diff{ u v}{x} + \diff{  v^2 }{y}=\nu \left( \diff{^2v}{ x^2}+ \diff{^2v }{y^2}\right),\\
+%&\diff{\bv{u} }{t} + \nabla\cdot(\bv{uu}) = \nu \nabla^2 \bv{u},\\
 \end{split}
 \end{equation}
 %
@@ -51,6 +52,7 @@ where $\bv{u}=(u,v)$,  $u$ and $v$ are the velocity in the  $x$ and $y$  directi
 The Method of Manufactured Solutions (MMS) provides a general procedure for  code accuracy verification \citep{Roache2002,Bond2007}.
 The MMS constructs a non-trivial but analytical solution for the flow variables; this manufactured
 solution usually does not  satisfy the governing equations, since the choice is somewhat arbitrary. However, by passing the solution through the governing equations gives the production terms $Q$. A modified set of equations formed by adding these source terms to the right-hand-side of the original governing equations is forced to become a model for the constructed solution, i.e., the manufactured solutions chosen \textit{a priori} are the analytical solutions of the MMS-modified governing equations.
+
 
 Although the form of the manufactured solution is slightly arbitrary, it should be chosen to be smooth, infinitely differentiable and realizable. Solutions should be avoided which have negative densities, pressures, temperatures, etc. \citep{KnuppSalari2003,Roy2004}. Solutions should also be chosen that are sufficiently general so as to exercise all terms in the governing equations. Examples of manufactured solutions and convergence studies for Burgers, Euler and/or Navier--Stokes equations may be found in \citet{Roy2002,KnuppSalari2003,Roy2004,Bond2007,Orozco2010}.
 
@@ -533,8 +535,62 @@ double SourceQ_u_transient_viscous ( double x, double y, double t, double nu)
 
 
 %---------------------------------------------------------------------------------------------------------
-\bibliographystyle{chicago} 
-\bibliography{/home/kemelli/MMS_maple_workplace/MMS_bib}
+%\bibliographystyle{chicago} 
+%\bibliography{/home/kemelli/MMS_maple_workplace/MMS_bib}
+
+
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Bond, Ober, Knupp, and Bova}{Bond
+  et~al.}{2007}]{Bond2007}
+Bond, R.~B., C.~C. Ober, P.~M. Knupp, and S.~W. Bova ({2007}, {SEP}).
+\newblock {Manufactured Solution for Computational Fluid Dynamics Boundary
+  Condition Verification}.
+\newblock {\em {AIAA Journal}\/}~{\em {45}\/}({9}), {2224--2236}.
+
+\bibitem[\protect\citeauthoryear{Knupp and Salari}{Knupp and
+  Salari}{2003}]{KnuppSalari2003}
+Knupp, P. and K.~Salari (2003).
+\newblock {\em Verification of Computer Codes in Computational Science and
+  Engineering}.
+\newblock Discrete Mathematics and its Applications. Chapman \& Hall/CRC.
+
+\bibitem[\protect\citeauthoryear{Maplesoft}{Maplesoft}{2011}]{Maple15}
+Maplesoft (2011, November).
+\newblock Maple${}^\mathrm{TM} 15$: the essential tool for mathematics and
+  modeling.
+\newblock http://www.maplesoft.com/Products/Maple/.
+
+\bibitem[\protect\citeauthoryear{Orozco, Kizildag, Oliva, and
+  P\'erez-Segarra}{Orozco et~al.}{2010}]{Orozco2010}
+Orozco, C., D.~Kizildag, A.~Oliva, and C.~D. P\'erez-Segarra (2010).
+\newblock Verification of multidimensional and transient {CFD} solutions.
+\newblock {\em Numerical Heat Transfer, Part B: Fundamentals\/}~{\em 57\/}(1),
+  46--73.
+
+\bibitem[\protect\citeauthoryear{Roache}{Roache}{2002}]{Roache2002}
+Roache, P. ({2002}, {MAR}).
+\newblock {Code Verification by the Method of Manufactured Solutions}.
+\newblock {\em {Journal of Fluids Engineering - Transactions of the
+  ASME}\/}~{\em {124}\/}({1}), {4--10}.
+
+\bibitem[\protect\citeauthoryear{Roy, Nelson, Smith, and Ober}{Roy
+  et~al.}{2004}]{Roy2004}
+Roy, C., C.~Nelson, T.~Smith, and C.~Ober ({2004}, {FEB 28}).
+\newblock {Verification Of Euler/Navier-Stokes Codes using the Method of
+  Manufactured Solutions}.
+\newblock {\em International Journal for Numerical Methods in Fluids\/}~{\em
+  {44}\/}({6}), {599--620}.
+
+\bibitem[\protect\citeauthoryear{Roy, Smith, and Ober}{Roy
+  et~al.}{2002}]{Roy2002}
+Roy, C., T.~Smith, and C.~Ober (2002).
+\newblock {Verification of a Compressible {CFD} Code using the Method of
+  Manufactured Solutions}.
+\newblock In {\em 32nd AIAA Fluid Dynamics Conference and Exhibit}, Number AIAA
+  2002-3110.
+
+\end{thebibliography}
 
 \end{document}
 
