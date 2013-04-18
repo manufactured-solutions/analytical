@@ -1,13 +1,13 @@
 \documentclass[10pt]{article}
 \usepackage[utf8x]{inputenc}
-\usepackage{amsmath}
+\usepackage{amsmath,color}
 \usepackage{geometry}
 %\usepackage[mathcal]{euscript}
 \geometry{ top=2.5cm, bottom=2cm, left=2cm, right=2cm}
 %\usepackage[authoryear]{natbib}
 % \usepackage{pdflscape}
 %\geometry{papersize={216mm,330mm}, top=3cm, bottom=2.5cm, left=4cm,  right=2cm}
-
+\usepackage{graphicx}
 \usepackage{siunitx}
 \usepackage{booktabs}
 
@@ -28,9 +28,10 @@
 \newcommand{\diffusion}{\,\text{diffusion}}
 \newcommand{\gradp}{\,\text{grad}p}
 \newcommand{\dissipation}{\,\text{dissipation}}
+\newcommand{\todo}[1]{ {\color{blue} #1} }
 %opening
 \title{Manufactured Solution for the 3D Incompressible Navier-Stokes equation}
-\author{Kemelli C. Estacio-Hiroms, Rhys Ulerich, Robert Moser}
+\author{Kemelli C. Estacio-Hiroms, Rhys Ulerich, Nick Malaya, Robert Moser}
 
 \begin{document}
 
@@ -92,6 +93,8 @@ For the channel-flow case, it is necessary that the manufactured solutions satis
 \item they should satisfy the incompressibility condition imposed by Equation (\ref{eq:ns_02}).
 \end{itemize}
 
+Even though there is no equation for the pressure in the incompressible Navier-Stokes equations, two of the above requirements is also true to the manufactured solutions for pressure $p$: it must be sufficiently complex in the channel as to exercises all the terms involving $p$ in the equations; and it must be periodic in $x$ and $z$ directions, but not in the $y$-direction. 
+
 
 %There are two different sets of manufactured solutions chosen for verifying the Incompressible Navier-Stokes.
 
@@ -99,9 +102,10 @@ For the channel-flow case, it is necessary that the manufactured solutions satis
 Choosing the manufactured solutions to be of the form:
 \begin{equation}
 \begin{split}\label{eq:uvw01}
-u(x,y,z,t)&= \alpha \sin\left( k_l x + a_{12}t \right) \cos\left( k_n z + b_{12}t \right) g'(y)\\
-v(x,y,z,t)&=        \cos\left( k_l x + a_{12}t \right) \cos\left( k_n z + b_{12}t \right) g(y)\\ 
-w(x,y,z,t)&=  \beta \cos\left( k_l x + a_{12}t \right) \sin\left( k_n z + b_{12}t \right) g'(y)\\
+u(x,y,z,t)&= \alpha \sin\left( \frac{k_l x}{L_x} + \frac{a_{12}t}{L_t} \right) \cos\left( \frac{k_n z}{L_z} + \frac{b_{12}t}{L_t} \right) g'(y)\\
+v(x,y,z,t)&=        \cos\left( \frac{k_l x}{L_x} + \frac{a_{12}t}{L_t} \right) \cos\left( \frac{k_n z}{L_z} + \frac{b_{12}t}{L_t} \right) g(y)\\ 
+w(x,y,z,t)&=  \beta \cos\left( \frac{k_l x}{L_x} + \frac{a_{12}t}{L_t} \right) \sin\left( \frac{k_n z}{L_z} + \frac{b_{12}t}{L_t} \right) g'(y)\\
+p(x,y,z,t)&=  \cos\left( \frac{k_l x}{L_x} + \frac{a_{12}t}{L_t} \right) \sin\left( \frac{k_n z}{L_z} + \frac{b_{12}t}{L_t} \right) \\
 \end{split}
 \end{equation}
 with
@@ -127,19 +131,21 @@ then the incompressibility restriction imposed by the continuity equation is sat
 % guarantees incompressibility.
 
 %By construction, 
-In order to the manufactured solutions for $u$, $v$ and $w$ satisfy the boundary conditions, it is sufficient that both function $g$ and its derivative $g'$ satisfy the boundary conditions, i.e.: $g(y)=0$ and $g'(y)=0$ at $y=0$ and $y=Ly$. A choice of functions $g$ that satisfy these requirements is:
-\begin{equation}\label{eq:g}
-g(y) = \dfrac{Ly^2}{\pi} \sin\left(\dfrac{\pi y}{Ly}\right)-y(Ly-y)+y^2 \left( \dfrac{Ly}{2}-y\right)^2(Ly-y)^2
-\end{equation}
+In order to the manufactured solutions for $u$, $v$ and $w$ satisfy the boundary conditions, it is sufficient that both function $g$ and its derivative $g'$ satisfy the boundary conditions, i.e.: $g(y)=0$ and $g'(y)=0$ at $y=0$ and $y=Ly$. A few choices of functions $g$ that satisfy these requirements are:
+\begin{align}
+\label{eq:g1}
+g &= \dfrac{L_y^2}{\pi} \cos\left(\dfrac{\pi y}{L_y}\right)+y^2-\dfrac{L_y^2}{4} , \quad \mbox{or}\\
+\label{eq:g2}
+g &= \dfrac{L_y^2}{\pi} \cos\left(\dfrac{\pi y}{L_y}\right)+y^2-\dfrac{L_y^2}{4} +y^2 \left(y-\dfrac{L_y}{2} \right)^2 \left(y+\dfrac{L_y}{2} \right)^2, \quad \mbox{or}\\
+\label{eq:g3}
+g &= \dfrac{L_y^2}{\pi} \cos\left(\dfrac{\pi y}{L_y}\right)+y^2-\dfrac{L_y^2}{4} +y^4 \left(y-\dfrac{L_y}{2} \right)^4 \left(y+\dfrac{L_y}{2} \right)^4, \quad \mbox{or}\\
+\label{eq:g4}
+g &= \dfrac{L_y^2}{\pi} \cos\left(\dfrac{\pi y}{L_y}\right)+y^2-\dfrac{L_y^2}{4} +y^4  \left(y-\dfrac{L_y}{2} \right)^2\left(y+\dfrac{L_y}{2} \right)^2, \quad \mbox{or}\\
+\label{eq:g5}
+g &= \dfrac{L_y^2}{\pi} \cos\left(\dfrac{\pi y}{L_y}\right)+y^2-\dfrac{L_y^2}{4} +y^2 \left(y-\dfrac{L_y}{2} \right)^4 \left(y+\dfrac{L_y}{2} \right)^4.
+\end{align}
 
-% Up to this moment nothing has been said about a manufactured solution for the pressure $p$. %Indeed, in the incompressible formulation of the Navier-Stokes, there is no constitutive equation for the pressure.
-% Indeed, the only information known is that the pressure can be numerically calculated solving Equation (\ref{eq:ns_03}). 
-% Thus, we conveniently choose our manufactured solution for $\nabla p$ to be:
-Up to this moment nothing has been said about a manufactured solution for the pressure $p$, which field can be numerically calculated solving Equation (\ref{eq:ns_03}). Indeed, if we conveniently choose our manufactured solution for $\nabla p$ to be:
-\begin{equation}\label{eq:p}
- \nabla p = \bv{H}
-\end{equation}
-then, Equation (\ref{eq:ns_03}) is automatically satisfied.%; and can be analytically calculated given the equations (\ref{eq:uvw01}) (or, (\ref{eq:uvw02})) and the definition of $\bv{H}$; and  
+
 
 \subsection{The Method of Manufactured Solutions}
 
@@ -152,7 +158,130 @@ The MMS consists in modifying the incompressible Navier-Stokes equations~(\ref{e
 &\diff{w}{t}  + \diff{p}{x} -H_3 -  \nu\left(\diff{^2 w}{ x^2}+\diff{^2 w}{ y^2}+\diff{^2 w}{ z^2} \right)=Q_w\\
 \end{split}
 \end{equation}
-so the modified set of equations (\ref{eq:ns_mod_2d}) conveniently has the analytical solution given in Equations (\ref{eq:uvw01}), (\ref{eq:ab01}), (\ref{eq:g}) and~(\ref{eq:p}).
+so the modified set of equations (\ref{eq:ns_mod_2d}) conveniently has the analytical solution given in Equations (\ref{eq:uvw01}), (\ref{eq:ab01}), and one choice for function $g$, given in Eqs. (\ref{eq:g1})--(\ref{eq:g5}).
+
+
+\subsection{Choosing $g$}
+We attempt to make the manufactured solution to resemble the inner portion (viscous sublayer + logarithmic
+layer) of a zero pressure gradient boundary layer. For that, we follow Pope's description of the Reynolds stress of a turbulent flow in a channel~\cite{pope2000turbulent}, and try to reproduce such behavior with the proposed manufactured solutions.
+
+The boundary condition $u=v=w=0$ at the wall determines the way in which the Reynolds stresses depart from zero for small $y$. For fixed $x$, $z$ and $t$, and for small $y$, the fluctuating velocity components can be written as Taylor series of the form:
+\begin{equation}
+\begin{split}
+u &= a_1 + b_1 y + c_1 y^2 + \dots, \\
+v &= a_2 + b_2 y + c_2 y^2 + \dots, \\
+w &= a_3 + b_3 y + c_3 y^2 + \dots, \\ 
+\end{split}
+\end{equation}
+
+The coefficients are zero-mean random variable, and, for fully developed channel flow, they are statistically independent of $x$, $z$ and $t$. For $y=0$, the no-slip condition yields $u=a_1=0$ and $w=a_3=0$; and the impermeability condition yields $v=a_2=0$. At the wall, since $u$ and $v$ are zero for all $x$ and $z$,  the derivatives $(\partial u/ \partial x)|_{y=0}$ and $(\partial w/ \partial z)|_{y=0}$ are also zero; hence the continuity equation yiels v$(\partial v/ \partial y)|_{y=0}=b_2=0$.
+\todo{actually, our wall is at y=+-1. So I am not sure how this will work. Rhys\&Nick, I need your input here.}
+
+The Reynolds stresses can be obtained from the expansions above simply by taking means of the products of the series. Taking account of the coefficients that are zero ($a_1$, $a_2$, $a_3$ and $b_2$), the leading order in $y$ of the Reynolds stresses are:
+\begin{equation}
+\begin{split}
+\langle u^2 \rangle &= \langle b_1^2 \rangle y^2  + \dots, \\
+\langle v^2 \rangle &= \langle c_2^2 \rangle y^4 + \dots, \\
+\langle uv  \rangle &= \langle b_1 c_2 \rangle y^2 + \dots, \\
+\langle w^2 \rangle &= \langle b_3^2 \rangle y^3 + \dots, 
+\end{split}
+\end{equation}
+Thus, while $\langle u^2 \rangle$ and $\langle w^2 \rangle$ increase from zero as $y^2$, $\langle uv  \rangle$ and 
+$\langle w^2 \rangle$ increase more slowly, as $y^3$ and $y^4$, respectively. Therefore, we seek for manufactured solutions that mostly closely reproduce such behavior.
+
+
+Recall that the instantaneous velocity $u'$ can be written as the sum of the fluctuating velocity $u$ with the average velocity $\langle u\rangle$, i.e:
+$$u'=u+\langle u\rangle$$
+
+The Reynolds stresses can be obtained from the manufactured solutions by taking the mean (expectation) of the fluctuating velocity squared:
+\begin{equation}
+\begin{split}\label{eq:exp_Reynolds}
+\langle u^2\rangle &= \langle (u'-\langle u\rangle)^2 \rangle = \langle{u'}^2\rangle - \langle u\rangle^2 \\
+\langle v^2\rangle &= \langle {v'}^2 \rangle - \langle v\rangle^2 \\ 
+\langle w^2\rangle &= \langle {w'}^2 \rangle- \langle w\rangle^2 \\
+\langle uv \rangle &= \langle u'v' \rangle - \langle u\rangle\langle v\rangle \\  
+\end{split}
+\end{equation}
+where the average (expectation) of a function $u$ is defined by:
+\begin{equation}\label{eq:expectation}
+\langle u \rangle = E[[u(x,y,z,t)]]\big\rvert_{xzt}= \dfrac{1}{t_f L_x L_z} \int_{t=0}^{t_f} \int_{-L_x/2}^{L_x/2} \int_{-L_z/2}^{L_z/2} u(x,y,z,t) \;dz\,dx\,dt  
+\end{equation}
+
+
+In order to calculate the Reynolds stress (through averaging fluctuating velocities), one must select parameters for both the manufactured solution, Eq. (\ref{eq:ns_mod_2d}), and chosen $g$ function, Eq. (\ref{eq:g1})--(\ref{eq:g5}). A convenient set of parameters is given in Table \ref{table:parameters}. Note that with these choices the manufactured solution satisfies no-slip conditions at $y = -L_y/2$ and $y=L_y/2$.
+\begin{table}[htpb]
+\caption{Parameter recommendations.}
+\vspace{-8pt}
+\begin{center}
+\begin{tabular}{cc|cc|cc}
+\toprule
+Constant & Value & Constant & Value & Constant & Value \\
+\midrule\midrule
+$L_x$	& $4\pi$ & $L_t$  	& 1      & $k_n$ 	& 11 \\
+$L_y$	& 2      & $t_f$  	& 5      & $a_{12}$ & 7  \\
+$L_z$ 	& $3\pi$ & $k_l$ 	& 5      & $b_{12}$ & 13 \\[0.4ex]
+\bottomrule
+\end{tabular}
+\end{center}
+\label{table:parameters}
+\end{table}
+
+Using the parameters presented in Table \ref{table:parameters}, it is possible to calculate the expectations of the terms in Equation~(\ref{eq:exp_Reynolds}) using the definition given in Equation (\ref{eq:expectation}). The formula for $\langle u^2 \rangle$ and its Taylor expansion is given in  Table~\ref{table:exp_u}, for each function $g$ presented in Equations (\ref{eq:g1})--(\ref{eq:g5}). The Taylor expansion for the remaining terms ($\langle uv \rangle$, $\langle v^2 \rangle$ and $\langle w^2 \rangle$) is presented in Table \ref{table:taylor}. All the calculations are carried out using MAPLE.
+
+Analyzing the data presented in Tables \ref{table:exp_u} and \ref{table:taylor}, we conclude that the behavior mostly closely related to the one described by Pope~\cite{pope2000turbulent} is achieved when the function $g$ is given by Equation XXX. \todo{$\longleftarrow$ Nick/Rhys, this is with you :)}
+
+\begin{table}[htpb]
+\caption{Expectation of $u^2$ ($\langle u^2 \rangle$) and its approximation with Taylor series.}
+\vspace{-8pt}
+\begin{center}
+\begin{tabular}{c|c|c}
+\toprule
+$g$ & $\langle u^2 \rangle$ & Taylor series   \\
+\midrule\midrule
+Eq. (\ref{eq:g1}) &$0.1857338391 \sin(\pi y / 2)^2-0.3714676782 \sin(\pi y / 2) y+0.1857338391 y^2$	& $0.06051365368 y^2+O(y^4)$\\
+Eq. (\ref{eq:g2}) &$0.04643345978 (-2 \sin(\pi y / 2)+4 y+6 y^5-8 y^3)^2$	& $0.03421510645 y^2+O(y^4)$\\
+Eq. (\ref{eq:g3}) &$0.04643345978 (-2 \sin(\pi y / 2)+2 y+48 y^7-24 y^5+4 y^3+12 y^11-40 y^9)^2$& $0.06051365368 y^2+O(y^4)$ \\
+Eq. (\ref{eq:g4}) &$0.04643345978 (-2 \sin(\pi y / 2)+2 y+8 y^7-12 y^5+4 y^3)^2$	& $0.06051365368 y^2+O(y^4)$\\
+Eq. (\ref{eq:g5}) &$0.04643345978 (-2 \sin(\pi y / 2)+4 y+36 y^5-16 y^3+10 y^9-32 y^7)^2$	& $0.03421510645 y^2+O(y^4)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\label{table:exp_u}
+\end{table}
+
+\begin{table}[htpb]
+\caption{Taylor series of expectation of $v^2$, $uv$ and $w^2$.}
+\vspace{-8pt}
+\begin{center}
+\scriptsize
+\begin{tabular}{c|c|c|c}
+\toprule
+$g$ & $\langle v^2 \rangle$ &  $\langle uv \rangle$ & $\langle w^2 \rangle$  \\
+\midrule\midrule
+Eq. (\ref{eq:g1}) &$0.01863596445-0.07786091193 y^2+O(y^4)$&$-0.00004251718738 y+0.0001369344824 y^3+O(y^5)$&$0.1638380546 y^2+O(y^4)$\\
+Eq. (\ref{eq:g2}) &$0.01863596445+0.05854660928 y^2+O(y^4)$&$0.00003197030557 y-0.0001996148868 y^3+O(y^5)$&$0.09263589518 y^2+O(y^4)$\\
+Eq. (\ref{eq:g3}) &$0.01863596445-0.07786091193 y^2+O(y^4)$&$-0.00004251718738 y+0.0002859094683 y^3+O(y^5)$&$0.1638380546 y^2+O(y^4)$\\
+Eq. (\ref{eq:g4}) &$0.01863596445-0.07786091193 y^2+O(y^4)$&$-0.00004251718738 y+0.0002859094683 y^3+O(y^5)$&$0.1638380546 y^2+O(y^4)$\\
+Eq. (\ref{eq:g5}) &$0.01863596445+0.05854660928 y^2+O(y^4)$&$0.00003197030557 y-0.0004975648584 y^3+O(y^5)$&$0.09263589518 y^2+O(y^4)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\label{table:taylor}
+\end{table}
+
+
+\begin{figure}[thb]
+\centering
+%\includegraphics[width=0.495\textwidth]{channel-geometry}
+\includegraphics[scale=0.35]{uu.png}
+\includegraphics[scale=0.35]{uv.png}
+\includegraphics[scale=0.35]{vv.png}
+\includegraphics[scale=0.35]{ww.png}
+  \\[-0.2cm]
+  \caption{Expectations of $u^2$, $v^2$, $uv$ and $w^2$.
+           \label{fig:expectations}}
+\end{figure}
+
 
 
 % 
@@ -170,6 +299,14 @@ so the modified set of equations (\ref{eq:ns_mod_2d}) conveniently has the analy
 % \end{equation*}
 
 
+ \begin{thebibliography}{99}
+
+\bibitem{pope2000turbulent}
+S. B. Pope. Turbulent Flows, Cambridge University Press, 2000.
+
+ \end{thebibliography}
+
+\end{document}
 
 \subsection{Streamwise velocity}
 
@@ -292,10 +429,14 @@ where $g$ is given in Equation (\ref{eq:g}) and its derivatives are given in Equ
 % %---------------------------------------------------------------------------------------------------------
 
 % 
-% \begin{thebibliography}{99}
+ \begin{thebibliography}{99}
 %  \bibitem{Ulerich2012}
 % R.~Ulerich, {K.~C. Estacio-Hiroms}, N.~Malaya, R.~D. Moser, ``A Transient Manufactured Solution For The Compressible Navier-Stokes Equations with a Power Law Viscosity''. {\it 10th World Congress on Computational Mechanics}, S\~ao Paulo-Brazil, 8-12 July 2012.\\  
 % 
+\bibitem{pope2000turbulent}
+S. B. Pope. Turbulent Flows, Cambridge University Press, 2000.
+}
+
 % \end{thebibliography}
 
 
