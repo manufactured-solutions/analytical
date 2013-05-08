@@ -61,5 +61,22 @@ Finally, manufacture the pressure such that,
  P = d f(x) \tilde g(y) h(z)
 \end{equation}
 
+\section{MMS}
+\begin{verbatim}
+  // NS equation residuals
+  NumberArray<NDIM, Scalar> Q_rho_u = 
+    raw_value(
+
+	      // convective term
+	      divergence(U.outerproduct(U))
+
+	      // pressure
+	      + P.derivatives()
+
+	      // dissipation
+	      + nu * divergence(gradient(U)));
+
+  return Q_rho_u[1];
+\end{verbatim}
 
 \end{document}
