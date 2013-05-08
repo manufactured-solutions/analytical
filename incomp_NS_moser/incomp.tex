@@ -71,7 +71,7 @@ Finally, manufacture the pressure such that,
 	      divergence(U.outerproduct(U))
 
 	      // pressure
-	      + P.derivatives()
+	      - P.derivatives()
 
 	      // dissipation
 	      + nu * divergence(gradient(U)));
