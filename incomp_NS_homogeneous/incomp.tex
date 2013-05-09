@@ -53,7 +53,7 @@ Where d is just a scaling parameter.
     raw_value(
 
 	      // convective term
-	      divergence(U.outerproduct(U))
+	      -divergence(U.outerproduct(U))
 
 	      // pressure
 	      - P.derivatives()
