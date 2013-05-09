@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\title{\bf{Manufactured Solution for the Incompressible Navier-Stokes}}
+\author{Nicholas Malaya \\ Robert D. Moser} \date{}
+
+\begin{document}
+\maketitle
+
+Construct a 3D incompressible field. Define three functions: f(x), g(y),
+h(z) satisfying boundary conditions. 
+
+Define the three components of velocity as,
+\begin{align}
+u = a f(x)  g'(y)  h'(z) \\
+v = b f'(x) g(y)   h'(z) \\
+w = c f'(x) g'(y)  h(z) 
+\end{align}
+To satisfy continuity, $a+b+c=0$. We can include time dependence
+$a=a(t)$ if we so desire.
+
+\begin{equation}
+ g(y) = \frac{1}{\delta + \text{sin}(k_y y)} \mbox{if } \beta > 1
+\end{equation}
+
+In order to provide high wavenumber content, choose f(x) as,
+\begin{equation}
+ f(x) =
+  \begin{cases}
+   \text{sin}(k_x x)  \\
+   \frac{1}{\beta + \text{sin}(k_x x)} & \mbox{if } \beta > 1 \\
+  \end{cases}
+\end{equation}
+Likewise choose the manufactured solution for the spanwise component of
+velocity to be
+\begin{equation}
+ h(z) =
+  \begin{cases}
+   \text{sin}(k_z z)  \\
+   \frac{1}{\gamma + \text{sin}(k_z z)} & \mbox{if } \gamma > 1 \\
+  \end{cases}
+\end{equation}
+Finally, manufacture the pressure such that, 
+\begin{equation}
+ P = d f(x) g(y) h(z)
+\end{equation}
+Where d is just a scaling parameter. 
+\newpage
+\section{MMS}
+\begin{verbatim}
+  // NS equation residuals
+  NumberArray<NDIM, Scalar> Q_rho_u = 
+    raw_value(
+
+	      // convective term
+	      divergence(U.outerproduct(U))
+
+	      // pressure
+	      - P.derivatives()
+
+	      // dissipation
+	      + nu * divergence(gradient(U)));
+
+  return Q_rho_u[1];
+\end{verbatim}
+
+\end{document}
