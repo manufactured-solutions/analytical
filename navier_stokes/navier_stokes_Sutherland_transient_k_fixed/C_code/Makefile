@@ -1,0 +1,30 @@
+
+LIBS = \
+	-lstdc++
+		
+CXX = mpic++
+
+CXXFLAGS += -g -Wall -c
+
+default: all
+
+.SUFFIXES: .o .C
+
+all:	mms_codes_test
+
+clean:
+	rm -f *~
+	rm -f *.o
+	rm -f test_codes
+
+# mms_codes_test: Lesson04.o
+# 	$(CXX) Lesson04.o \
+# 	    -o example_tpetra $(LIBS)
+
+
+mms_codes_test:  NavierStokes_1d_codes_testing.o
+	$(CXX) NavierStokes_1d_codes_testing.o \
+	       -o test_codes $(LIBS)
+
+%.o: %.C
+	$(CXX) $(INC_PATHS) $(CXXFLAGS) $<
