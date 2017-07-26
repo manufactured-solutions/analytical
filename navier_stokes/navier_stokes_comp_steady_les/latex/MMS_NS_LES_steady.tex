@@ -37,7 +37,8 @@
   In this document, we describe the equations used for the generation
   of the source terms for the Navier-Stokes with Large Eddy Simulation
   models. We will use automatic differentiation for the source term
-  derivation.
+  derivation. These equations and source terms are implemented as
+  \texttt{ad\_cns\_3d\_les} in MASA.
 \end{abstract}
 
 \section{Mathematical Model}
@@ -118,7 +119,9 @@ The SFS turbulent diffusion is modeled as
 \end{align}
 
 The source terms for these equations are obtained through automatic
-differentiation as implemented in MASA and METAPHYSICL.
+differentiation as implemented in MASA and METAPHYSICL. These
+equations and source terms are implemented as
+\texttt{ad\_cns\_3d\_les} in MASA.
 
 \section{Results}
 
