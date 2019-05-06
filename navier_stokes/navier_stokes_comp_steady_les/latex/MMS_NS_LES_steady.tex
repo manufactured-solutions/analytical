@@ -38,7 +38,8 @@
   of the source terms for the Navier-Stokes with Large Eddy Simulation
   models. We will use automatic differentiation for the source term
   derivation. These equations and source terms are implemented as
-  \texttt{ad\_cns\_3d\_les} in MASA.
+  \texttt{ad\_cns\_3d\_les} and \texttt{ad\_cns\_3d\_les\_sph}
+  (spherical MMS version) in MASA.
 \end{abstract}
 
 \section{Mathematical Model}
@@ -121,7 +122,25 @@ The SFS turbulent diffusion is modeled as
 The source terms for these equations are obtained through automatic
 differentiation as implemented in MASA and METAPHYSICL. These
 equations and source terms are implemented as
-\texttt{ad\_cns\_3d\_les} in MASA.
+\texttt{ad\_cns\_3d\_les} and  \texttt{ad\_cns\_3d\_les\_sph} (spherical MMS version) in MASA.
+
+
+The \texttt{ad\_cns\_3d\_les} version uses standard manufactured
+solutions with sine and cosine fields for use in cartesian
+simulations. The spherical MMS version (implemented as
+\texttt{ad\_cns\_3d\_les\_sph}) was designed to test cartesian
+simulations that use boundary methods to represent complex boundaries
+within the domain, e.g.\ embedded boundary method, immersed boundary
+method, etc. This implementation can be used to create (in a cartesian
+simulation) smoothly varying cosine fields that are depended on the
+radial coordinate. For example, the velocity field, $u_i$, is defined
+as:
+\begin{align}
+u_i = u_0 + u_r \cos(a_{u_r} \pi r);
+\end{align}
+where $r = \sqrt{x^2 + y^2+z^2}$. The free parameters can be chosen to
+ensure that the velocities are zero at the boundary of an embedded
+sphere within the domain.
 
 \section{Results}
 
